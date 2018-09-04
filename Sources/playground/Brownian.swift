@@ -88,7 +88,7 @@ final class Brownian {
         }
       }
 
-      print("Took \(t.clocks) ticks for a total of \(Double(t.duration) / Double(CLOCKS_PER_SEC))s")
+      print("Took \(t.clocks) ticks for a total of \(Double(t.duration))s")
 
       if preview && i % 100 == 0 {
         save()
