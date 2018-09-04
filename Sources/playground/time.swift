@@ -13,6 +13,7 @@ struct TimeResult {
 }
 
 struct ClockTimer {
+  @inline(__always)
   func time<T>(_ f: () throws -> T) rethrows -> (T, TimeResult) {
     let s = clock()
     let res = try f()
@@ -21,6 +22,7 @@ struct ClockTimer {
     return (res, TimeResult(clocks: Int(e)))
   }
 
+  @inline(__always)
   static func time<T>(_ f: () throws -> T) rethrows -> (T, TimeResult) {
     return try ClockTimer().time(f)
   }
