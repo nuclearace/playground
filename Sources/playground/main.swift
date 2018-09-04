@@ -1,5 +1,5 @@
 import Foundation
 
-let forestFire = ForestFire(ticks: 1000, size: 50, printOnTick: 1)
+let ants = Langton(size: 100, numberOfAnts: 2)
 
-forestFire.simulate()
+ants.run()
