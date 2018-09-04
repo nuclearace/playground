@@ -1,7 +1,5 @@
 import Foundation
 
-let b = Brownian(height: 900, width: 1440, numberOfParticles: 20_000)
+let forestFire = ForestFire(ticks: 1000, size: 50, printOnTick: 1)
 
-print("Starting to tree")
-
-b.tree(preview: true)
+forestFire.simulate()
