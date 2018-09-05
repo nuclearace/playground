@@ -66,7 +66,7 @@ private struct Ant {
 
   /// Moves this ant one tick. Returns true if the ant has escaped
   mutating func step() -> Bool {
-    direction = direction.newDirection(black: board.grid[x][y])
+    direction.changeDirection(isBlack: board.grid[x][y])
 
     board.grid[x][y].toggle()
 
@@ -79,24 +79,24 @@ private struct Ant {
 private enum Direction : CaseIterable {
   case north, south, east, west
 
-  func newDirection(black: Bool) -> Direction {
-    switch (self, black) {
+  mutating func changeDirection(isBlack: Bool) {
+    switch (self, isBlack) {
     case (.north, true):
-      return .west
+      self = .west
     case (.north, false):
-      return .east
+      self = .east
     case (.south, true):
-      return .east
+      self = .east
     case (.south, false):
-      return .west
+      self = .west
     case (.east, true):
-      return .north
+      self = .north
     case (.east, false):
-      return .south
+      self = .south
     case (.west, true):
-      return .south
+      self = .south
     case (.west, false):
-      return .north
+      self = .north
     }
   }
 
