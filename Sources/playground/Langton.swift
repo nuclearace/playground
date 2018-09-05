@@ -29,7 +29,7 @@ final class Langton {
 
     while !ants.isEmpty {
       // Check and see if the ants are goofing around
-      guard stepCount < 20_000 else { break }
+      guard stepCount < 50_000 else { break }
 
       var ant = ants.remove(at: 0)
 
