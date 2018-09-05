@@ -5,12 +5,15 @@
 import Foundation
 
 final class Langton {
+  let numberOfAnts: Int
   let size: Int
+  lazy var maxSteps = numberOfAnts * 30_000
 
   private var ants = [Ant]()
   fileprivate var grid: [[Bool]]
 
   init(size: Int, numberOfAnts: Int) {
+    self.numberOfAnts = numberOfAnts
     self.size = size
     self.grid = [[Bool]](repeating: [Bool](repeating: false, count: size), count: size)
 
@@ -29,9 +32,9 @@ final class Langton {
 
     while !ants.isEmpty {
       // Check and see if the ants are goofing around
-      guard stepCount < 50_000 else { break }
+      guard stepCount < maxSteps else { break }
 
-      var ant = ants.remove(at: 0)
+      var ant = ants.removeFirst()
 
       if !ant.step() {
         // Ant didn't escape, put it back
@@ -48,6 +51,9 @@ final class Langton {
 
       print()
     }
+
+    print("\(numberOfAnts - ants.count) escaped")
+    print("Took \(stepCount) steps")
   }
 }
 
