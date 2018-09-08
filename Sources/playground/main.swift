@@ -1,5 +1,7 @@
 import Foundation
 
-let ants = Langton(size: 100, numberOfAnts: 2)
+let a = unchurch(add(church(3))(church(4)))
+let b = unchurch(mult(church(3))(church(4)))
 
-ants.run()
+print(a)
+print(b)
