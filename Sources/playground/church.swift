@@ -6,8 +6,12 @@ import Foundation
 
 // Church encoding
 
-func id<A>(_ a: A) -> A {
-  return a
+func succ<A, B, C>(_ n : @escaping (@escaping (A) -> B) -> (C) -> A) -> (@escaping (A) -> B) -> (C) -> B {
+  return {f in
+    return {x in
+      return f(n(f)(x))
+    }
+  }
 }
 
 func zero<A, B>(_ a : A) -> (B) -> B {
@@ -16,11 +20,15 @@ func zero<A, B>(_ a : A) -> (B) -> B {
   }
 }
 
-func succ<A, B, C>(_ n : @escaping (@escaping (A) -> B) -> (C) -> A) -> (@escaping (A) -> B) -> (C) -> B {
-  return {f in
-    return {x in
-      return f(n(f)(x))
-    }
+func three<A>(_ f : @escaping ((A) -> A)) -> (A) -> A {
+  return { x in
+    return succ(succ(succ(zero)))(f)(x)
+  }
+}
+
+func four<A>(_ f : @escaping ((A) -> A)) -> (A) -> A {
+  return { x in
+    return succ(succ(succ(succ(zero))))(f)(x)
   }
 }
 
@@ -42,16 +50,18 @@ func mult<A, B, C>(_ m : @escaping (A) -> B) -> (@escaping (C) -> A) -> (C) -> B
   }
 }
 
-//func exp<A, B, C>(_ m : @escaping (A) -> B) -> (A) -> C {
-//  return {n in
-//    return n(m)
-//  }
-//}
+func exp<A, B, C>(_ m : A) -> (@escaping (A) -> (B) -> (C) -> C) -> (B) -> (C) -> C {
+  return {n in
+    return {f in
+      return {x in
+        return n(m)(f)(x)
+      }
+    }
+  }
+}
 
 func church<A>(_ x : Int) -> (@escaping (A) -> A) -> (A) -> A {
-  if x == 0 {
-    return zero
-  }
+  guard x != 0 else { return zero }
 
   return {f in
     return {a in
