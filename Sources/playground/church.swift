@@ -6,7 +6,7 @@ import Foundation
 
 // Church encoding
 
-func succ<A, B, C>(_ n : @escaping (@escaping (A) -> B) -> (C) -> A) -> (@escaping (A) -> B) -> (C) -> B {
+func succ<A, B, C>(_ n: @escaping (@escaping (A) -> B) -> (C) -> A) -> (@escaping (A) -> B) -> (C) -> B {
   return {f in
     return {x in
       return f(n(f)(x))
@@ -14,20 +14,20 @@ func succ<A, B, C>(_ n : @escaping (@escaping (A) -> B) -> (C) -> A) -> (@escapi
   }
 }
 
-func zero<A, B>(_ a : A) -> (B) -> B {
+func zero<A, B>(_ a: A) -> (B) -> B {
   return {b in
     return b
   }
 }
 
-func three<A>(_ f : @escaping ((A) -> A)) -> (A) -> A {
-  return { x in
+func three<A>(_ f: @escaping (A) -> A) -> (A) -> A {
+  return {x in
     return succ(succ(succ(zero)))(f)(x)
   }
 }
 
-func four<A>(_ f : @escaping ((A) -> A)) -> (A) -> A {
-  return { x in
+func four<A>(_ f: @escaping (A) -> A) -> (A) -> A {
+  return {x in
     return succ(succ(succ(succ(zero))))(f)(x)
   }
 }
@@ -42,7 +42,7 @@ func add<A, B, C>(_ m: @escaping (B) -> (A) -> C) -> (@escaping (B) -> (C) -> A)
   }
 }
 
-func mult<A, B, C>(_ m : @escaping (A) -> B) -> (@escaping (C) -> A) -> (C) -> B {
+func mult<A, B, C>(_ m: @escaping (A) -> B) -> (@escaping (C) -> A) -> (C) -> B {
   return {n in
     return {f in
       return m(n(f))
@@ -50,7 +50,7 @@ func mult<A, B, C>(_ m : @escaping (A) -> B) -> (@escaping (C) -> A) -> (C) -> B
   }
 }
 
-func exp<A, B, C>(_ m : A) -> (@escaping (A) -> (B) -> (C) -> C) -> (B) -> (C) -> C {
+func exp<A, B, C>(_ m: A) -> (@escaping (A) -> (B) -> (C) -> C) -> (B) -> (C) -> C {
   return {n in
     return {f in
       return {x in
@@ -60,7 +60,7 @@ func exp<A, B, C>(_ m : A) -> (@escaping (A) -> (B) -> (C) -> C) -> (B) -> (C) -
   }
 }
 
-func church<A>(_ x : Int) -> (@escaping (A) -> A) -> (A) -> A {
+func church<A>(_ x: Int) -> (@escaping (A) -> A) -> (A) -> A {
   guard x != 0 else { return zero }
 
   return {f in
@@ -70,7 +70,7 @@ func church<A>(_ x : Int) -> (@escaping (A) -> A) -> (A) -> A {
   }
 }
 
-func unchurch<A>(_ f : (@escaping (Int) -> Int) -> (Int) -> A) -> A {
+func unchurch<A>(_ f: (@escaping (Int) -> Int) -> (Int) -> A) -> A {
   return f({i in
     return i + 1
   })(0)
