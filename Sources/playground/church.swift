@@ -2,8 +2,6 @@
 // Created by Erik Little on 9/8/18.
 //
 
-import Foundation
-
 // Church encoding
 
 func succ<A, B, C>(_ n: @escaping (@escaping (A) -> B) -> (C) -> A) -> (@escaping (A) -> B) -> (C) -> B {
