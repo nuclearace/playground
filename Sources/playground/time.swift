@@ -12,6 +12,12 @@ struct TimeResult {
   }
 }
 
+extension TimeResult : CustomStringConvertible {
+  var description: String {
+    return "TimeResult(clocks: \(clocks), duration: \(duration))"
+  }
+}
+
 struct ClockTimer {
   @inline(__always)
   func time<T>(_ f: () throws -> T) rethrows -> (T, TimeResult) {
