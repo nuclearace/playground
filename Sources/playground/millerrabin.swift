@@ -4,13 +4,10 @@
 
 import BigInt
 
-private let numTrails = 5
-
 // Miller-Rabin prime test
-func isPrime(_ n: BigInt) -> Bool {
-  guard n >= 2 else { fatalError() }
+func isPrime(_ n: BigInt, rounds: Int = 5) -> Bool {
   guard n != 2 else { return true }
-  guard n % 2 != 0 else { return false }
+  guard n % 2 != 0 && n > 2 else { return false }
 
   var s = 0
   var d = n - 1
@@ -34,7 +31,7 @@ func isPrime(_ n: BigInt) -> Bool {
     return true
   }
 
-  for _ in 0..<numTrails where tryComposite(BigInt(BigUInt.randomInteger(lessThan: BigUInt(n)))) {
+  for _ in 0..<rounds where tryComposite(BigInt(BigUInt.randomInteger(lessThan: BigUInt(n)))) {
     return false
   }
 

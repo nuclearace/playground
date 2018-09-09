@@ -1,11 +1,5 @@
-import Foundation
+import BigInt
 
-var pop = 0.5
-
-for i in 0..<20 {
-  guard pop >= 0.01 else { break }
-
-  print("Pop \(i): \(pop)")
-
-  pop = populationNext(lambda: 3.2, initial: pop)
+for i in 3..<18 {
+  print("\(i): \(largestLeftTruncatablePrime(i))")
 }
