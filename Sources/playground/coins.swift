@@ -5,7 +5,7 @@
 import BigInt
 
 func countCoins(amountCents cents: Int, coins: [Int]) -> BigInt {
-  let cycle = coins.filter({ BigInt($0) <= cents }).map({ $0 + 1 }).max()! * coins.count
+  let cycle = coins.filter({ $0 <= cents }).map({ $0 + 1 }).max()! * coins.count
   var table = [BigInt](repeating: 0, count: cycle)
 
   for x in 0..<coins.count {
