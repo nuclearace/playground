@@ -14,8 +14,9 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "playground",
-            dependencies: ["BigInt", "QDBMP"]),
+            dependencies: ["BigInt", "QDBMP", "CStuff"]),
         .target(name: "QDBMP"),
+        .target(name: "CStuff"),
         .testTarget(
             name: "playgroundTests",
             dependencies: ["playground"]),
