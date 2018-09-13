@@ -26,7 +26,7 @@ func is89(_ n: Int) -> Bool {
 }
 
 func iterSquare(upToPower pow: Int) {
-  var sums = [BigInt](repeating: 0, count: 10_000_000)
+  var sums = [BigInt](repeating: 0, count: pow * 81 + 1)
   sums[0] = 1
 
   for n in 1...pow {

@@ -1,3 +1,3 @@
 import BigInt
 
-iterSquare(upToPower: 50)
+iterSquare(upToPower: 100)
