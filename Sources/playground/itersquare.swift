@@ -4,27 +4,6 @@
 
 import BigInt
 
-func is89(_ n: Int) -> Bool {
-  var n = n
-
-  while true {
-    var s = 0
-
-    repeat {
-      s += (n%10) * (n%10)
-      n /= 10
-    } while n > 0
-
-    if s == 89 {
-      return true
-    } else if s == 1 {
-      return false
-    }
-
-    n = s
-  }
-}
-
 func iterSquare(upToPower pow: Int) {
   var sums = [BigInt](repeating: 0, count: pow * 81 + 1)
   sums[0] = 1
@@ -51,5 +30,26 @@ func iterSquare(upToPower pow: Int) {
     }
 
     print("1->10^\(n): \(count89)")
+  }
+}
+
+private func is89(_ n: Int) -> Bool {
+  var n = n
+
+  while true {
+    var s = 0
+
+    repeat {
+      s += (n%10) * (n%10)
+      n /= 10
+    } while n > 0
+
+    if s == 89 {
+      return true
+    } else if s == 1 {
+      return false
+    }
+
+    n = s
   }
 }
