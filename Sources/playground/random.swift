@@ -4,7 +4,7 @@
 
 import Foundation
 
-final class MTRandom : RandomNumberGenerator {
+struct MTRandom : RandomNumberGenerator {
   private var index = 312
   private var mt = [UInt64](repeating: 0, count: 312)
 
@@ -16,7 +16,7 @@ final class MTRandom : RandomNumberGenerator {
     }
   }
 
-  func next() -> UInt64 {
+  mutating func next() -> UInt64 {
     if index >= 312 {
       twist()
     }
@@ -33,7 +33,7 @@ final class MTRandom : RandomNumberGenerator {
     return y
   }
 
-  private func twist() {
+  private mutating func twist() {
     index = 0
 
     for i in 0..<312 {
