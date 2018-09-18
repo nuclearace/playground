@@ -4,6 +4,6 @@
 
 import BigInt
 
-func factorial(_ n: Int) -> BigInt {
+public func factorial(_ n: Int) -> BigInt {
   return (1...n).map({ BigInt($0) }).reduce(1, *)
 }

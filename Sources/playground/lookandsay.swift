@@ -9,7 +9,7 @@
 //  print("Seq \(i): \(seq)")
 //  seq = lookAndSay(seq)
 // }
-func lookAndSay(_ seq: [Int]) -> [Int] {
+public func lookAndSay(_ seq: [Int]) -> [Int] {
   var result = [Int]()
   var cur = seq[0]
   var curRunLength = 1

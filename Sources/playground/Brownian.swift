@@ -7,10 +7,10 @@ import QDBMP
 
 private let orange: (r: UInt8, g: UInt8, b: UInt8) = (255, 158, 22)
 
-final class Brownian {
-  let height: Int
-  let width: Int
-  let numberOfParticles: Int
+public final class Brownian {
+  public let height: Int
+  public let width: Int
+  public let numberOfParticles: Int
 
   private let bmp: OpaquePointer
   // Default RNG is too slow. Use a Mersenne Twister
@@ -18,7 +18,7 @@ final class Brownian {
 
   private var grid: [[Bool]]
 
-  init(height: Int, width: Int, numberOfParticles: Int) {
+  public init(height: Int, width: Int, numberOfParticles: Int) {
     self.height = height
     self.width = width
     self.numberOfParticles = numberOfParticles
@@ -40,7 +40,7 @@ final class Brownian {
     }
   }
 
-  func save() {
+  public func save() {
     for x in 0..<width {
       for y in 0..<height where grid[x][y] {
         BMP_SetPixelRGB(bmp, UInt(x), UInt(y), orange.r, orange.g, orange.b)
@@ -53,7 +53,7 @@ final class Brownian {
     }
   }
 
-  func tree(preview: Bool = false) {
+  public func tree(preview: Bool = false) {
     var (px, py, dx, dy) = (0, 0, 0, 0)
 
     func randomPoint() {

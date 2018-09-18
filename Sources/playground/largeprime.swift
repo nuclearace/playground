@@ -4,7 +4,7 @@
 
 import BigInt
 
-func largestLeftTruncatablePrime(_ base: Int) -> BigInt {
+public func largestLeftTruncatablePrime(_ base: Int) -> BigInt {
   var radix = 0
   var candidates = [BigInt(0)]
 

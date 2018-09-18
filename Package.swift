@@ -5,20 +5,25 @@ import PackageDescription
 
 let package = Package(
     name: "playground",
+    products: [
+      .executable(name: "Runner", targets: ["Runner"]),
+      .library(name: "Playground", targets: ["Playground"])
+    ],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-         .package(url: "https://github.com/attaswift/BigInt.git", from: "3.1.0"),
+        .package(url: "https://github.com/attaswift/BigInt.git", from: "3.1.0"),
+        .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.10.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
-            name: "playground",
+            name: "Playground",
             dependencies: ["BigInt", "QDBMP", "CStuff"]),
         .target(name: "QDBMP"),
+        .target(name: "Runner", dependencies: ["Playground"]),
         .target(name: "CStuff"),
         .testTarget(
             name: "playgroundTests",
-            dependencies: ["playground"]),
+            dependencies: ["Playground", "SwiftCheck", "BigInt"]),
     ]
 )

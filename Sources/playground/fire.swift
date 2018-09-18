@@ -4,14 +4,14 @@
 
 import Foundation
 
-final class ForestFire {
-  let ticks: Int
-  let size: Int
-  let printOnTick: Int
+public final class ForestFire {
+  public let ticks: Int
+  public let size: Int
+  public let printOnTick: Int
 
   private var forest: [[Plot]]
 
-  init(ticks: Int, size: Int, printOnTick: Int) {
+  public init(ticks: Int, size: Int, printOnTick: Int) {
     self.ticks = ticks
     self.size = size
     self.printOnTick = printOnTick
@@ -63,7 +63,7 @@ final class ForestFire {
     print(output)
   }
 
-  func simulate() {
+  public func simulate() {
     printForest()
 
     for i in 0..<ticks {

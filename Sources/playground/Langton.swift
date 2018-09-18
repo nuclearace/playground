@@ -4,15 +4,15 @@
 
 import Foundation
 
-final class Langton {
-  let numberOfAnts: Int
-  let size: Int
-  lazy var maxSteps = numberOfAnts * 30_000
+public final class Langton {
+  public let numberOfAnts: Int
+  public let size: Int
 
   private var ants = [Ant]()
+  private lazy var maxSteps = numberOfAnts * 30_000
   fileprivate var grid: [[Bool]]
 
-  init(size: Int, numberOfAnts: Int) {
+  public init(size: Int, numberOfAnts: Int) {
     self.numberOfAnts = numberOfAnts
     self.size = size
     self.grid = [[Bool]](repeating: [Bool](repeating: false, count: size), count: size)
@@ -27,7 +27,7 @@ final class Langton {
     }
   }
 
-  func run() {
+  public func run() {
     var stepCount = 0
 
     while !ants.isEmpty {

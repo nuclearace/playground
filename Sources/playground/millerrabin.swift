@@ -5,7 +5,7 @@
 import BigInt
 
 // Miller-Rabin prime test
-func isPrime(_ n: BigInt, rounds: Int = 5) -> Bool {
+public func isPrime(_ n: BigInt, rounds: Int = 5) -> Bool {
   guard n != 2 else { return true }
   guard n % 2 != 0 && n > 2 else { return false }
 

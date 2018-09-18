@@ -2,26 +2,31 @@
 // Created by Erik Little on 9/16/18.
 //
 
-struct Point {
+public struct Point {
   var x: Double
   var y: Double
 }
 
-struct Line {
-  var p1: Point
-  var p2: Point
+public struct Line {
+  public var p1: Point
+  public var p2: Point
 
-  var slope: Double {
+  public var slope: Double {
     guard p1.x - p2.x != 0.0 else { return .nan }
 
     return (p1.y-p2.y) / (p1.x-p2.x)
   }
 
-  var yIntercept: Double {
+  public var yIntercept: Double {
     return p1.y - slope * p1.x
   }
 
-  func intersection(of other: Line) -> Point? {
+  public init(p1: Point, p2: Point) {
+    self.p1 = p1
+    self.p2 = p2
+  }
+
+  public func intersection(of other: Line) -> Point? {
     let ourSlope = slope
     let theirSlope = other.slope
 
@@ -39,7 +44,7 @@ struct Line {
 }
 
 extension Line : CustomStringConvertible {
-  var description: String {
+  public var description: String {
     let s = slope
     let yI = yIntercept
 

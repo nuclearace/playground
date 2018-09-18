@@ -4,7 +4,7 @@
 
 import BigInt
 
-func collatz(_ n: BigInt) -> (series: [BigInt], peak: BigInt) {
+public func collatz(_ n: BigInt) -> (series: [BigInt], peak: BigInt) {
   var series = [n]
   var n = n
   var peak = n

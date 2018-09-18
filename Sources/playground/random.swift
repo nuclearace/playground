@@ -4,11 +4,11 @@
 
 import Foundation
 
-struct MTRandom : RandomNumberGenerator {
+public struct MTRandom : RandomNumberGenerator {
   private var index = 312
   private var mt = [UInt64](repeating: 0, count: 312)
 
-  init(seed: UInt64) {
+  public init(seed: UInt64) {
     mt[0] = seed
 
     for i in 1..<312 {
@@ -16,7 +16,7 @@ struct MTRandom : RandomNumberGenerator {
     }
   }
 
-  mutating func next() -> UInt64 {
+  public mutating func next() -> UInt64 {
     if index >= 312 {
       twist()
     }

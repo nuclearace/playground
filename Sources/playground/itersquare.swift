@@ -4,7 +4,7 @@
 
 import BigInt
 
-func iterSquare(upToPower pow: Int) {
+public func iterSquare(upToPower pow: Int) {
   var sums = [BigInt](repeating: 0, count: pow * 81 + 1)
   sums[0] = 1
 
