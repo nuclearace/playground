@@ -1,7 +1,7 @@
 import XCTest
 
-import collatzTests
+import playgroundTests
 
 var tests = [XCTestCaseEntry]()
-tests += collatzTests.allTests()
+tests += playgroundTests.allTests()
 XCTMain(tests)

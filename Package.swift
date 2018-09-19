@@ -20,8 +20,13 @@ let package = Package(
             name: "Playground",
             dependencies: ["BigInt", "QDBMP", "CStuff"]),
         .target(name: "QDBMP"),
-        .target(name: "Runner", dependencies: ["Playground"]),
+        .target(name: "Runner", dependencies: ["Playground", "CGMP", "BigInt"]),
         .target(name: "CStuff"),
+        .systemLibrary(
+            name: "CGMP",
+            pkgConfig: "gmp",
+            providers: [.brew(["gmp"])]
+        ),
         .testTarget(
             name: "playgroundTests",
             dependencies: ["Playground", "SwiftCheck", "BigInt"]),
