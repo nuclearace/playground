@@ -8,7 +8,7 @@ import Foundation
 private let primes = Array(Eratosthenes(upTo: 100_000_000))
 
 public func primorial(n: Int) -> BigUInt {
-  return primes.lazy.prefix(n).reduce(BigUInt(1), { $0 * BigUInt($1) })
+  return primes.prefix(n).reduce(BigUInt(1), { $0 * BigUInt($1) })
 }
 
 public func esCheck(sieve: [Int], n: Int) -> Bool {

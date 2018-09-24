@@ -2,28 +2,60 @@
 // Created by Erik Little on 9/16/18.
 //
 
+import Foundation
+
 public struct Point {
-  var x: Double
-  var y: Double
+  public var x: Double
+  public var y: Double
+
+  public init(x: Double, y: Double) {
+    self.x = x
+    self.y = y
+  }
+
+  public func perpendicularDistance(to line: Line) -> Double {
+    var dx = line.end.x - line.start.x
+    var dy = line.end.y - line.start.y
+
+    let mag = pow(pow(dx, 2.0) + pow(dy, 2.0), 0.5)
+
+    if mag > 0.0 {
+      dx /= mag
+      dy /= mag
+    }
+
+    let pvx = x - line.start.x
+    let pvy = y - line.start.y
+
+    let pvDot = dx * pvx + dy * pvy
+
+    let dsx = pvDot * dx
+    let dsy = pvDot * dy
+
+    let ax = pvx - dsx
+    let ay = pvy - dsy
+
+    return pow(pow(ax, 2.0) + pow(ay, 2.0), 0.5)
+  }
 }
 
 public struct Line {
-  public var p1: Point
-  public var p2: Point
+  public var start: Point
+  public var end: Point
 
   public var slope: Double {
-    guard p1.x - p2.x != 0.0 else { return .nan }
+    guard start.x - end.x != 0.0 else { return .nan }
 
-    return (p1.y-p2.y) / (p1.x-p2.x)
+    return (start.y - end.y) / (start.x - end.x)
   }
 
   public var yIntercept: Double {
-    return p1.y - slope * p1.x
+    return start.y - slope * start.x
   }
 
   public init(p1: Point, p2: Point) {
-    self.p1 = p1
-    self.p2 = p2
+    self.start = p1
+    self.end = p2
   }
 
   public func intersection(of other: Line) -> Point? {
@@ -33,12 +65,12 @@ public struct Line {
     guard ourSlope != theirSlope else { return nil }
 
     if ourSlope.isNaN && !theirSlope.isNaN {
-      return Point(x: p1.x, y: (p1.x - other.p1.x) * theirSlope + other.p1.y)
+      return Point(x: start.x, y: (start.x - other.start.x) * theirSlope + other.start.y)
     } else if theirSlope.isNaN && !ourSlope.isNaN {
-      return Point(x: other.p1.x, y: (other.p1.x - p1.x) * ourSlope + other.p1.y)
+      return Point(x: other.start.x, y: (other.start.x - start.x) * ourSlope + other.start.y)
     } else {
-      let x = (ourSlope*p1.x - theirSlope*other.p1.x + other.p1.y - p1.y) / (ourSlope - theirSlope)
-      return Point(x: x, y: theirSlope*(x - other.p1.x) + other.p1.y)
+      let x = (ourSlope * start.x - theirSlope*other.start.x + other.start.y - start.y) / (ourSlope - theirSlope)
+      return Point(x: x, y: theirSlope*(x - other.start.x) + other.start.y)
     }
   }
 }
@@ -48,8 +80,8 @@ extension Line : CustomStringConvertible {
     let s = slope
     let yI = yIntercept
 
-    guard !s.isNaN else { return "x = \(p1.x)" }
-    guard abs(s) != 0 else { return "y = \(p1.y)" }
+    guard !s.isNaN else { return "x = \(start.x)" }
+    guard abs(s) != 0 else { return "y = \(start.y)" }
 
     let sign = yI >= 0 ? "+" : "-"
     return "y = \(s)x \(sign) \(abs(yI))"

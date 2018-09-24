@@ -2,10 +2,6 @@ import BigInt
 import CStuff
 import Playground
 
-for (offset, element) in (0...9).lazy.map(primorial).enumerated() {
-  print("primorial(\(offset)) -> \(element)")
-}
+let l = Line(p1: Point(x: 1, y: 4), p2: Point(x: 2, y: 6))
 
-for (n, primordialN) in [10, 100, 1_000, 10_000, 100_000].lazy.map({ ($0, primorial(n: $0)) }) {
-  print("primorial(\(n)) -> has \(primordialN.description.count) digits")
-}
+print(Point(x: 2, y: 4).perpendicularDistance(to: l))
