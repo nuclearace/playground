@@ -38,7 +38,6 @@ public struct Point {
     return pow(pow(ax, 2.0) + pow(ay, 2.0), 0.5)
   }
 }
-
 public struct Line {
   public var start: Point
   public var end: Point
@@ -88,3 +87,43 @@ extension Line : CustomStringConvertible {
   }
 }
 
+public struct PointLine {
+  public var points: [Point]
+
+  public init(points: [Point]) {
+    self.points = points
+  }
+
+  public mutating func simplify(epsilon: Double = 1.0) {
+    points = PointLine._simplify(epsilon: epsilon, points: points)
+  }
+
+  private static func _simplify(epsilon: Double, points: [Point]) -> [Point] {
+    precondition(points.count >= 2, "Not enough points to simplify")
+
+    let l = Line(p1: points.first!, p2: points.last!)
+
+    // Find the point with the maximum distance from line between start and end
+    var dMax = 0.0
+    var index = 0
+
+    for i in 1..<points.count-1 {
+      let point = points[i]
+      let d = point.perpendicularDistance(to: l)
+
+      guard d > dMax else { continue }
+
+      index = i
+      dMax = d
+    }
+
+    guard dMax > epsilon else {
+      return [l.start, l.end]
+    }
+
+    let res1 = _simplify(epsilon: epsilon, points: Array(points[...index]))
+    let res2 = _simplify(epsilon: epsilon, points: Array(points[index...]))
+
+    return res1.dropLast() + res2
+  }
+}
