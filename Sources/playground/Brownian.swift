@@ -5,52 +5,24 @@
 import Foundation
 import QDBMP
 
-private let orange: (r: UInt8, g: UInt8, b: UInt8) = (255, 158, 22)
+private let orange = Color(red: 255, green: 158, blue: 22)
 
-public final class Brownian {
-  public let height: Int
-  public let width: Int
+public final class Brownian : BitmapDrawer {
   public let numberOfParticles: Int
 
-  private let bmp: OpaquePointer
   // Default RNG is too slow. Use a Mersenne Twister
   private var rng = MTRandom(seed: UInt64.random(in: 0...UInt64.max))
 
-  private var grid: [[Bool]]
-
   public init(height: Int, width: Int, numberOfParticles: Int) {
-    self.height = height
-    self.width = width
     self.numberOfParticles = numberOfParticles
-    self.grid = [[Bool]](repeating: [Bool](repeating: false, count: height), count: width)
-    self.bmp = BMP_Create(UInt(width), UInt(height), 24)
 
-    checkError()
+    super.init(height: height, width: width)
   }
 
-  deinit {
-    BMP_Free(bmp)
-  }
+  public required init(height: Int, width: Int) {
+    self.numberOfParticles = 15_000
 
-  private func checkError() {
-    let err = BMP_GetError()
-
-    guard err == BMP_STATUS(0) else {
-      fatalError("\(err)")
-    }
-  }
-
-  public func save() {
-    for x in 0..<width {
-      for y in 0..<height where grid[x][y] {
-        BMP_SetPixelRGB(bmp, UInt(x), UInt(y), orange.r, orange.g, orange.b)
-        checkError()
-      }
-    }
-
-    ("~/Desktop/out.bmp" as NSString).expandingTildeInPath.withCString {s in
-      BMP_WriteFile(bmp, s)
-    }
+    super.init(height: height, width: width)
   }
 
   public func tree(preview: Bool = false) {
@@ -62,7 +34,7 @@ public final class Brownian {
     }
 
     // Seed
-    grid[width/3][height/3] = true
+    grid[width/3][height/3] = orange
 
     for i in 0..<numberOfParticles-1 {
       print("Putting point \(i + 1)")
@@ -78,8 +50,8 @@ public final class Brownian {
 
           if x < 0 || x >= width || y < 0 || y >= height {
             randomPoint()
-          } else if grid[x][y] {
-            grid[px][py] = true
+          } else if grid[x][y] != nil {
+            grid[px][py] = orange
             break
           } else {
             px += dx

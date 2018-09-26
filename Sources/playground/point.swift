@@ -127,3 +127,18 @@ public struct PointLine {
     return res1.dropLast() + res2
   }
 }
+
+extension PointLine : Drawable {
+  public func draw<T: Drawer>(into drawer: inout T) {
+    let (oX, oY) = drawer.origin
+
+    // FIXME this is horrible, need to figure out scaling stuff
+    for point in points {
+      drawer.setPixel(
+          x: oX + Int(point.x.rounded()),
+          y: oY + Int(point.y.rounded()),
+          to: Color(red: 255, green: 158, blue: 22)
+      )
+    }
+  }
+}

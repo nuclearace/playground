@@ -1,20 +1,26 @@
 import BigInt
 import CStuff
+import Foundation
 import Playground
 
-var line = PointLine(points: [
-  Point(x: 0, y: 0),
-  Point(x: 1, y: 0.1),
-  Point(x: 2, y: -0.1),
-  Point(x: 3, y: 5),
-  Point(x: 4, y: 6),
-  Point(x: 5, y: 7),
-  Point(x: 6, y: 8.1),
-  Point(x: 7, y: 9),
-  Point(x: 8, y: 9),
-  Point(x: 9, y: 9)
-])
+var drawer = BitmapDrawer(height: 1000, width: 1000)
 
-line.simplify()
+func someFunc(x: Double) -> Double {
+  return (14 * pow(x, 3)) + 2 * x + 5
+}
 
-print(line)
+var points = [Point]()
+
+for d in stride(from: -1, through: 1, by: 0.1) {
+  points.append(Point(x: d, y: someFunc(x: d)))
+}
+
+var line = PointLine(points: points)
+
+line.draw(into: &drawer)
+
+line.simplify(epsilon: 0.05)
+
+line.draw(into: &drawer)
+
+drawer.save()
