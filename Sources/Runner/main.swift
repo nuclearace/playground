@@ -3,17 +3,21 @@ import CStuff
 import Foundation
 import Playground
 
-var num = 0
-var denom = 0
+let res1 = cholesky(
+  matrix: [25.0, 15.0, -5.0,
+           15.0, 18.0,  0.0,
+           -5.0,  0.0, 11.0],
+  n: 3
+)
 
-for base in 2...5 {
-  print("base \(base): 0 ", terminator: "")
+let res2 = cholesky(
+  matrix: [18.0, 22.0,  54.0,  42.0,
+           22.0, 70.0,  86.0,  62.0,
+           54.0, 86.0, 174.0, 134.0,
+           42.0, 62.0, 134.0, 106.0],
+  n: 4
+)
 
-  for n in 1..<10 {
-    vanDerCorput(n: n, base: base, num: &num, denom: &denom)
-
-    print("\(num)/\(denom) ", terminator: "")
-  }
-
-  print()
-}
+printMatrix(res1, n: 3)
+print()
+printMatrix(res2, n: 4)
