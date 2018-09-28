@@ -38,6 +38,7 @@ public struct Point {
     return pow(pow(ax, 2.0) + pow(ay, 2.0), 0.5)
   }
 }
+
 public struct Line {
   public var start: Point
   public var end: Point
