@@ -78,7 +78,7 @@ func primeDecomposition<T: BinaryInteger>(of n: T) -> [T] {
     return 1 + (x << 2) - ((x >> 1) << 1)
   }
 
-  let maxQ = Int(Double(n).squareRoot())
+  let maxQ = T(Double(n).squareRoot())
   var d: T = 1
   var q: T = n % 2 == 0 ? 2 : 3
 
