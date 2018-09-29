@@ -19,7 +19,7 @@ public struct TimeResult {
 
 extension TimeResult : CustomStringConvertible {
   public var description: String {
-    return "TimeResult(clocks: \(clocks), duration: \(duration))"
+    return "TimeResult(clocks: \(clocks), duration: \(duration)s)"
   }
 }
 
