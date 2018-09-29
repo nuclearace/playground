@@ -69,8 +69,9 @@ extension BinaryInteger {
   }
 }
 
-@inlinable
-public func primeDecomposition<T: BinaryInteger>(of n: T) -> [T] {
+// Force generic function to be the body of the instance method
+@usableFromInline @inline(__always)
+func primeDecomposition<T: BinaryInteger>(of n: T) -> [T] {
   guard n > 2 else { return [] }
 
   func step(_ x: T) -> T {

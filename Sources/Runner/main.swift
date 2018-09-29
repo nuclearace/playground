@@ -6,7 +6,6 @@ import Playground
 for prime in Eratosthenes(upTo: 60) {
   let m = Int(pow(2, Double(prime))) - 1
   let (decom, t) = ClockTimer.time {
-//    return primeDecomposition(of: m)
     return m.primeDecomposition()
   }
 
