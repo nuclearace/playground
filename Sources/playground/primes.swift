@@ -90,6 +90,17 @@ func primeDecomposition<T: BinaryInteger>(of n: T) -> [T] {
   return q <= maxQ ? [q] + primeDecomposition(of: n / q) : [n]
 }
 
+public func lucasLehmer(_ p: Int) -> Bool {
+  let m = BigInt(2).power(p) - 1
+  var s = BigInt(4)
+
+  for _ in 0..<p-2 {
+    s = ((s * s) - 2) % m
+  }
+
+  return s == 0
+}
+
 // Swift doesn't do a great job of tail call optimization, so this blows up with big numbers
 public func primeDecompositionRec(of n: Int) -> [Int] {
   func factors(n: Int, k: Int, acc: [Int], sqr: Int) -> [Int] {
