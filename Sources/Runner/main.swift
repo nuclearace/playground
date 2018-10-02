@@ -3,4 +3,6 @@ import CStuff
 import Foundation
 import Playground
 
-print(lucasLehmer(13))
+for i in 0...17 {
+  print(treePow(x: 2, n: i))
+}
