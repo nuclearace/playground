@@ -16,7 +16,7 @@ public final class TestEratosthenes : XCTestCase {
         let primeNumberGen = Gen<Int>.fromElements(of: primes)
 
         return forAll(primeNumberGen) {(p: Int) in
-          return isPrime(n: p)
+          return p.isPrime
         }
       }
     }
@@ -27,21 +27,4 @@ public final class TestEratosthenes : XCTestCase {
       ("testPrimes", testPrimes)
     ]
   }
-}
-
-private func isPrime(n : Int) -> Bool {
-  if n == 0 || n == 1 {
-    return false
-  } else if n == 2 {
-    return true
-  }
-
-  let max = Int(ceil(sqrt(Double(n))))
-
-  for i in 2...max {
-    if n % i == 0 {
-      return false
-    }
-  }
-  return true
 }
