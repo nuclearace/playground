@@ -3,16 +3,33 @@ import CStuff
 import Foundation
 import Playground
 
-var switchResults = [Bool]()
+let pows = (0...)
+    .lazy
+    .map({ Int(pow(3, Double($0))) })
+    .map(populationCount)
+    .prefix(30)
 
-for _ in 0..<100_000 {
-  let guess = Int.random(in: 1...3)
-  let wasRight = montyHall(guess: guess, switch: true)
+let evils = (0...)
+    .lazy
+    .filter({ populationCount(n: $0) & 1 == 0 })
+    .prefix(30)
 
-  switchResults.append(wasRight)
-}
+let odious = (0...)
+    .lazy
+    .filter({ populationCount(n: $0) & 1 == 1 })
+    .prefix(30)
 
-let switchWins = switchResults.filter({ $0 }).count
+let pernicious = (0...)
+    .lazy
+    .filter({ populationCount(n: $0).isPrime })
+    .prefix(25)
 
-print("Switching would've won \((Double(switchWins) / Double(switchResults.count)) * 100)% of games")
-print("Not switching would've won \(((Double(switchResults.count - switchWins)) / Double(switchResults.count)) * 100)% of games")
+let perniciousMore = (888_888_877...888_888_888)
+    .filter({ populationCount(n: $0).isPrime })
+
+
+print("Powers:", Array(pows))
+print("Evils:", Array(evils))
+print("Odious:", Array(odious))
+print("Pernicious:", Array(pernicious))
+print("Pernicious 888,888,877 - 888,888,888:", Array(perniciousMore))

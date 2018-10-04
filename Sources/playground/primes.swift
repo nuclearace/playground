@@ -3,6 +3,7 @@
 //
 
 import BigInt
+import Foundation
 
 public func largestLeftTruncatablePrime(_ base: Int) -> BigInt {
   var radix = 0
@@ -62,6 +63,24 @@ public func isPrime(_ n: BigInt, rounds: Int = 5) -> Bool {
 }
 
 extension BinaryInteger {
+  public var isPrime: Bool {
+    if self == 0 || self == 1 {
+      return false
+    } else if self == 2 {
+      return true
+    }
+
+    let max = Int(ceil(sqrt(Double(self))))
+
+    for i in 2...max {
+      if self % Self(i) == 0 {
+        return false
+      }
+    }
+
+    return true
+  }
+
   @inlinable
   public func primeDecomposition() -> [Self] {
     // Use free generic function for aggressive specialization
