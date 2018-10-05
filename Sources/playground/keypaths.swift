@@ -43,7 +43,6 @@ public func <-> <T, V>(lhs: SwapHolder<T, V>, rhs: T) -> PartialSwapHolder<T> {
   return PartialSwapHolder(thing: lhs.thing)
 }
 
-@discardableResult
 public func <-> <T, V>(lhs: PartialSwapHolder<T>, rhs: WritableKeyPath<T, V>) -> SwapHolder<T, V> {
   return SwapHolder(thing: lhs.thing, path: rhs)
 }
