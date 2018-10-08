@@ -6,8 +6,9 @@ import PackageDescription
 let package = Package(
     name: "playground",
     products: [
-      .executable(name: "Runner", targets: ["Runner"]),
-      .library(name: "Playground", targets: ["Playground"])
+        .executable(name: "Runner", targets: ["Runner"]),
+        .executable(name: "Profiler", targets: ["Profiler"]),
+        .library(name: "Playground", targets: ["Playground"])
     ],
     dependencies: [
         .package(url: "https://github.com/attaswift/BigInt.git", from: "3.1.0"),
@@ -15,11 +16,12 @@ let package = Package(
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "0.12.0")
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "Playground",
             dependencies: ["BigInt", "QDBMP", "CStuff", "CryptoSwift"]),
+        .target(
+            name: "Profiler"
+        ),
         .target(name: "QDBMP"),
         .target(name: "Runner", dependencies: ["Playground", "CGMP", "BigInt"]),
         .target(name: "CStuff"),
