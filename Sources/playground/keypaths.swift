@@ -4,6 +4,7 @@
 
 import Foundation
 
+// alice <-> \Person.age <-> bob <-> \Person.name <-> bob
 infix operator <-> : SwapGroup
 
 precedencegroup SwapGroup {

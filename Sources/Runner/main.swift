@@ -3,17 +3,6 @@ import CStuff
 import Foundation
 import Playground
 
-struct Person : Equatable {
-  var name: String
-  var age: Int
+for diff in (0...9).map({ nthForwardsDifference(of: [90, 47, 58, 29, 22, 32, 55, 5, 55, 73], n: $0) }) {
+  print(diff)
 }
-
-var alice = Person(name: "Alice", age: 26)
-let bob = Person(name: "Bob", age: 23)
-
-print(alice == bob)
-
-alice <-> \Person.age <-> bob <-> \Person.name <-> bob
-
-print(alice == bob)
-
