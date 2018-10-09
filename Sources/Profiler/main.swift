@@ -19,14 +19,14 @@ guard runTimes > 0 else {
 
 var times = [Double]()
 
-for i in 0..<runTimes {
+for i in -1..<runTimes {
   let p = Process()
 
   p.standardInput = nil
   p.standardError = nil
   p.standardOutput = nil
 
-  if #available(OSX 10.13, *) {
+  if #available(macOS 10.13, *) {
     p.executableURL = URL(fileURLWithPath: command)
   } else {
     p.launchPath = command
@@ -37,6 +37,9 @@ for i in 0..<runTimes {
   p.waitUntilExit()
 
   let t = Double(clock() - s) / Double(CLOCKS_PER_SEC)
+
+  // First result is skewed from Process setup overhead
+  guard i >= 0 else { continue }
 
   print("run \(i + 1) took \(t)s")
 
