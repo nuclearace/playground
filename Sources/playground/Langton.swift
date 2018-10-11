@@ -22,7 +22,7 @@ public final class Langton {
     let high = origin + 20
 
     for _ in 0..<numberOfAnts {
-      let p = Ant(x: Int.random(in: low...high), y: Int.random(in: low...high), board: self)
+      let p = Ant(x: .random(in: low...high), y: .random(in: low...high), board: self)
       ants.append(p)
     }
   }
