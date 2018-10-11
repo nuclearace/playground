@@ -12,3 +12,10 @@ public func printMatrix<T>(_ matrix: [T], n: Int) {
     print()
   }
 }
+
+@inlinable
+public func replicateAtLeastOnce<T>(_ n: T, times: Int) -> [T] {
+  guard times > 0 else { return [n] }
+
+  return [n] + [T](repeating: n, count: times - 1)
+}
