@@ -102,7 +102,7 @@ extension Line : Drawable {
     var d = 2*dy - dx
     var y = start.y
 
-    for x in stride(from: start.x, to: end.x, by: 0.5) {
+    for x in stride(from: start.x, to: end.x, by: 1) {
       drawer.setPixel(
           x: Int(x),
           y: Int(y),
@@ -131,7 +131,7 @@ extension Line : Drawable {
     var d = 2*dx - dy
     var x = start.x
 
-    for y in stride(from: start.y, to: end.y, by: 0.5) {
+    for y in stride(from: start.y, to: end.y, by: 1) {
       drawer.setPixel(
           x: Int(x),
           y: Int(y),
@@ -149,7 +149,7 @@ extension Line : Drawable {
 
   public func draw<T: Drawer>(into drawer: inout T) {
     guard start.x != end.x else {
-      for y in stride(from: start.y, through: end.y, by: 0.5) {
+      for y in stride(from: min(start.y, end.y), through: max(start.y, end.y), by: 1) {
         drawer.setPixel(x: Int(start.x), y: Int(y), to: (255, 158, 22))
       }
 
