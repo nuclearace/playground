@@ -90,7 +90,6 @@ extension Line : CustomStringConvertible {
 
 extension Line : Drawable {
   private func drawLow<T: Drawer>(into drawer: inout T, start: Point, end: Point) {
-    let (oX, oY) = drawer.origin
     let dx = end.x - start.x
     var dy = end.y - start.y
     var yi = 1
@@ -105,9 +104,9 @@ extension Line : Drawable {
 
     for x in stride(from: start.x, to: end.x, by: 0.5) {
       drawer.setPixel(
-          x: oX + Int(x),
-          y: oY + Int(y),
-          to: Color(red: 255, green: 158, blue: 22)
+          x: Int(x),
+          y: Int(y),
+          to: (255, 158, 22)
       )
 
       if d > 0 {
@@ -120,7 +119,6 @@ extension Line : Drawable {
   }
 
   private func drawHigh<T: Drawer>(into drawer: inout T, start: Point, end: Point) {
-    let (oX, oY) = drawer.origin
     var dx = end.x - start.x
     let dy = end.y - start.y
     var xi = 1
@@ -135,9 +133,9 @@ extension Line : Drawable {
 
     for y in stride(from: start.y, to: end.y, by: 0.5) {
       drawer.setPixel(
-          x: oX + Int(x),
-          y: oY + Int(y),
-          to: Color(red: 255, green: 158, blue: 22)
+          x: Int(x),
+          y: Int(y),
+          to: (255, 158, 22)
       )
 
       if d > 0 {
@@ -150,6 +148,14 @@ extension Line : Drawable {
   }
 
   public func draw<T: Drawer>(into drawer: inout T) {
+    guard start.x != end.x else {
+      for y in stride(from: start.y, through: end.y, by: 0.5) {
+        drawer.setPixel(x: Int(start.x), y: Int(y), to: (255, 158, 22))
+      }
+
+      return
+    }
+
     if abs(end.y - start.y) < abs(end.x - start.x) {
       if start.x > end.x {
         drawLow(into: &drawer, start: end, end: start)

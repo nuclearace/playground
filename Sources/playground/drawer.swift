@@ -61,11 +61,11 @@ public class BitmapDrawer : Drawer {
   public func drawGrid() {
     let (oX, oY) = origin
 
-    for x in 0..<height {
+    for x in 0..<width {
       grid[x][oY] = (255, 255, 255)
     }
 
-    for y in 0..<width {
+    for y in 0..<height {
       grid[oX][y] = (255, 255, 255)
     }
   }
