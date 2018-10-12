@@ -10,8 +10,6 @@ public protocol Drawer {
   var width: Int { get }
   var origin: (Int, Int) { get }
 
-  init(height: Int, width: Int)
-
   func save(to path: String)
   func setPixel(x: Int, y: Int, to color: Color?)
 }
@@ -39,7 +37,7 @@ public class BitmapDrawer : Drawer {
 
   private let bmp: OpaquePointer
 
-  public required init(height: Int, width: Int) {
+  public init(height: Int, width: Int) {
     self.height = height
     self.width = width
     self.grid = [[Color?]](repeating: [Color?](repeating: nil, count: height), count: width)
@@ -57,6 +55,18 @@ public class BitmapDrawer : Drawer {
 
     guard err == BMP_STATUS(0) else {
       fatalError("\(err)")
+    }
+  }
+
+  public func drawGrid() {
+    let (oX, oY) = origin
+
+    for x in 0..<height {
+      grid[x][oY] = (255, 255, 255)
+    }
+
+    for y in 0..<width {
+      grid[oX][y] = (255, 255, 255)
     }
   }
 

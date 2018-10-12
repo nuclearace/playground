@@ -23,11 +23,6 @@ public struct SwapHolder<SwapType, SwapValue> {
   fileprivate var thing: UnsafeMutablePointer<SwapType>
   fileprivate var path: WritableKeyPath<SwapType, SwapValue>
 
-  fileprivate init(thing: UnsafeMutablePointer<SwapType>, path: WritableKeyPath<SwapType, SwapValue>) {
-    self.thing = thing
-    self.path = path
-  }
-
   fileprivate func applyChange(withValue value: SwapValue) {
     thing.pointee[keyPath: path] = value
   }

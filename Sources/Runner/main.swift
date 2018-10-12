@@ -3,15 +3,16 @@ import CStuff
 import Foundation
 import Playground
 
-print([1, 2, 4, 5]
-    .cycled()
-    .lazy
-    .prefix(5)
-    .reduce(0, +))
+var draw = BitmapDrawer(height: 500, width: 500)
+let l1 = Line(p1: Point(x: 0, y: 0), p2: Point(x: 20, y: -200))
+let l2 = Line(p1: Point(x: 0, y: 0), p2: Point(x: 100, y: 100))
 
-let arr1 = (0...).cycled().lazy
-let arr2 = (1...).cycled().lazy
-let arr3 = replicateAtLeastOnce([1, 5].cycled(), times: 5).lazy.flatMap({ $0 }).map({ $0 + 2 }).prefix(20)
+print(l1)
+print(l2)
 
-print(zip(arr1, arr2).prefix(20).map(+))
-print(Array(arr3))
+l1.draw(into: &draw)
+l2.draw(into: &draw)
+
+draw.drawGrid()
+
+draw.save()

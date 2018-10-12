@@ -88,6 +88,84 @@ extension Line : CustomStringConvertible {
   }
 }
 
+extension Line : Drawable {
+  private func drawLow<T: Drawer>(into drawer: inout T, start: Point, end: Point) {
+    let (oX, oY) = drawer.origin
+    let dx = end.x - start.x
+    var dy = end.y - start.y
+    var yi = 1
+
+    if dy < 0 {
+      yi = -1
+      dy *= -1
+    }
+
+    var d = 2*dy - dx
+    var y = start.y
+
+    for x in stride(from: start.x, to: end.x, by: 0.5) {
+      drawer.setPixel(
+          x: oX + Int(x),
+          y: oY + Int(y),
+          to: Color(red: 255, green: 158, blue: 22)
+      )
+
+      if d > 0 {
+        y += Double(yi)
+        d -= 2*dx
+      }
+
+      d += 2*dy
+    }
+  }
+
+  private func drawHigh<T: Drawer>(into drawer: inout T, start: Point, end: Point) {
+    let (oX, oY) = drawer.origin
+    var dx = end.x - start.x
+    let dy = end.y - start.y
+    var xi = 1
+
+    if dx < 0 {
+      xi = -1
+      dx *= -1
+    }
+
+    var d = 2*dx - dy
+    var x = start.x
+
+    for y in stride(from: start.y, to: end.y, by: 0.5) {
+      drawer.setPixel(
+          x: oX + Int(x),
+          y: oY + Int(y),
+          to: Color(red: 255, green: 158, blue: 22)
+      )
+
+      if d > 0 {
+        x += Double(xi)
+        d -= 2*dy
+      }
+
+      d += 2*dx
+    }
+  }
+
+  public func draw<T: Drawer>(into drawer: inout T) {
+    if abs(end.y - start.y) < abs(end.x - start.x) {
+      if start.x > end.x {
+        drawLow(into: &drawer, start: end, end: start)
+      } else {
+        drawLow(into: &drawer, start: start, end: end)
+      }
+    } else {
+      if start.y > end.y {
+        drawHigh(into: &drawer, start: end, end: start)
+      } else {
+        drawHigh(into: &drawer, start: start, end: end)
+      }
+    }
+  }
+}
+
 public struct PointLine {
   public var points: [Point]
 

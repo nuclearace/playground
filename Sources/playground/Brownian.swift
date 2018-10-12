@@ -19,12 +19,6 @@ public final class Brownian : BitmapDrawer {
     super.init(height: height, width: width)
   }
 
-  public required init(height: Int, width: Int) {
-    self.numberOfParticles = 15_000
-
-    super.init(height: height, width: width)
-  }
-
   public func tree(preview: Bool = false) {
     var (px, py, dx, dy) = (0, 0, 0, 0)
 
