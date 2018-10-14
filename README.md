@@ -1,2 +1,4 @@
-# Where I do some Swift stuff
+# Some Swift stuff
+
+Mostly solutions to Rosetta Code tasks
 
