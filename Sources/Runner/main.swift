@@ -3,4 +3,4 @@ import CStuff
 import Foundation
 import Playground
 
-print(missingD(upTo: 2200).cycled().prefix(100).reduce(0, +))
+print([2, 2, -6, 6].walshHadamardTransformed())
