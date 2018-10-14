@@ -3,10 +3,25 @@ import CStuff
 import Foundation
 import Playground
 
-print(disjointOrder(m: ["the", "cat", "sat", "on", "the", "mat"], n: ["mat", "cat"]))
-print(disjointOrder(m: ["the", "cat", "sat", "on", "the", "mat"], n: ["cat", "mat"]))
-print(disjointOrder(m: ["A", "B", "C", "A", "B", "C", "A", "B", "C"], n: ["C", "A", "C", "A"]))
-print(disjointOrder(m: ["A", "B", "C", "A", "B", "D", "A", "B", "E"], n: ["E", "A", "D", "A"]))
-print(disjointOrder(m: ["A", "B"], n: ["B"]))
-print(disjointOrder(m: ["A", "B"], n: ["B", "A"]))
-print(disjointOrder(m: ["A", "B", "B", "A"], n: ["B", "A"]))
+let p = Percolate(height: 10, width: 10)
+
+p.makeGrid(porosity: 0.5)
+p.percolate()
+p.showGrid()
+
+print("Running \(p.height) x \(p.width) grid 10,000 times for each porosity")
+
+for factor in 1...10 {
+  var count = 0
+  let porosity = Double(factor) / 10.0
+
+  for _ in 0..<10_000 {
+    p.makeGrid(porosity: porosity)
+
+    if (p.percolate()) {
+      count += 1
+    }
+  }
+
+  print("p = \(porosity): \(Double(count) / 10_000.0)")
+}
