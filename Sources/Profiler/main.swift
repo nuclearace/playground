@@ -5,6 +5,7 @@ guard let command = CommandLine.arguments.dropFirst().first else {
 }
 
 let runTimes: Int
+let quiet = CommandLine.arguments.contains("-q")
 
 if let stringTimes = CommandLine.arguments.filter({ $0.hasPrefix("-n=") }).first,
    let times = Int(stringTimes.dropFirst(3)) {
@@ -41,7 +42,9 @@ for i in -1..<runTimes {
   // First result is skewed from Process setup overhead
   guard i >= 0 else { continue }
 
-  print("run \(i + 1) took \(t)s")
+  if !quiet || (i + 1) % 10 == 0 {
+    print("run \(i + 1) took \(t)s")
+  }
 
   times.append(t)
 }
