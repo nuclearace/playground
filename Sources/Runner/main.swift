@@ -3,10 +3,14 @@ import CStuff
 import Foundation
 import Playground
 
+var rng = MTRandom(seed: 1343234)
 var points = [Point]()
 
-for _ in 0..<1_000 {
-  points.append(Point(x: .random(in: -10...10), y: .random(in: -10...10)))
+for _ in 0..<50_000 {
+  points.append(Point(
+      x: .random(in: -10...10, using: &rng),
+      y: .random(in: -10...10, using: &rng)
+  ))
 }
 
 guard case let (pair?, t) = ClockTimer.time({

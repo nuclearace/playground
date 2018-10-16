@@ -114,9 +114,10 @@ extension Collection where Element == Point {
     guard count != 2 else { return (minDistance, closestPoints) }
 
     for i in 0..<count {
+      let p1 = self[index(startIndex, offsetBy: i)]
+
       for j in i+1..<count {
-        let (iIndex, jIndex) = (index(startIndex, offsetBy: i), index(startIndex, offsetBy: j))
-        let (p1, p2) = (self[iIndex], self[jIndex])
+        let p2 = self[index(startIndex, offsetBy: j)]
 
         let distance = abs(p1.distance(to: p2))
 
