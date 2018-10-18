@@ -55,14 +55,16 @@ extension Point : CustomStringConvertible {
 extension Collection where Element == Point {
   @inlinable
   public func closestPair() -> (Point, Point)? {
+    guard count > 20 else { return closestPairBruteForce()?.1 }
+
     let (xP, xY) = (sorted(by: { $0.x < $1.x }), sorted(by: { $0.y < $1.y }))
 
     return Self.closestPair(xP, xY)?.1
   }
 
   @usableFromInline
-  static func closestPair(_ xP: [Element], _ yP: [Element]) -> (Double, (Point, Point))? {
-    guard xP.count > 15 else { return xP.closestPairBruteForce() }
+  static func closestPair(_ xP: [Point], _ yP: [Point]) -> (Double, (Point, Point))? {
+    guard xP.count > 20 else { return xP.closestPairBruteForce() }
 
     let half = xP.count / 2
     let xl = Array(xP[..<half])
