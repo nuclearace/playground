@@ -36,8 +36,7 @@ public final class Percolate {
   }
 
   public func makeGrid(porosity p: Double) {
-    grid = [Int](repeating: 0, count: width * (height + 2))
-    end = width
+    resetGrid()
 
     let thresh = Int(randMax * p)
 
@@ -72,6 +71,14 @@ public final class Percolate {
     }
 
     return i < width
+  }
+
+  private func resetGrid() {
+    end = width
+
+    for i in 0..<grid.count {
+      grid[i] = 0
+    }
   }
 
   public func showGrid() {

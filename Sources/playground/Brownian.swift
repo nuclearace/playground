@@ -3,7 +3,6 @@
 //
 
 import Foundation
-import QDBMP
 
 private let orange = Color(red: 255, green: 158, blue: 22)
 
