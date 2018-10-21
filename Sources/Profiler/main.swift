@@ -1,23 +1,27 @@
 import Foundation
 
-guard let command = CommandLine.arguments.dropFirst().first else {
-  fatalError("Not enough arguments")
-}
+let args = Array(CommandLine.arguments.dropFirst())
 
-let runTimes: Int
-let quiet = CommandLine.arguments.contains("-q")
+var quiet = false
+var runTimes = 10
+var commandArgs = [String]()
 
-if let stringTimes = CommandLine.arguments.filter({ $0.hasPrefix("-n=") }).first,
-   let times = Int(stringTimes.dropFirst(3)) {
-  runTimes = times
-} else {
-  runTimes = 10
+for (i, arg) in args.enumerated() {
+  if arg == "-q" {
+    quiet = true
+  } else if arg.hasPrefix("-n=") {
+    runTimes = Int(arg.dropFirst(3))!
+  } else {
+    commandArgs = Array(args.dropFirst(i))
+    break
+  }
 }
 
 guard runTimes > 0 else {
   fatalError("Must run at least once")
 }
 
+let command = commandArgs.first!
 var times = [Double]()
 
 for i in -1..<runTimes {
@@ -33,11 +37,13 @@ for i in -1..<runTimes {
     p.launchPath = command
   }
 
-  let s = clock()
+  p.arguments = Array(commandArgs.dropFirst())
+
+  let s = Date().timeIntervalSince1970
   p.launch()
   p.waitUntilExit()
 
-  let t = Double(clock() - s) / Double(CLOCKS_PER_SEC)
+  let t = Date().timeIntervalSince1970 - s
 
   // First result is skewed from Process setup overhead
   guard i >= 0 else { continue }
