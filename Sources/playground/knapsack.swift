@@ -2,8 +2,6 @@
 // Created by Erik Little on 2018-10-21.
 //
 
-import Foundation
-
 public struct KnapsackItem : Hashable {
   public var name: String
   public var weight: Int
