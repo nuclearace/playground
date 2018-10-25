@@ -5,14 +5,14 @@
 import Foundation
 
 public func missingD(upTo n: Int) -> [Int] {
-  var res = [Int](repeating: 0, count: n + 1)
-  var ab = [Int](repeating: 0, count: n * n * 2 + 1)
+  var res = [Bool](repeating: false, count: n + 1)
+  var ab = [Bool](repeating: false, count: n * n * 2 + 1)
 
   for a in 1...n {
     let a2 = a * a
 
     for b in a...n {
-      ab[a2 + b * b] = 1
+      ab[a2 + b * b] = true
     }
   }
 
@@ -24,8 +24,8 @@ public func missingD(upTo n: Int) -> [Int] {
     var s2 = s
 
     for d in c+1...n {
-      if ab[s1] != 0 {
-        res[d] = 1
+      if ab[s1] {
+        res[d] = true
       }
 
       s1 += s2
@@ -33,5 +33,5 @@ public func missingD(upTo n: Int) -> [Int] {
     }
   }
 
-  return (1...n).filter({ res[$0] == 0 })
+  return (1...n).filter({ !res[$0] })
 }
