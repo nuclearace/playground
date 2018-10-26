@@ -6,20 +6,22 @@ import Playground
 var list = DoubleLinkedList<Int>()
 var arr = [2, 3, 4, 5]
 
+func printList() {
+  for el in list {
+    print(el)
+  }
+}
+
 list.append(2)
 list.append(3)
 list.append(4)
 list.append(5)
 
-list.replaceSubrange(0..<3, with: [200, 201])
-arr.replaceSubrange(0..<3, with: [200, 201])
+printList()
 
+print()
 
-list.append(contentsOf: [2, 4, 5, 6, 7, 3])
-arr.append(contentsOf: [2, 4, 5, 6, 7, 3])
+list.replaceSubrange(0..<0, with: [1])
 
-for el in list {
-  print(el)
-}
+printList()
 
-print(arr)
