@@ -8,10 +8,26 @@ public final class DoubleLinkedList<Value> {
   public private(set) var count = 0
 
   private var head: UnsafeMutablePointer<DListNode<Value>>?
+  private var tail: UnsafeMutablePointer<DListNode<Value>>?
 
   public init() { }
 
   deinit {
+    clearList()
+  }
+
+  @discardableResult
+  fileprivate func addFirstValue(_ value: Value) -> UnsafeMutablePointer<DListNode<Value>> {
+    let p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
+
+    p.pointee = DListNode(value: value, prev: nil, next: nil)
+    head = p
+    tail = p
+
+    return p
+  }
+
+  private func clearList() {
     var cur = head
 
     while let node = cur {
@@ -21,20 +37,15 @@ public final class DoubleLinkedList<Value> {
 
       cur = tmpNode
     }
-  }
 
-  @discardableResult
-  fileprivate func addFirstValue(_ value: Value) -> UnsafeMutablePointer<DListNode<Value>> {
-    let p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
-
-    p.pointee = DListNode(value: value, prev: nil, next: nil)
-    head = p
-
-    return p
+    head = nil
+    tail = nil
   }
 
   private func node(at i: Int) -> UnsafeMutablePointer<DListNode<Value>>? {
-    assert(i >= 0 && i < count)
+    guard i >= 0 && i < count else {
+      return nil
+    }
 
     var curI = 0
     var cur = head
@@ -76,24 +87,6 @@ extension DoubleLinkedList : Collection, MutableCollection {
 }
 
 extension DoubleLinkedList : RangeReplaceableCollection {
-//  public func append(_ value: Value) {
-//    count += 1
-//
-//    let p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
-//    var node = DListNode(value: value, prev: nil, next: nil)
-//
-//    guard tail != nil else {
-//      addFirstValue(value)
-//
-//      return
-//    }
-//
-//    node.prev = tail
-//    p.pointee = node
-//    tail?.pointee.next = p
-//    tail = p
-//  }
-
   public func replaceSubrange<C>(_ subrange: Range<Int>, with newElements: C) where C: Collection, C.Element == Value {
 //    precondition(subrange.lowerBound >= startIndex && subrange.upperBound < endIndex)
 
@@ -113,68 +106,87 @@ extension DoubleLinkedList : RangeReplaceableCollection {
 //      node = self.node(at: subrange.lowerBound - 1)
 //    }
 
-    // Handle just adding new elements
     if lenRange == 0 {
-      guard !newElements.isEmpty else { return }
+      print("insert at")
 
-      guard !isEmpty else {
-        node = addFirstValue(newElements.first!)
+      if subrange.lowerBound == count {
+        // Handle insert
+        var p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
 
-        for el in newElements.dropFirst() {
-          let p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
+        if !isEmpty {
+          node = self.node(at: count - 1)
+        }
+
+        tail = p
+
+        if head == nil {
+          head = p
+        }
+
+        for el in newElements {
+          defer {
+            p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
+          }
+
+          node?.pointee.next = p
           p.pointee = DListNode(value: el, prev: node, next: nil)
+        }
 
+        // Cleanup unused p
+        p.deallocate()
+      } else if !newElements.isEmpty {
+        node = self.node(at: subrange.lowerBound)
+        let fNode = node
+
+        var p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
+
+        if node == head {
+          head = p
+        }
+
+        // Splice in the new node
+        node?.pointee.prev?.pointee.next = p
+        node = node?.pointee.prev
+
+        for el in newElements {
+          defer {
+            p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
+          }
+
+          p.pointee = DListNode(value: el, prev: fNode?.pointee.prev, next: fNode)
+
+          fNode?.pointee.prev = p
           node?.pointee.next = p
           node = p
         }
 
-        return
+        // Cleanup unused p
+        p.deallocate()
       }
-
-      if subrange.lowerBound != 0 {
-        node = self.node(at: subrange.lowerBound - 1)
-      } else {
-        node = head
-      }
-
-      let lastPrev = node?.pointee.next
-
-      for (i, el) in newElements.enumerated() {
-        let p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
-        p.pointee = DListNode(value: el, prev: node, next: nil)
-
-        if node == head && i == 0 {
-          head = p
-        }
-
-        node?.pointee.next = p
-        node = p
-      }
-
-      node?.pointee.next = lastPrev
-      lastPrev?.pointee.prev = node
 
       return
     }
 
     if newElements.isEmpty {
-      guard !isEmpty else { return }
+      print("Remove elements \(lenRange)")
 
-      if subrange.lowerBound != 0 {
-        node = self.node(at: subrange.lowerBound - 1)
-      } else {
-        node = head
+      node = self.node(at: subrange.lowerBound)
+      let endNode = self.node(at: subrange.upperBound)
+
+      if node == head {
+        head = endNode
       }
 
-      for _ in 0..<lenRange {
+      if endNode == nil {
+        tail = node?.pointee.prev
+      }
+
+      while node != endNode {
         let tmpNode = node?.pointee.next
 
-        if node == head {
-          head = tmpNode
-        }
-
-        node?.pointee.prev?.pointee.next = tmpNode
+        // FIXME: This isn't right, this can break the prev field
         node?.pointee.next?.pointee.prev = node?.pointee.prev
+        node?.pointee.prev?.pointee.next = node?.pointee.next
 
         node?.deallocate()
 
@@ -183,7 +195,6 @@ extension DoubleLinkedList : RangeReplaceableCollection {
 
       return
     }
-
 
 //    if lenRange < newElements.count {
 //      let numAdd = newElements.count - lenRange
