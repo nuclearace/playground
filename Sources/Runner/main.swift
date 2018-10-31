@@ -19,6 +19,8 @@ list.append(5)
 
 printList()
 
-list.replaceSubrange(0...3, with: [])
+print()
+
+list.replaceSubrange(1...3, with: [])
 
 printList()

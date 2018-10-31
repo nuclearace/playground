@@ -87,6 +87,67 @@ extension DoubleLinkedList : Collection, MutableCollection {
 }
 
 extension DoubleLinkedList : RangeReplaceableCollection {
+  private func insert<C>(atSubrange subrange: Range<Int>, _ newElements: C) where C: Collection, C.Element == Value {
+    let lenRange = subrange.upperBound - subrange.lowerBound
+
+    var node: UnsafeMutablePointer<DListNode<Value>>?
+
+    if subrange.lowerBound == count {
+      var p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
+
+      if !isEmpty {
+        node = self.node(at: count - 1)
+      }
+
+      tail = p
+
+      if head == nil {
+        head = p
+      }
+
+      for el in newElements {
+        defer {
+          p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
+        }
+
+        node?.pointee.next = p
+        p.pointee = DListNode(value: el, prev: node, next: nil)
+      }
+
+      // Cleanup unused p
+      p.deallocate()
+    } else if !newElements.isEmpty {
+      node = self.node(at: subrange.lowerBound)
+      let fNode = node
+
+      var p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
+
+      if node == head {
+        head = p
+      }
+
+      // Splice in the new node
+      node?.pointee.prev?.pointee.next = p
+      node = node?.pointee.prev
+
+      for el in newElements {
+        defer {
+          p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
+        }
+
+        p.pointee = DListNode(value: el, prev: fNode?.pointee.prev, next: fNode)
+
+        fNode?.pointee.prev = p
+        node?.pointee.next = p
+        node = p
+      }
+
+      // Cleanup unused p
+      p.deallocate()
+    }
+
+  }
+
   public func replaceSubrange<C>(_ subrange: Range<Int>, with newElements: C) where C: Collection, C.Element == Value {
 //    precondition(subrange.lowerBound >= startIndex && subrange.upperBound < endIndex)
 
@@ -98,165 +159,45 @@ extension DoubleLinkedList : RangeReplaceableCollection {
       count += newElements.count - lenRange
     }
 
-//    if isEmpty && !newElements.isEmpty {
-//      node = addFirstValue(newElements.first!)
-//    } else if lenRange != 0 {
-//      node = self.node(at: subrange.lowerBound)
-//    } else {
-//      node = self.node(at: subrange.lowerBound - 1)
-//    }
-
     if lenRange == 0 {
       print("insert at")
-
-      if subrange.lowerBound == count {
-        // Handle insert
-        var p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
-
-        if !isEmpty {
-          node = self.node(at: count - 1)
-        }
-
-        tail = p
-
-        if head == nil {
-          head = p
-        }
-
-        for el in newElements {
-          defer {
-            p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
-          }
-
-          node?.pointee.next = p
-          p.pointee = DListNode(value: el, prev: node, next: nil)
-        }
-
-        // Cleanup unused p
-        p.deallocate()
-      } else if !newElements.isEmpty {
-        node = self.node(at: subrange.lowerBound)
-        let fNode = node
-
-        var p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
-
-        if node == head {
-          head = p
-        }
-
-        // Splice in the new node
-        node?.pointee.prev?.pointee.next = p
-        node = node?.pointee.prev
-
-        for el in newElements {
-          defer {
-            p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
-          }
-
-          p.pointee = DListNode(value: el, prev: fNode?.pointee.prev, next: fNode)
-
-          fNode?.pointee.prev = p
-          node?.pointee.next = p
-          node = p
-        }
-
-        // Cleanup unused p
-        p.deallocate()
-      }
+      insert(atSubrange: subrange, newElements)
 
       return
     }
 
     if newElements.isEmpty {
-      print("Remove elements \(lenRange)")
-
-      node = self.node(at: subrange.lowerBound)
-      let endNode = self.node(at: subrange.upperBound)
-
-      if node == head {
-        head = endNode
-      }
-
-      if endNode == nil {
-        tail = node?.pointee.prev
-      }
-
-      while node != endNode {
-        let tmpNode = node?.pointee.next
-
-        // FIXME: This isn't right, this can break the prev field
-        node?.pointee.next?.pointee.prev = node?.pointee.prev
-        node?.pointee.prev?.pointee.next = node?.pointee.next
-
-        node?.deallocate()
-
-        node = tmpNode
-      }
+      removeElements(subrange)
 
       return
     }
+  }
 
-//    if lenRange < newElements.count {
-//      let numAdd = newElements.count - lenRange
-//
-//      count += numAdd
-//
-//      guard count != 1 else {
-//        return
-//      }
-//
-//      for el in newElements.dropLast(numAdd) {
-//        node?.pointee.value = el
-//        node = node?.pointee.next
-//      }
-//
-//      var nodePast: UnsafeMutablePointer<DListNode<Value>>?
-//
-//      (node, nodePast) = (node?.pointee.prev, node)
-//
-//      // Fill in the gap between node and nodeLast
-//      for el in newElements.dropFirst(lenRange) {
-//        let p = UnsafeMutablePointer<DListNode<Value>>.allocate(capacity: 1)
-//        p.pointee = DListNode(value: el, prev: node ?? nodePast, next: nil)
-//
-//        node?.pointee.next = p
-//        node = p
-//      }
-//
-//      if lenRange != 0 {
-//        node?.pointee.next = nodePast
-//        nodePast?.pointee.prev = node
-//      }
-//    } else if lenRange > newElements.count {
-//      let numRemove = lenRange - newElements.count
-//
-//      count -= numRemove
-//
-//      for el in newElements {
-//        node?.pointee.value = el
-//        node = node?.pointee.next
-//      }
-//
-//      let nodePast = node?.pointee.prev
-//
-//      for _ in 0..<numRemove {
-//        let tmpNext = node?.pointee.next
-//
-//        node?.pointee.prev?.pointee.next = node?.pointee.next
-//        node?.deallocate()
-//
-//        node = tmpNext
-//      }
-//
-//      nodePast?.pointee.next = node
-//    } else {
-//      guard !newElements.isEmpty else { return }
-//
-//      for el in newElements {
-//        node?.pointee.value = el
-//        node = node?.pointee.next
-//      }
-//    }
+  private func removeElements(_ subrange: Range<Int>) {
+    var node: UnsafeMutablePointer<DListNode<Value>>?
+
+    node = self.node(at: subrange.lowerBound)
+    let endNode = self.node(at: subrange.upperBound)
+
+    if node == head {
+      head = endNode
+    }
+
+    if endNode == nil {
+      tail = node?.pointee.prev
+    }
+
+    while node != endNode {
+      let tmpNode = node?.pointee.next
+
+      // FIXME: This isn't right, this can break the prev field
+      node?.pointee.next?.pointee.prev = node?.pointee.prev
+      node?.pointee.prev?.pointee.next = node?.pointee.next
+
+      node?.deallocate()
+
+      node = tmpNode
+    }
   }
 }
 
