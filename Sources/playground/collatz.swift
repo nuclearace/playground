@@ -2,9 +2,8 @@
 // Created by Erik Little on 9/1/18.
 //
 
-import BigInt
-
-public func collatz(_ n: BigInt) -> (series: [BigInt], peak: BigInt) {
+@inlinable
+public func collatz<T: BinaryInteger>(_ n: T) -> (series: [T], peak: T) {
   var series = [n]
   var n = n
   var peak = n
