@@ -8,7 +8,7 @@ public struct MTRandom : RandomNumberGenerator {
   private var index = 312
   private var mt = [UInt64](repeating: 0, count: 312)
 
-  public init(seed: UInt64) {
+  public init(seed: UInt64 = .random(in: .min ... .max)) {
     mt[0] = seed
 
     for i in 1..<312 {

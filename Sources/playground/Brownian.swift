@@ -10,7 +10,7 @@ public final class Brownian : BitmapDrawer {
   public let numberOfParticles: Int
 
   // Default RNG is too slow. Use a Mersenne Twister
-  private var rng = MTRandom(seed: UInt64.random(in: 0...UInt64.max))
+  private var rng = MTRandom()
 
   public init(height: Int, width: Int, numberOfParticles: Int) {
     self.numberOfParticles = numberOfParticles
