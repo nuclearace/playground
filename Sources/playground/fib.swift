@@ -14,6 +14,16 @@ public func fib(n: Int) -> BigInt {
   return a
 }
 
+public func fibRecursive(n: Int) -> BigInt {
+  assert(n >= 0)
+
+  if n <= 1 {
+    return BigInt(n)
+  }
+
+  return fibRecursive(n: n - 1) + fibRecursive(n: n - 2)
+}
+
 public struct FibonacciSequence : Sequence, IteratorProtocol {
   private var a = BigInt(0)
   private var b = BigInt(1)
