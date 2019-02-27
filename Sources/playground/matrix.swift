@@ -63,7 +63,7 @@ public func gaussPartial(a0: [[Double]], b0: [Double]) -> [Double] {
   
   for i in stride(from: m - 1, through: 0, by: -1) {
     ret[i] = a[i][m]
-    
+
     for j in i+1..<m {
       ret[i] -= a[i][j] * ret[j]
     }
