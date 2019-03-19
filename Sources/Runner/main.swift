@@ -4,15 +4,32 @@ import Foundation
 import Playground
 import Dispatch
 
-let ta = [
-  [1.00, 0.00, 0.00, 0.00, 0.00, 0.00],
-  [1.00, 0.63, 0.39, 0.25, 0.16, 0.10],
-  [1.00, 1.26, 1.58, 1.98, 2.49, 3.13],
-  [1.00, 1.88, 3.55, 6.70, 12.62, 23.80],
-  [1.00, 2.51, 6.32, 15.88, 39.90, 100.28],
-  [1.00, 3.14, 9.87, 31.01, 97.41, 306.02]
+let tests = [
+  "123456789.123456789",
+  ".123456789",
+  "57256.1D-4",
+  "pi=3.14159265358979323846264338327950288419716939937510582097494459231",
+  "The author has two Z$100000000000000 Zimbabwe notes (100 trillion).",
+  "-in Aus$+1411.8millions",
+  "===US$0017440 millions=== (in 2000 dollars)",
+  "123.e8000 is pretty big.",
+  "The land area of the earth is 57268900(29% of the surface) square miles.",
+  "Ain't no numbers in this here words, nohow, no way, Jose.",
+  "James was never known as 0000000007",
+  "Arthur Eddington wrote: I believe there are " +
+      "15747724136275002577605653961181555468044717914527116709366231425076185631031296" +
+      " protons in the universe.",
+  "   $-140000±100 millions.",
+  "6/9/1946 was a good year for some."
 ]
 
-let tb = [-0.01, 0.61, 0.91, 0.99, 0.60, 0.02]
+print(tests[0].commatize(period: 2, separator: "*"))
+print(tests[1].commatize(period: 3, separator: "-"))
+print(tests[2].commatize(period: 4, separator: "__"))
+print(tests[3].commatize(period: 5, separator: " "))
+print(tests[4].commatize(separator: "."))
 
-print(gaussPartial(a0: ta, b0: tb))
+for testCase in tests.dropFirst(5) {
+  print(testCase.commatize())
+}
+
