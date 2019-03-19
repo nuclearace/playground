@@ -24,29 +24,29 @@ guard runTimes > 0 else {
 let command = commandArgs.first!
 var times = [Double]()
 
-for i in -1..<runTimes {
-  let p = Process()
+print("Running \(commandArgs)")
 
-  p.standardInput = nil
-  p.standardError = nil
-  p.standardOutput = nil
+for i in 0..<runTimes {
+  var pid: pid_t = 0
 
-  if #available(macOS 10.13, *) {
-    p.executableURL = URL(fileURLWithPath: command)
-  } else {
-    p.launchPath = command
+  let status = command.withCString {str in
+    return posix_spawn(&pid, str, nil, nil, CommandLine.unsafeArgv.advanced(by: 2), environ)
   }
 
-  p.arguments = Array(commandArgs.dropFirst())
+  guard status == 0 else {
+    fatalError("Could not spawn process")
+  }
 
   let s = Date().timeIntervalSince1970
-  p.launch()
-  p.waitUntilExit()
+  let returnCode = waitpid(pid, nil, 0)
+
+  guard returnCode == pid else {
+    print("Run \(i + 1) errored")
+    
+    continue
+  }
 
   let t = Date().timeIntervalSince1970 - s
-
-  // First result is skewed from Process setup overhead
-  guard i >= 0 else { continue }
 
   if !quiet || (i + 1) % 10 == 0 {
     print("run \(i + 1) took \(t)s")
