@@ -3,12 +3,15 @@ import Foundation
 let args = Array(CommandLine.arguments.dropFirst())
 
 var quiet = false
+var verbose = false
 var runTimes = 10
 var commandArgs = [String]()
 
 for (i, arg) in args.enumerated() {
   if arg == "-q" {
     quiet = true
+  } else if arg == "-v" {
+    verbose = true
   } else if arg.hasPrefix("-n=") {
     runTimes = Int(arg.dropFirst(3))!
   } else {
@@ -25,7 +28,7 @@ var childFDActions: posix_spawn_file_actions_t?
 
 posix_spawn_file_actions_init(&childFDActions)
 
-if quiet {
+if !verbose {
   _ = "/dev/null".withCString {strPtr in
     posix_spawn_file_actions_addopen(&childFDActions, 1, strPtr, O_WRONLY | O_CREAT | O_TRUNC, 0644)
   }
@@ -39,6 +42,7 @@ print("Running \(commandArgs)")
 for i in 0..<runTimes {
   var pid: pid_t = 0
 
+  let s = Date().timeIntervalSince1970
   let status = command.withCString {str in
     return posix_spawn(&pid, str, &childFDActions, nil, CommandLine.unsafeArgv.advanced(by: 2), environ)
   }
@@ -47,7 +51,6 @@ for i in 0..<runTimes {
     fatalError("Could not spawn process")
   }
 
-  let s = Date().timeIntervalSince1970
   let returnCode = waitpid(pid, nil, 0)
 
   guard returnCode == pid else {
