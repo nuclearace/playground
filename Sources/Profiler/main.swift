@@ -21,6 +21,16 @@ guard runTimes > 0 else {
   fatalError("Must run at least once")
 }
 
+var childFDActions: posix_spawn_file_actions_t?
+
+posix_spawn_file_actions_init(&childFDActions)
+
+if quiet {
+  _ = "/dev/null".withCString {strPtr in
+    posix_spawn_file_actions_addopen(&childFDActions, 1, strPtr, O_WRONLY | O_CREAT | O_TRUNC, 0644)
+  }
+}
+
 let command = commandArgs.first!
 var times = [Double]()
 
@@ -30,7 +40,7 @@ for i in 0..<runTimes {
   var pid: pid_t = 0
 
   let status = command.withCString {str in
-    return posix_spawn(&pid, str, nil, nil, CommandLine.unsafeArgv.advanced(by: 2), environ)
+    return posix_spawn(&pid, str, &childFDActions, nil, CommandLine.unsafeArgv.advanced(by: 2), environ)
   }
 
   guard status == 0 else {
@@ -42,7 +52,7 @@ for i in 0..<runTimes {
 
   guard returnCode == pid else {
     print("Run \(i + 1) errored")
-    
+
     continue
   }
 
