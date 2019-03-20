@@ -6,6 +6,7 @@ var quiet = false
 var verbose = false
 var runTimes = 10
 var commandArgs = [String]()
+var times = [Double]()
 
 for (i, arg) in args.enumerated() {
   if arg == "-q" {
@@ -34,8 +35,27 @@ if !verbose {
   }
 }
 
-let command = commandArgs.first!
-var times = [Double]()
+var command = commandArgs.first!
+
+if !command.hasPrefix("/") && !command.hasPrefix(".") {
+  print("Looking up \(command)")
+
+  guard let foundCommand = whichCommand(command) else {
+    fatalError("Could not find \(command) to run")
+  }
+
+  print("found \(foundCommand)")
+
+  command = foundCommand
+}
+
+let argv = ([command] + commandArgs.dropFirst()).map({ $0.withCString(strdup) })
+
+defer {
+  for arg in argv {
+    free(arg)
+  }
+}
 
 print("Running \(commandArgs)")
 
@@ -44,7 +64,7 @@ for i in 0..<runTimes {
 
   let s = Date().timeIntervalSince1970
   let status = command.withCString {str in
-    return posix_spawn(&pid, str, &childFDActions, nil, CommandLine.unsafeArgv.advanced(by: 2), environ)
+    return posix_spawn(&pid, str, &childFDActions, nil, argv + [nil], environ)
   }
 
   guard status == 0 else {
