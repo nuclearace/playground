@@ -4,32 +4,34 @@ import Foundation
 import Playground
 import Dispatch
 
-let tests = [
-  "123456789.123456789",
-  ".123456789",
-  "57256.1D-4",
-  "pi=3.14159265358979323846264338327950288419716939937510582097494459231",
-  "The author has two Z$100000000000000 Zimbabwe notes (100 trillion).",
-  "-in Aus$+1411.8millions",
-  "===US$0017440 millions=== (in 2000 dollars)",
-  "123.e8000 is pretty big.",
-  "The land area of the earth is 57268900(29% of the surface) square miles.",
-  "Ain't no numbers in this here words, nohow, no way, Jose.",
-  "James was never known as 0000000007",
-  "Arthur Eddington wrote: I believe there are " +
-      "15747724136275002577605653961181555468044717914527116709366231425076185631031296" +
-      " protons in the universe.",
-  "   $-140000±100 millions.",
-  "6/9/1946 was a good year for some."
-]
+print("Sample of permutations from 1 to 12")
 
-print(tests[0].commatize(period: 2, separator: "*"))
-print(tests[1].commatize(period: 3, separator: "-"))
-print(tests[2].commatize(period: 4, separator: "__"))
-print(tests[3].commatize(period: 5, separator: " "))
-print(tests[4].commatize(separator: "."))
-
-for testCase in tests.dropFirst(5) {
-  print(testCase.commatize())
+for i in 1...12 {
+  print("\(i) P \(i / 3) = \(permutations(n: i, k: i / 3))")
 }
 
+print("\nSample of combinations from 10 to 60")
+
+for i in stride(from: 10, through: 60, by: 10) {
+  print("\(i) C \(i / 3) = \(combinations(n: i, k: i / 3))")
+}
+
+print("\nSample of permutations from 5 to 15,000")
+
+for i in [5, 50, 500, 1000, 5000, 15000] {
+  let k = i / 3
+  let res = permutations(n: i, k: k).description
+  let extra = res.count > 40 ? "... (\(res.count - 40) more digits)" : ""
+
+  print("\(i) P \(k) = \(res.prefix(40))\(extra)")
+}
+
+print("\nSample of combinations from 100 to 1000")
+
+for i in stride(from: 100, through: 1000, by: 100) {
+  let k = i / 3
+  let res = combinations(n: i, k: k).description
+  let extra = res.count > 40 ? "... (\(res.count - 40) more digits)" : ""
+
+  print("\(i) C \(k) = \(res.prefix(40))\(extra)")
+}

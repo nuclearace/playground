@@ -5,6 +5,10 @@
 import BigInt
 
 public func factorial(_ n: Int) -> BigInt {
+  guard n != 0 else {
+    return 1
+  }
+
   return (1...n).map({ BigInt($0) }).reduce(1, *)
 }
 

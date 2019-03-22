@@ -59,6 +59,8 @@ defer {
 
 print("Running \(commandArgs)")
 
+let start = Date().timeIntervalSince1970
+
 for i in 0..<runTimes {
   var pid: pid_t = 0
 
@@ -88,8 +90,11 @@ for i in 0..<runTimes {
   times.append(t)
 }
 
+let finish = Date().timeIntervalSince1970
+
 print()
 print("Minimum: \(times.min()!)")
 print("Maximum: \(times.max()!)")
 print("Average: \(times.reduce(0, +) / Double(times.count))s")
 print("Standard Deviation: \(stdDev(samples: times))")
+print("Total test time: \(finish - start)")
