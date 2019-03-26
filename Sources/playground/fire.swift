@@ -68,12 +68,9 @@ public final class ForestFire {
 
     for i in 0..<ticks {
       if i % printOnTick == 0 {
-        defer {
-          printForest()
+        printForest()
 
-          guard readLine(strippingNewline: true) != "q" else { exit(0) }
-        }
-
+        guard readLine(strippingNewline: true) != "q" else { exit(0) }
       }
 
       tick()
