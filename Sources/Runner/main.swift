@@ -4,34 +4,25 @@ import Foundation
 import Playground
 import Dispatch
 
-print("Sample of permutations from 1 to 12")
+print("First 15: \(Array(SternBrocot().prefix(15)))")
 
-for i in 1...12 {
-  print("\(i) P \(i / 3) = \(permutations(n: i, k: i / 3))")
+var found = Set<Int>()
+
+for (i, val) in SternBrocot().enumerated() {
+  switch val {
+  case 1...10 where !found.contains(val), 100 where !found.contains(val):
+    print("First \(val) at \(i + 1)")
+    found.insert(val)
+  case _:
+    continue
+  }
+
+  if found.count == 11 {
+    break
+  }
 }
 
-print("\nSample of combinations from 10 to 60")
+let firstThousand = SternBrocot().prefix(1000)
+let gcdIsOne = zip(firstThousand, firstThousand.dropFirst()).allSatisfy({ gcd($0.0, $0.1) == 1 })
 
-for i in stride(from: 10, through: 60, by: 10) {
-  print("\(i) C \(i / 3) = \(combinations(n: i, k: i / 3))")
-}
-
-print("\nSample of permutations from 5 to 15,000")
-
-for i in [5, 50, 500, 1000, 5000, 15000] {
-  let k = i / 3
-  let res = permutations(n: i, k: k).description
-  let extra = res.count > 40 ? "... (\(res.count - 40) more digits)" : ""
-
-  print("\(i) P \(k) = \(res.prefix(40))\(extra)")
-}
-
-print("\nSample of combinations from 100 to 1000")
-
-for i in stride(from: 100, through: 1000, by: 100) {
-  let k = i / 3
-  let res = combinations(n: i, k: k).description
-  let extra = res.count > 40 ? "... (\(res.count - 40) more digits)" : ""
-
-  print("\(i) C \(k) = \(res.prefix(40))\(extra)")
-}
+print("GCDs of all two consecutive members are \(gcdIsOne ? "" : "not")one")
