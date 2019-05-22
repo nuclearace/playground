@@ -101,7 +101,7 @@ public final class ForestFire {
   }
 }
 
-private enum ForestConstants : Double {
+private enum ForestConstants: Double {
   case probabilityIgnite = 0.0001
   case probabilityGrow = 0.01
   case probabilityTree = 0.55

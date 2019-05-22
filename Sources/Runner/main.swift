@@ -4,16 +4,37 @@ import Foundation
 import Playground
 import Dispatch
 
-func nextEaster(on date: (month: Int, day: Int)) -> SimpleDate {
-  for year in 2019...Int.max {
-    let easter = dateForEaster(year: year)
-
-    if date == (easter.month, easter.day) {
-      return easter
+extension Collection {
+  func grouped<T: Equatable>(on property: KeyPath<Element, T>) -> [[Element]] {
+    guard !isEmpty else {
+      return []
     }
-  }
 
-  fatalError()
+    var groups = [[first!]]
+
+    main: for thing in self[index(after: startIndex)...] {
+      for (i, var group) in groups.enumerated() {
+        if group.first![keyPath: property] == thing[keyPath: property] {
+          group.append(thing)
+
+          groups[i] = group
+
+          continue main
+        }
+      }
+
+      groups.append([thing])
+    }
+
+    return groups
+  }
 }
 
-print(nextEaster(on: (3, 24)))
+struct Person {
+  var name: String
+  var age: Int
+}
+
+let people = (10...85).flatMap({age in (1...5).map({ Person(name: "\($0)", age: age) }) }).shuffled()
+
+print(people.grouped(on: \.age))

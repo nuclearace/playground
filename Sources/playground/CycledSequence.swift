@@ -18,7 +18,7 @@ public struct CycledSequence<WrappedSequence: Sequence> {
   }
 }
 
-extension CycledSequence : Sequence, IteratorProtocol {
+extension CycledSequence: Sequence, IteratorProtocol {
   public mutating func next() -> WrappedSequence.Element? {
     if let ele = iter.next() {
       return ele

@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct MTRandom : RandomNumberGenerator {
+public struct MTRandom: RandomNumberGenerator {
   private var index = 312
   private var mt = [UInt64](repeating: 0, count: 312)
 
