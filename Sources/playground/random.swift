@@ -47,3 +47,18 @@ public struct MTRandom: RandomNumberGenerator {
     }
   }
 }
+
+public func generateRandomNumArray(numDigits: Int = 4) -> [Int] {
+  guard numDigits > 0 else {
+    return []
+  }
+
+  let needed =  min(9, numDigits)
+  var nums = Set<Int>()
+
+  repeat {
+    nums.insert(.random(in: 1...9))
+  } while nums.count != needed
+
+  return Array(nums)
+}

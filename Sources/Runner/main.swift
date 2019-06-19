@@ -4,37 +4,13 @@ import Foundation
 import Playground
 import Dispatch
 
-extension Collection {
-  func grouped<T: Equatable>(on property: KeyPath<Element, T>) -> [[Element]] {
-    guard !isEmpty else {
-      return []
-    }
+let target = "METHINKS IT IS LIKE A WEASEL"
+let copies = 100
+let mutationRate = 20
 
-    var groups = [[first!]]
+var start = mutated(sentence: target, rate: 100)
 
-    main: for thing in self[index(after: startIndex)...] {
-      for (i, var group) in groups.enumerated() {
-        if group.first![keyPath: property] == thing[keyPath: property] {
-          group.append(thing)
+print("target: \(target)")
+print("Gen 0: \(start) with fitness \(fitness(target: target, sentence: start))")
 
-          groups[i] = group
-
-          continue main
-        }
-      }
-
-      groups.append([thing])
-    }
-
-    return groups
-  }
-}
-
-struct Person {
-  var name: String
-  var age: Int
-}
-
-let people = (10...85).flatMap({age in (1...5).map({ Person(name: "\($0)", age: age) }) }).shuffled()
-
-print(people.grouped(on: \.age))
+evolve(to: target, parent: &start, mutationRate: mutationRate, copies: 100)
