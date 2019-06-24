@@ -19,16 +19,16 @@ public func evolve(
   while parent != target {
     generation += 1
 
-    let bestOfGeneration =
+    let (bestFitness, bestSentence) =
         (0..<copies)
           .map({_ in mutated(sentence: parent, rate: mutationRate) })
           .map({ (fitness(target: target, sentence: $0), $0) })
           .sorted(by: { $0.0 < $1.0 })
           .first!
 
-    if bestOfGeneration.0 < parentFitness {
-      print("Gen \(generation) produced better fit. \(bestOfGeneration.1) with fitness \(bestOfGeneration.0)")
-      parent = bestOfGeneration.1
+    if bestFitness < parentFitness {
+      print("Gen \(generation) produced better fit. \(bestSentence) with fitness \(bestFitness)")
+      parent = bestSentence
     }
   }
 }
