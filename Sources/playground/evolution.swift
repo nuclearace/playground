@@ -48,4 +48,3 @@ public func mutated(sentence: String, rate: Int) -> String {
     })
   )
 }
-

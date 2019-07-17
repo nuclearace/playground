@@ -5,6 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "playground",
+    platforms: [
+        .macOS(.v10_12),
+    ],
     products: [
         .executable(name: "Runner", targets: ["Runner"]),
         .executable(name: "Profiler", targets: ["Profiler"]),

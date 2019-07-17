@@ -4,22 +4,23 @@ import Foundation
 import Playground
 import Dispatch
 
-print("Please enter a sentence to evolve", terminator: ": ")
+let testCases = [
+  "037833100",
+  "17275R102",
+  "38259P508",
+  "594918104",
+  "68389X106",
+  "68389X105"
+]
 
-guard let target = readLine(strippingNewline: true)?.uppercased() else {
-  exit(0)
+for potentialCUSIP in testCases {
+  print("\(potentialCUSIP) -> ", terminator: "")
+
+  switch CUSIP(value: potentialCUSIP) {
+  case nil:
+    print("Invalid")
+  case _:
+    print("Valid")
+  }
 }
 
-let copies = 100
-let mutationRate = 20
-
-var start = mutated(sentence: target, rate: 100)
-
-print("target: \(target)")
-print("Gen 0: \(start) with fitness \(fitness(target: target, sentence: start))")
-
-let (_, t) = ClockTimer.time {
-  evolve(to: target, parent: &start, mutationRate: mutationRate, copies: 100)
-}
-
-print(t)

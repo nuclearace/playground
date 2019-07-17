@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct Point : Equatable, Hashable {
+public struct Point: Equatable, Hashable {
   public var x: Double
   public var y: Double
 
@@ -46,7 +46,7 @@ public struct Point : Equatable, Hashable {
   }
 }
 
-extension Point : CustomStringConvertible {
+extension Point: CustomStringConvertible {
   public var description: String {
     return "Point(x: \(x), y: \(y))"
   }
@@ -134,7 +134,7 @@ extension Collection where Element == Point {
   }
 }
 
-public struct Line : Equatable, Hashable {
+public struct Line: Equatable, Hashable {
   public var start: Point
   public var end: Point
 
@@ -170,7 +170,7 @@ public struct Line : Equatable, Hashable {
   }
 }
 
-extension Line : CustomStringConvertible {
+extension Line: CustomStringConvertible {
   public var description: String {
     let s = slope
     let yI = yIntercept
@@ -183,7 +183,7 @@ extension Line : CustomStringConvertible {
   }
 }
 
-extension Line : Drawable {
+extension Line: Drawable {
   private func drawLow<T: Drawer>(into drawer: inout T, start: Point, end: Point) {
     let dx = end.x - start.x
     var dy = end.y - start.y
@@ -320,5 +320,26 @@ extension PointLine : Drawable {
           to: Color(red: 255, green: 158, blue: 22)
       )
     }
+  }
+}
+
+public struct Polygon {
+  public var points: [Point]
+
+  public var area: Double {
+    let xx = points.map({ $0.x })
+    let yy = points.map({ $0.y })
+    let overlace = zip(xx, yy.dropFirst() + yy.prefix(1)).map({ $0.0 * $0.1 }).reduce(0, +)
+    let underlace = zip(yy, xx.dropFirst() + xx.prefix(1)).map({ $0.0 * $0.1 }).reduce(0, +)
+
+    return abs(overlace - underlace) / 2
+  }
+
+  public init(points: [Point]) {
+    self.points = points
+  }
+
+  public init(points: [(Double, Double)]) {
+    self.init(points: points.map({ Point(x: $0.0, y: $0.1) }))
   }
 }
