@@ -5,22 +5,20 @@ import Playground
 import Dispatch
 
 let testCases = [
-  "037833100",
-  "17275R102",
-  "38259P508",
-  "594918104",
-  "68389X106",
-  "68389X105"
+  (Point(x: 0.1234, y: 0.9876), Point(x: 0.8765, y: 0.2345), 2.0),
+  (Point(x: 0.0000, y: 2.0000), Point(x: 0.0000, y: 0.0000), 1.0),
+  (Point(x: 0.1234, y: 0.9876), Point(x: 0.1234, y: 0.9876), 2.0),
+  (Point(x: 0.1234, y: 0.9876), Point(x: 0.8765, y: 0.2345), 0.5),
+  (Point(x: 0.1234, y: 0.9876), Point(x: 0.1234, y: 0.9876), 0.0)
 ]
 
-for potentialCUSIP in testCases {
-  print("\(potentialCUSIP) -> ", terminator: "")
-
-  switch CUSIP(value: potentialCUSIP) {
+for testCase in testCases {
+  switch Circle.circleBetween(testCase.0, testCase.1, withRadius: testCase.2) {
   case nil:
-    print("Invalid")
-  case _:
-    print("Valid")
+    print("No ans")
+  case (let circle1, nil)?:
+    print("One ans: \(circle1)")
+  case (let circle1, let circle2?)?:
+    print("Two ans: \(circle1) \(circle2)")
   }
 }
-

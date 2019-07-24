@@ -343,3 +343,60 @@ public struct Polygon {
     self.init(points: points.map({ Point(x: $0.0, y: $0.1) }))
   }
 }
+
+public struct Circle {
+  public var center: Point
+  public var radius: Double
+
+  public init(center: Point, radius: Double) {
+    self.center = center
+    self.radius = radius
+  }
+
+  public static func circleBetween(
+    _ p1: Point,
+    _ p2: Point,
+    withRadius radius: Double
+  ) -> (Circle, Circle?)? {
+    func applyPoint(_ p1: Point, _ p2: Point, op: (Double, Double) -> Double) -> Point {
+      return Point(x: op(p1.x, p2.x), y: op(p1.y, p2.y))
+    }
+
+    func mul2(_ p: Point, mul: Double) -> Point {
+      return Point(x: p.x * mul, y: p.y * mul)
+    }
+
+    func div2(_ p: Point, div: Double) -> Point {
+      return Point(x: p.x / div, y: p.y / div)
+    }
+
+    func norm(_ p: Point) -> Point {
+      return div2(p, div: (p.x * p.x + p.y * p.y).squareRoot())
+    }
+
+    guard radius != 0, p1 != p2 else {
+      return nil
+    }
+
+    let diameter = 2 * radius
+    let pq = applyPoint(p1, p2, op: -)
+    let magPQ = (pq.x * pq.x + pq.y * pq.y).squareRoot()
+
+    guard diameter >= magPQ else {
+      return nil
+    }
+
+    let midpoint = div2(applyPoint(p1, p2, op: +), div: 2)
+    let halfPQ = magPQ / 2
+    let magMidC = abs(radius * radius - halfPQ * halfPQ).squareRoot()
+    let midC = mul2(norm(Point(x: -pq.y, y: pq.x)), mul: magMidC)
+    let center1 = applyPoint(midpoint, midC, op: +)
+    let center2 = applyPoint(midpoint, midC, op: -)
+
+    if center1 == center2 {
+      return (Circle(center: center1, radius: radius), nil)
+    } else {
+      return (Circle(center: center1, radius: radius), Circle(center: center2, radius: radius))
+    }
+  }
+}
