@@ -9,16 +9,13 @@ public func collatz<T: BinaryInteger>(_ n: T) -> (series: [T], peak: T) {
   var peak = n
 
   while n != 1 {
-    switch n & 1 {
-    case 0:
+    if n & 1 == 0 {
       n /= 2
-    case 1:
+    } else {
       n = 3*n + 1
-    case _:
-      fatalError()
     }
 
-    peak = n > peak ? n : peak
+    peak = max(n, peak)
 
     series.append(n)
   }

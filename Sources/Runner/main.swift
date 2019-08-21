@@ -4,21 +4,23 @@ import Foundation
 import Playground
 import Dispatch
 
-let testCases = [
-  (Point(x: 0.1234, y: 0.9876), Point(x: 0.8765, y: 0.2345), 2.0),
-  (Point(x: 0.0000, y: 2.0000), Point(x: 0.0000, y: 0.0000), 1.0),
-  (Point(x: 0.1234, y: 0.9876), Point(x: 0.1234, y: 0.9876), 2.0),
-  (Point(x: 0.1234, y: 0.9876), Point(x: 0.8765, y: 0.2345), 0.5),
-  (Point(x: 0.1234, y: 0.9876), Point(x: 0.1234, y: 0.9876), 0.0)
-]
+//let l1 = [3, 2, 6, 4, 5, 1]
+//let l2 = [0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15]
+//
+//print("\(l1) = \(l1.longestIncreasingSubsequence())")
+//print("\(l2) = \(l2.longestIncreasingSubsequence())")
 
-for testCase in testCases {
-  switch Circle.circleBetween(testCase.0, testCase.1, withRadius: testCase.2) {
-  case nil:
-    print("No ans")
-  case (let circle1, nil)?:
-    print("One ans: \(circle1)")
-  case (let circle1, let circle2?)?:
-    print("Two ans: \(circle1) \(circle2)")
-  }
+do {
+  var rng = MTRandom()
+
+  let arr = Array(1...1_000_000)
+
+  let (shuffled, t1) = ClockTimer.time { arr.shuffled(using: &rng) }
+
+  print("Shuffling took \(t1.duration)s")
+
+  let (lis, t2) = ClockTimer.time { shuffled.longestIncreasingSubsequence() }
+
+  print("Took \(t2.duration)s to find longest increasing subsequence of len \(lis.count)")
 }
+

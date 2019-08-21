@@ -2,21 +2,14 @@
 // Created by Erik Little on 2019-03-19.
 //
 
+import Foundation
+
 public func castOutNines(n: Int) -> Int {
   guard n > 8 else {
     return n
   }
 
   return castOutNines(n: String(n).map({ Int(String($0))! }).filter({ $0 % 9 != 0 }).reduce(0, +))
-}
-
-@inlinable
-public func gcd<T: BinaryInteger>(_ a: T, _ b: T) -> T {
-  guard a != 0 else {
-    return b
-  }
-
-  return a < b ? gcd(b % a, a) : gcd(a % b, b)
 }
 
 extension Array {
@@ -71,4 +64,73 @@ public func cartesianProduct<T>(_ arrays: [T]...) -> [[T]] {
   return arrays.lazy.reversed()
     .reduce([first], {res, el in el.flatMap({ pel($0, res) }) })
     .map({ $0.dropLast(first.count) })
+}
+
+extension Sequence {
+  @inlinable
+  public func groupedBy<PropertyType: Hashable>(
+    _ extractor: (Element) -> PropertyType
+  ) -> [PropertyType: [Element]] {
+    var dict: [PropertyType: [Element]] = [:]
+
+    for el in self {
+      dict[extractor(el), default: []].append(el)
+    }
+
+    return dict
+  }
+
+  @inlinable
+  public func groupedBy<PropertyType: Hashable>(
+    _ property: KeyPath<Element, PropertyType>
+  ) -> [PropertyType: [Element]] {
+    var dict: [PropertyType: [Element]] = [:]
+
+    for el in self {
+      dict[el[keyPath: property], default: []].append(el)
+    }
+
+    return dict
+  }
+}
+
+extension Array where Element: Comparable {
+  @inlinable
+  public func longestIncreasingSubsequence() -> [Element] {
+    var startI = [Int](repeating: 0, count: count)
+    var endI = [Int](repeating: 0, count: count + 1)
+    var len = 0
+
+    for i in 0..<count {
+      var lo = 1
+      var hi = len
+
+      while lo <= hi {
+        let mid = Int(ceil((Double(lo + hi)) / 2))
+
+        if self[endI[mid]] <= self[i] {
+          lo = mid + 1
+        } else {
+          hi = mid - 1
+        }
+      }
+
+      startI[i] = endI[lo-1]
+      endI[lo] = i
+
+      if lo > len {
+        len = lo
+      }
+    }
+
+    var arr = [Element]()
+    var k = endI[len]
+
+    for _ in 0..<len {
+      arr.append(self[k])
+      k = startI[k]
+    }
+
+    return arr.reversed()
+  }
 }
