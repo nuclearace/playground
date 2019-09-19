@@ -15,8 +15,8 @@ let package = Package(
         .library(name: "Playground", targets: ["Playground"])
     ],
     dependencies: [
-        .package(url: "https://github.com/attaswift/BigInt.git", from: "4.0.0"),
-        .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.10.0"),
+        .package(url: "https://github.com/attaswift/BigInt.git", from: "5.0.0"),
+        .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.12.0"),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.0.0")
     ],
     targets: [
