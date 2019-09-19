@@ -2,7 +2,7 @@
 // Created by Erik Little on 2018-09-26.
 //
 
-public enum IntegrationType : CaseIterable {
+public enum IntegrationType: CaseIterable {
   case rectangularLeft
   case rectangularRight
   case rectangularMidpoint

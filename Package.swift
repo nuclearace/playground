@@ -11,6 +11,7 @@ let package = Package(
     products: [
         .executable(name: "Runner", targets: ["Runner"]),
         .executable(name: "Profiler", targets: ["Profiler"]),
+        .executable(name: "Collatzing", targets: ["Collatzing"]),
         .library(name: "Playground", targets: ["Playground"])
     ],
     dependencies: [
@@ -28,6 +29,7 @@ let package = Package(
         .target(name: "QDBMP"),
         .target(name: "Runner", dependencies: ["Playground", "CGMP", "BigInt"]),
         .target(name: "CStuff"),
+        .target(name: "Collatzing", dependencies: ["Playground", "BigInt"]),
         .systemLibrary(
             name: "CGMP",
             pkgConfig: "gmp",

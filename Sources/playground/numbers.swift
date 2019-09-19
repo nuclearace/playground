@@ -170,3 +170,121 @@ public func flyStraightDammit<T: BinaryInteger>(n: T) -> T {
     return previousN / gcd
   }
 }
+
+@inlinable
+public func flyStraightDammitIterative<T: BinaryInteger>(n: T) -> T {
+  guard n > 1 else {
+    return n
+  }
+
+  var previousN: T = 1
+  var c: T = 2
+
+  while c <= n {
+    let gcd = c.gcd(with: previousN)
+
+    if gcd == 1 {
+      previousN += c + 1
+    } else {
+      previousN /= gcd
+    }
+
+    c += 1
+  }
+
+  return previousN
+}
+
+extension FixedWidthInteger {
+  @inlinable
+  public func wouldOverflow(adding other: Self) -> Bool {
+    let summed = self &+ other
+
+    if self > 0 && other > 0 && summed < 0 {
+      return true
+    } else if self < 0 && other < 0 && summed > 0 {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  @inlinable
+  public func wouldOverflow(multiplying other: Self) -> Bool {
+    if self == 0 || other == 0 {
+      return false
+    }
+
+    let res = (self &* other) / self
+
+    return res != self && res != other
+  }
+
+  @inlinable
+  public func wouldOverflow(subtracting other: Self) -> Bool {
+    let subbed = self &- other
+
+    if self > 0 && other < 0 && subbed < 0 {
+      return true
+    } else if self < 0 && other > 0 && subbed > 0 {
+      return true
+    } else {
+      return false
+    }
+  }
+}
+
+extension FloatingPoint {
+  @inlinable
+  public func isAlmostEqual(
+    to other: Self,
+    tolerance: Self = Self.ulpOfOne.squareRoot()
+  ) -> Bool {
+    // tolerances outside of [.ulpOfOne,1) yield well-defined but useless results,
+    // so this is enforced by an assert rathern than a precondition.
+    assert(tolerance >= .ulpOfOne && tolerance < 1, "tolerance should be in [.ulpOfOne, 1).")
+    // The simple computation below does not necessarily give sensible
+    // results if one of self or other is infinite; we need to rescale
+    // the computation in that case.
+    guard self.isFinite && other.isFinite else {
+      return rescaledAlmostEqual(to: other, tolerance: tolerance)
+    }
+    // This should eventually be rewritten to use a scaling facility to be
+    // defined on FloatingPoint suitable for hypot and scaled sums, but the
+    // following is good enough to be useful for now.
+    let scale = max(abs(self), abs(other), .leastNormalMagnitude)
+    return abs(self - other) < scale*tolerance
+  }
+
+  @inlinable
+  public func isAlmostZero(
+    absoluteTolerance tolerance: Self = Self.ulpOfOne.squareRoot()
+  ) -> Bool {
+    assert(tolerance > 0)
+    return abs(self) < tolerance
+  }
+
+  @usableFromInline
+  internal func rescaledAlmostEqual(to other: Self, tolerance: Self) -> Bool {
+    // NaN is considered to be not approximately equal to anything, not even
+    // itself.
+    if self.isNaN || other.isNaN { return false }
+    if self.isInfinite {
+      if other.isInfinite { return self == other }
+      // Self is infinite and other is finite. Replace self with the binade
+      // of the greatestFiniteMagnitude, and reduce the exponent of other by
+      // one to compensate.
+      let scaledSelf = Self(sign: self.sign,
+        exponent: Self.greatestFiniteMagnitude.exponent,
+        significand: 1)
+      let scaledOther = Self(sign: .plus,
+        exponent: -1,
+        significand: other)
+      // Now both values are finite, so re-run the naive comparison.
+      return scaledSelf.isAlmostEqual(to: scaledOther, tolerance: tolerance)
+    }
+    // If self is finite and other is infinite, flip order and use scaling
+    // defined above, since this relation is symmetric.
+    return other.rescaledAlmostEqual(to: self, tolerance: tolerance)
+  }
+}

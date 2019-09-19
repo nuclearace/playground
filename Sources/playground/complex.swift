@@ -47,7 +47,7 @@ public struct Complex {
 }
 
 extension Complex {
-  public init(real: Int, imaginary: Int) {
+  public init(real: Int = 0, imaginary: Int = 0) {
     self.real = Double(real)
     self.imaginary = Double(imaginary)
   }
