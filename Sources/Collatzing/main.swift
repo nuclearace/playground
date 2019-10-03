@@ -46,7 +46,7 @@ func createRanges(numRanges: Int, max: Int = .max) -> [ClosedRange<Int>] {
 
 private let timer = DispatchSource.makeTimerSource()
 private let start = Date().timeIntervalSince1970
-private let ranges = createRanges(numRanges: 100_000)
+private let ranges = createRanges(numRanges: 50_000)
 
 private var lastInterestingThing = Date().timeIntervalSince1970
 private var rng = MTRandom()

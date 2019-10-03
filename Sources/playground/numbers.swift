@@ -3,6 +3,7 @@
 //
 
 import BigInt
+import Foundation
 
 extension Int {
   fileprivate static let bigNames = [
@@ -153,6 +154,46 @@ extension BinaryInteger {
 
     return gcd
   }
+
+  @inlinable
+  func power(_ n: Int) -> Self {
+    return (0..<n).lazy.map({_ in self }).reduce(1, *)
+  }
+
+  @inlinable
+  public func countDivisors() -> Int {
+    var workingN = self
+    var count = 1
+
+    while workingN & 1 == 0 {
+      workingN >>= 1
+
+      count += 1
+    }
+
+    var d = Self(3)
+
+    while d * d <= workingN {
+      var (quo, rem) = workingN.quotientAndRemainder(dividingBy: d)
+
+      if rem == 0 {
+        var dc = 0
+
+        while rem == 0 {
+          dc += count
+          workingN = quo
+
+          (quo, rem) = workingN.quotientAndRemainder(dividingBy: d)
+        }
+
+        count += dc
+      }
+
+      d += 2
+    }
+
+    return workingN != 1 ? count * 2 : count
+  }
 }
 
 @inlinable
@@ -233,6 +274,46 @@ extension FixedWidthInteger {
     }
   }
 }
+
+@inlinable
+public func exactlyNDivisors<TermType: BinaryInteger>(numTerms: Int) -> [TermType] {
+  let primes = smallPrimes(num: numTerms)
+  var seq = [TermType]()
+
+  for i in 1...numTerms {
+    if i.isPrime {
+      seq.append(TermType(primes[i - 1]).power(i - 1))
+    } else {
+      var count = 0
+      var j = 1
+
+      while true {
+        if i & 1 == 1 {
+          let sqr = Int(Double(j).squareRoot())
+
+          if sqr * sqr != j {
+            j += 1
+            continue
+          }
+        }
+
+        if j.countDivisors() == i {
+          count += 1
+
+          if count == i {
+            seq.append(TermType(j))
+            break
+          }
+        }
+
+        j += 1
+      }
+    }
+  }
+
+  return seq
+}
+
 
 extension FloatingPoint {
   @inlinable

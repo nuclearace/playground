@@ -2,6 +2,8 @@
 // Created by Erik Little on 2018-09-26.
 //
 
+import Foundation
+
 public enum IntegrationType: CaseIterable {
   case rectangularLeft
   case rectangularRight
@@ -100,5 +102,3 @@ private func integrateSimpson(from: Double, to: Double, n: Int, f: (Double) -> D
 
   return h / 6.0 * (f(from) + f(to) + 4.0 * sum1 + 2.0 * sum2)
 }
-
-

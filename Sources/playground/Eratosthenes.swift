@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct Eratosthenes : Sequence, IteratorProtocol {
+public struct Eratosthenes: Sequence, IteratorProtocol {
   private let n: Int
   private let limit: Int
 
