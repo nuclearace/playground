@@ -2,7 +2,7 @@
 // Created by Erik Little on 2018-10-21.
 //
 
-public struct KnapsackItem : Hashable {
+public struct KnapsackItem: Hashable {
   public var name: String
   public var weight: Int
   public var value: Int
