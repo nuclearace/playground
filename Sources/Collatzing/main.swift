@@ -15,8 +15,13 @@ typealias CollatzType = Int
 
 typealias InterestingN = (n: Int, found: Int)
 
+enum Mode {
+  case random
+  case peakSearch
+}
+
 struct InterestingCollatz: CustomStringConvertible {
-  var n = 1
+  var n = CollatzType(1)
   var iteration = 1
   var peak = CollatzType(1)
   var seriesCount = 1
@@ -47,10 +52,12 @@ func createRanges(numRanges: Int, max: Int = .max) -> [ClosedRange<Int>] {
 private let timer = DispatchSource.makeTimerSource()
 private let start = Date().timeIntervalSince1970
 private let ranges = createRanges(numRanges: 50_000)
+private let mode = CommandLine.arguments.contains("-p") ? Mode.peakSearch : .random
 
 private var lastInterestingThing = Date().timeIntervalSince1970
 private var rng = MTRandom()
 private var i = 1
+private var peakN = CollatzType(1)
 private var longestSeries: InterestingCollatz!
 private var largestN: InterestingCollatz!
 private var largestPeak: InterestingCollatz!
@@ -58,6 +65,24 @@ private var largestPeak: InterestingCollatz!
 private var shortestSeries: InterestingCollatz!
 private var smallestPeak: InterestingCollatz!
 private var smallestN: InterestingCollatz!
+
+func getN() -> CollatzType {
+  switch mode {
+  case .peakSearch:
+    print("\(i): n = \(peakN)")
+
+    peakN += 1
+
+    return peakN
+  case _:
+    let range = ranges.randomElement(using: &rng)!
+    let n = CollatzType(Int.random(in: range))
+
+    print("\(i): n = \(n) from range \(range)")
+
+    return n
+  }
+}
 
 func stringFromTimeInterval(_ interval: TimeInterval) -> String {
   let interval = Int(interval)
@@ -68,7 +93,7 @@ func stringFromTimeInterval(_ interval: TimeInterval) -> String {
   return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
 }
 
-func calculateInterestingThings(n: Int, seriesCount: Int, peak: CollatzType) {
+func calculateInterestingThings(n: CollatzType, seriesCount: Int, peak: CollatzType) {
   let interesting = InterestingCollatz(n: n, iteration: i, peak: peak, seriesCount: seriesCount)
   var wasInteresting = false
 
@@ -86,16 +111,18 @@ func calculateInterestingThings(n: Int, seriesCount: Int, peak: CollatzType) {
     return
   }
 
-  if n > largestN.n {
-    print("\(i): New largest n")
+  if mode == .random {
+    if n > largestN.n {
+      print("\(i): New largest n")
 
-    wasInteresting = true
-    largestN = interesting
-  } else if n < smallestN.n {
-    print("\(i): New smallest n")
+      wasInteresting = true
+      largestN = interesting
+    } else if n < smallestN.n {
+      print("\(i): New smallest n")
 
-    wasInteresting = true
-    smallestN = interesting
+      wasInteresting = true
+      smallestN = interesting
+    }
   }
 
   if seriesCount > longestSeries.seriesCount {
@@ -128,11 +155,7 @@ func calculateInterestingThings(n: Int, seriesCount: Int, peak: CollatzType) {
 }
 
 func randomCollatz() {
-  let range = ranges.randomElement(using: &rng)!
-  let n = Int.random(in: range)
-
-  print("\(i): n = \(n) from range \(range)")
-
+  let n = getN()
   let (series, peak) = collatz(CollatzType(n))
 
   print("\(i): series length: \(series.count); peak: \(peak)")

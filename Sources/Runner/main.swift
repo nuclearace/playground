@@ -4,16 +4,16 @@ import Foundation
 import Playground
 import Dispatch
 
-guard let sim = NBody(file: "/Users/erik.little/Desktop/input.txt") else {
-  fatalError()
-}
+let b = KnightsTour(size: 8)
 
 print()
-print("Body   :      x          y          z    |     vx         vy         vz")
 
-for i in 0..<sim.timeSteps {
-  print("Step \(i + 1)")
-  sim.simulate()
-  sim.printState()
-  print()
+let completed = b.tour(startingAt: CPoint(x: 3, y: 1))
+
+if completed {
+  print("Completed tour")
+} else {
+  print("Did not complete tour")
 }
+
+b.printBoard()

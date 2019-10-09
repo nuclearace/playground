@@ -33,6 +33,12 @@ public struct Vector {
     )
   }
 
+  static func += (lhs: inout Vector, rhs: Vector) {
+    lhs.px += rhs.px
+    lhs.py += rhs.py
+    lhs.pz += rhs.pz
+  }
+
   static func - (lhs: Vector, rhs: Vector) -> Vector {
     return Vector(
       px: lhs.px - rhs.px,
@@ -129,7 +135,7 @@ public class NBody {
 
       for j in 0..<numBodies where i != j {
         let t = gravitationalConstant * masses[j] / pow((positions[i] - positions[j]).mod(), 3)
-        accelerations[i] = accelerations[i] + (positions[j] - positions[i]) * t
+        accelerations[i] += (positions[j] - positions[i]) * t
       }
     }
   }
@@ -144,13 +150,13 @@ public class NBody {
 
   private func computeVelocities() {
     for i in 0..<numBodies {
-      velocities[i] = velocities[i] + accelerations[i]
+      velocities[i] += accelerations[i]
     }
   }
 
   private func computePositions() {
     for i in 0..<numBodies {
-      positions[i] = positions[i] + velocities[i] + accelerations[i] * 0.5
+      positions[i] += velocities[i] + accelerations[i] * 0.5
     }
   }
 
