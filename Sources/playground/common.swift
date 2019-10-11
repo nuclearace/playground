@@ -8,17 +8,6 @@ public enum Either<L, R> {
 }
 
 @inlinable
-public func printMatrix<T>(_ matrix: [T], n: Int) {
-  for i in 0..<n {
-    for j in 0..<n {
-      print(matrix[i * n + j], terminator: " ")
-    }
-
-    print()
-  }
-}
-
-@inlinable
 public func replicateAtLeastOnce<T>(_ n: T, times: Int) -> [T] {
   guard times > 0 else { return [n] }
 

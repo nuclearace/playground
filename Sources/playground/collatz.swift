@@ -22,3 +22,9 @@ public func collatz<T: BinaryInteger>(_ n: T) -> (series: [T], peak: T) {
 
   return (series, peak)
 }
+
+@inlinable
+public func countFalls<T: BinaryInteger>(_ series: [T]) -> Int {
+  return zip(series[1...], series[1...].dropFirst())
+    .reduce(0, {falls, n in n.1 > n.0 ? falls + 1 : falls })
+}

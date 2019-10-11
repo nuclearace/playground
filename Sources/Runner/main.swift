@@ -4,16 +4,6 @@ import Foundation
 import Playground
 import Dispatch
 
-let b = KnightsTour(size: 8)
-
-print()
-
-let completed = b.tour(startingAt: CPoint(x: 3, y: 1))
-
-if completed {
-  print("Completed tour")
-} else {
-  print("Did not complete tour")
+for i in 0..<100 {
+  print("robbins(n: \(i)) = \(robbins(n: i) as BigInt)")
 }
-
-b.printBoard()
