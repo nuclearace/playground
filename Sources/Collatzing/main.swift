@@ -2,6 +2,7 @@
 // Created by Erik Little on 2019-09-19.
 //
 
+import Commander
 import Foundation
 import Playground
 
@@ -50,10 +51,10 @@ func createRanges(numRanges: Int, max: Int = .max) -> [ClosedRange<Int>] {
 }
 
 private let timer = DispatchSource.makeTimerSource()
-private let start = Date().timeIntervalSince1970
-private let ranges = createRanges(numRanges: 50_000)
-private let mode = CommandLine.arguments.contains("-p") ? Mode.peakSearch : .random
 
+private var start: TimeInterval!
+private var ranges: [ClosedRange<Int>]!
+private var mode = Mode.random
 private var lastInterestingThing = Date().timeIntervalSince1970
 private var rng = MTRandom()
 private var i = 1
@@ -164,30 +165,51 @@ func randomCollatz() {
   calculateInterestingThings(n: n, seriesCount: series.count, peak: peak)
   print()
 
-  print("\(i): Largest n = \(largestN!)")
+  print("\(i): \(mode == .random ? "Largest" : "Starting") n = \(largestN!)")
   print("\(i): Longest Series = \(longestSeries!)")
   print("\(i): Largest Peak = \(largestPeak!)")
   print()
-  print("\(i): Smallest n = \(smallestN!)")
+  print("\(i): \(mode == .random ? "Smallest" : "Starting") = \(smallestN!)")
   print("\(i): Shortest Series = \(shortestSeries!)")
   print("\(i): Smallest Peak = \(smallestPeak!)")
 }
 
-timer.setEventHandler {
-  let timeRunningStr = stringFromTimeInterval(Date().timeIntervalSince1970 - start)
-  let lastInterestingStr = stringFromTimeInterval(Date().timeIntervalSince1970 - lastInterestingThing)
+let collatzing = command(
+  Option("peak", default: -1, flag: "p", description: "peak search, starting at n (default 1)"),
+  Option("random", default: 50_000, flag: "r", description: "number of ranges for random search")
+) {n, numRanges in
+  if n > 0 {
+    print("doing peak search starting at \(n)")
 
-  print("\u{001B}[2J\u{001B}[f", terminator: "")
-  print("Starting \(i); Time running: \(timeRunningStr); Time since last interesting thing: \(lastInterestingStr)")
+    mode = .peakSearch
+    peakN = CollatzType(n)
+  } else {
+    print("random search with num ranges \(numRanges)")
 
-  let (_, t) = ClockTimer.time(randomCollatz)
+    ranges = createRanges(numRanges: numRanges)
+  }
 
-  print("\(i): took \(t.duration)s")
+  start = Date().timeIntervalSince1970
 
-  i += 1
+  timer.setEventHandler {
+    let timeRunningStr = stringFromTimeInterval(Date().timeIntervalSince1970 - start)
+    let lastInterestingStr = stringFromTimeInterval(Date().timeIntervalSince1970 - lastInterestingThing)
+
+    print("\u{001B}[2J\u{001B}[f", terminator: "")
+    print("Starting \(i); Time running: \(timeRunningStr); Time since last interesting thing: \(lastInterestingStr)")
+
+    let (_, t) = ClockTimer.time(randomCollatz)
+
+    print("\(i): took \(t.duration)s")
+
+    i += 1
+  }
+
+  timer.schedule(deadline: .now(), repeating: .milliseconds(5))
+  timer.activate()
+
+  dispatchMain()
 }
 
-timer.schedule(deadline: .now(), repeating: .milliseconds(15))
-timer.activate()
+collatzing.run()
 
-dispatchMain()

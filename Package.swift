@@ -17,7 +17,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/attaswift/BigInt.git", from: "5.0.0"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.12.0"),
-        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.0.0") 
+        .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.0.0"),
+        .package(url: "https://github.com/kylef/Commander.git", from: "0.9.0")
     ],
     targets: [
         .target(
@@ -29,7 +30,7 @@ let package = Package(
         .target(name: "QDBMP"),
         .target(name: "Runner", dependencies: ["Playground", "CGMP", "BigInt"]),
         .target(name: "CStuff"),
-        .target(name: "Collatzing", dependencies: ["Playground", "BigInt"]),
+        .target(name: "Collatzing", dependencies: ["Playground", "BigInt", "Commander"]),
         .systemLibrary(
             name: "CGMP",
             pkgConfig: "gmp",
