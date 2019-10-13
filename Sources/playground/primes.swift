@@ -157,3 +157,14 @@ func smallPrimes(num: Int) -> [Int] {
 
   return primes
 }
+
+@inlinable
+public func aksPrimeTest<T: BinaryInteger & SignedNumeric>(n: T) -> Bool {
+  guard !n.isPerfectPower() else {
+    return false
+  }
+
+
+
+  return false
+}

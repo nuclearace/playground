@@ -2,9 +2,10 @@
 // Created by Erik Little on 2019-04-19.
 //
 
-public func totient(n: Int) -> Int {
+@inlinable
+public func totient<T: BinaryInteger>(n: T) -> T {
   var n = n
-  var i = 2
+  var i: T = 2
   var tot = n
 
   while i * i <= n {

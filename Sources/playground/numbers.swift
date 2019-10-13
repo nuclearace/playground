@@ -144,6 +144,39 @@ private func threeDigitsToText(n: Int) -> String {
 
 extension BinaryInteger {
   @inlinable
+  public func factors() -> [Self] {
+    let maxN = Int(Double(self).squareRoot())
+    var res = Set<Self>()
+
+    for factor in 1...maxN where self % Self(factor) == 0 {
+      let factor = Self(factor)
+
+      res.insert(factor)
+      res.insert(self / factor)
+    }
+
+    return res.sorted()
+  }
+
+  @usableFromInline
+  func fastExp(_ exp: Int) -> Self {
+    var ans: Self = 1
+    var work = self
+    var exp = exp
+
+    while exp > 0 {
+      if exp & 1 == 1 {
+        ans *= work
+      }
+
+      work *= work
+      exp >>= 1
+    }
+
+    return ans
+  }
+
+  @inlinable
   public func gcd(with other: Self) -> Self {
     var gcd = self
     var b = other
@@ -156,7 +189,14 @@ extension BinaryInteger {
   }
 
   @inlinable
-  func power(_ n: Int) -> Self {
+  public func lcm(with other: Self) -> Self {
+    let g = gcd(with: other)
+
+    return self / g * other
+  }
+
+  @inlinable
+  public func power(_ n: Int) -> Self {
     return (0..<n).lazy.map({_ in self }).reduce(1, *)
   }
 
@@ -193,6 +233,37 @@ extension BinaryInteger {
     }
 
     return workingN != 1 ? count * 2 : count
+  }
+}
+
+extension BinaryInteger where Self: SignedNumeric {
+  @inlinable
+  public func isPerfectPower() -> Bool {
+    if -self & self == self {
+      return true
+    }
+
+    let lgN = 1 + (String(abs(self), radix: 2).count - 2)
+
+    for b in 2..<lgN {
+      var lowA: Self = 1
+      var highA: Self  = 1 << Self(lgN / b + 1)
+
+      while lowA < highA - 1 {
+        let midA = (lowA + highA) >> 1
+        let ab = midA.fastExp(b)
+
+        if ab > self {
+          highA = midA
+        } else if ab < self {
+          lowA = midA
+        } else {
+          return true
+        }
+      }
+    }
+
+    return false
   }
 }
 
