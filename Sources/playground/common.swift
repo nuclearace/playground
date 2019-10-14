@@ -14,23 +14,21 @@ public func replicateAtLeastOnce<T>(_ n: T, times: Int) -> [T] {
   return [n] + [T](repeating: n, count: times - 1)
 }
 
-public func convertToAsciiBytes(
+public func convertToUnicodeScalars(
   str: String,
-  minChar: UInt8,
-  maxChar: UInt8
-) -> [UInt8] {
+  minChar: UInt32,
+  maxChar: UInt32
+) -> [UInt32] {
+  var bytes = [UInt32]()
+
   for scalar in str.unicodeScalars {
-    print(scalar)
-  }
+    let val = scalar.value
 
-  var bytes = [UInt8]()
-
-  for char in str {
-    guard let asciiVal = char.asciiValue, asciiVal >= minChar && asciiVal <= maxChar else {
+    guard val >= minChar && val <= maxChar else {
       continue
     }
 
-    bytes.append(asciiVal)
+    bytes.append(val)
   }
 
   return bytes

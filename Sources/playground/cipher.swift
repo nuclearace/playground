@@ -36,23 +36,24 @@ public struct SubstitutionCipher {
 }
 
 public struct Vigenere {
-  private let keyBytes: [UInt8]
-  private let smallestChar: UInt8
-  private let largestChar: UInt8
-  private let sizeAlphabet: UInt8
+  private let keyBytes: [UInt32]
+  private let smallestScalar: UInt32
+  private let largestScalar: UInt32
+  private let sizeAlphabet: UInt32
 
   public init?(key: String, smallestCharacter: Character = "A", largestCharacter:  Character = "Z") {
+    let smallScalars = smallestCharacter.unicodeScalars
+    let largeScalars = largestCharacter.unicodeScalars
 
-    guard let smallestAscii = smallestCharacter.asciiValue,
-          let largestAscii = largestCharacter.asciiValue else {
+    guard smallScalars.count == 1, largeScalars.count == 1 else {
       return nil
     }
 
-    self.smallestChar = smallestAscii
-    self.largestChar = largestAscii
-    self.sizeAlphabet = (largestAscii - smallestAscii) + 1
+    self.smallestScalar = smallScalars.first!.value
+    self.largestScalar = largeScalars.first!.value
+    self.sizeAlphabet = (largestScalar - smallestScalar) + 1
 
-    let bytes = convertToAsciiBytes(str: key, minChar: smallestChar, maxChar: largestChar)
+    let bytes = convertToUnicodeScalars(str: key, minChar: smallestScalar, maxChar: largestScalar)
 
     guard !bytes.isEmpty else {
       return nil
@@ -63,7 +64,7 @@ public struct Vigenere {
   }
 
   public func decrypt(_ str: String) -> String? {
-    let txtBytes = convertToAsciiBytes(str: str, minChar: smallestChar, maxChar: largestChar)
+    let txtBytes = convertToUnicodeScalars(str: str, minChar: smallestScalar, maxChar: largestScalar)
 
     guard !txtBytes.isEmpty else {
       return nil
@@ -71,9 +72,12 @@ public struct Vigenere {
 
     var res = ""
 
-    for (i, c) in txtBytes.enumerated() where c >= smallestChar && c <= largestChar {
-      let char =
-        UnicodeScalar((c &+ sizeAlphabet &- keyBytes[i % keyBytes.count]) % sizeAlphabet &+ smallestChar)
+    for (i, c) in txtBytes.enumerated() where c >= smallestScalar && c <= largestScalar {
+      guard let char =
+        UnicodeScalar((c &+ sizeAlphabet &- keyBytes[i % keyBytes.count]) % sizeAlphabet &+ smallestScalar)
+      else {
+        return nil
+      }
 
       res += String(char)
     }
@@ -82,7 +86,7 @@ public struct Vigenere {
   }
 
   public func encrypt(_ str: String) -> String? {
-    let txtBytes = convertToAsciiBytes(str: str, minChar: smallestChar, maxChar: largestChar)
+    let txtBytes = convertToUnicodeScalars(str: str, minChar: smallestScalar, maxChar: largestScalar)
 
     guard !txtBytes.isEmpty else {
       return nil
@@ -90,8 +94,12 @@ public struct Vigenere {
 
     var res = ""
 
-    for (i, c) in txtBytes.enumerated() where c >= smallestChar && c <= largestChar {
-      let char = UnicodeScalar((c &+ keyBytes[i % keyBytes.count] &- 2 &* smallestChar) % sizeAlphabet &+ smallestChar)
+    for (i, c) in txtBytes.enumerated() where c >= smallestScalar && c <= largestScalar {
+      guard let char =
+        UnicodeScalar((c &+ keyBytes[i % keyBytes.count] &- 2 &* smallestScalar) % sizeAlphabet &+ smallestScalar)
+      else {
+        return nil
+      }
 
       res += String(char)
     }

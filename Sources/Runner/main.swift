@@ -4,34 +4,19 @@ import Foundation
 import Playground
 import Dispatch
 
-let text = "Beware the Jabberwock, my son! The jaws that bite, the claws that catch!";
-let key = "VIGENERECIPHER";
-let cipher = Vigenere(key: key)!
+let key = "this is some key🤮"
+let text = "this is a string 😂😂😂😂😂😂 with unicode ü"
 
-print("Key: \(key)")
-print("Plain Text: \(text)")
+let cipher = Vigenere(key: key, smallestCharacter: " ", largestCharacter: "🛹")!
 
-let encoded = cipher.encrypt(text.uppercased())!
+guard let encoded = cipher.encrypt(text) else {
+  fatalError()
+}
 
-print("Cipher Text: \(encoded)")
+print(encoded)
 
-let decoded = cipher.decrypt(encoded)!
+guard let decoded = cipher.decrypt(encoded) else {
+  fatalError()
+}
 
-print("Decoded: \(decoded)")
-
-print("\nLarger set:")
-
-let key2 = "Vigenere cipher"
-
-let cipher2 = Vigenere(key: key2, smallestCharacter: " ", largestCharacter: "z")!
-
-print("Key: \(key2)")
-print("Plain Text: \(text)")
-
-let encoded2 = cipher2.encrypt(text)!
-
-print("Cipher Text: \(encoded2)")
-
-let decoded2 = cipher2.decrypt(encoded2)!
-
-print("Decoded: \(decoded2)")
+print(decoded)
