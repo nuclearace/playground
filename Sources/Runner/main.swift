@@ -4,7 +4,7 @@ import Foundation
 import Playground
 import Dispatch
 
-for n in 1...10_000_000 {
+for n in 1...1_000 {
   print("\u{001B}[2J\u{001B}[f", terminator: "")
   print("\(n) prime?: ", terminator: "")
 

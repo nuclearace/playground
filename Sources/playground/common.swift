@@ -13,3 +13,23 @@ public func replicateAtLeastOnce<T>(_ n: T, times: Int) -> [T] {
 
   return [n] + [T](repeating: n, count: times - 1)
 }
+
+public func convertToUnicodeScalars(
+  str: String,
+  minChar: UInt32,
+  maxChar: UInt32
+) -> [UInt32] {
+  var bytes = [UInt32]()
+
+  for scalar in str.unicodeScalars {
+    let val = scalar.value
+
+    guard val >= minChar && val <= maxChar else {
+      continue
+    }
+
+    bytes.append(val)
+  }
+
+  return bytes
+}
