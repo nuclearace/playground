@@ -245,6 +245,10 @@ extension BinaryInteger where Self: SignedNumeric {
 
     let lgN = 1 + (String(abs(self), radix: 2).count - 2)
 
+    if lgN <= 2 {
+      return false
+    }
+
     for b in 2..<lgN {
       var lowA: Self = 1
       var highA: Self  = 1 << Self(lgN / b + 1)

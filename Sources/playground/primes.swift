@@ -71,10 +71,10 @@ extension BinaryInteger {
       return true
     }
 
-    let max = Int(ceil(sqrt(Double(self))))
+    let max = Self(ceil((Double(self).squareRoot())))
 
-    for i in 2...max {
-      if self % Self(i) == 0 {
+    for i in stride(from: 2, through: max, by: 1) {
+      if self % i == 0 {
         return false
       }
     }
@@ -158,13 +158,101 @@ func smallPrimes(num: Int) -> [Int] {
   return primes
 }
 
+@usableFromInline
+func polyMult<T: BinaryInteger>(a: [T], b: [T], r: T, p: T) -> [T] {
+  var res: [T] = Array(repeating: 0, count: Int(r))
+
+  for (i, u) in a.enumerated() {
+    for (j, v) in b.enumerated() {
+      let idx = Int(T(i + j) % r)
+
+      res[idx] = (res[idx] + u * v ) % p
+    }
+  }
+
+  return res
+}
+
+extension BinaryInteger {
+  @usableFromInline
+  func testPoly(p: Self, r: Self) -> Bool {
+    var ans: [Self] = [1]
+    var poly = [self, 1]
+    var n = p
+
+    while n != 0 {
+      if n & 1 == 1 {
+        ans = polyMult(a: ans, b: poly, r: r, p: p)
+      }
+
+      n >>= 1
+      poly = polyMult(a: poly, b: poly, r: r, p: p)
+    }
+
+    var check: [Self] = Array(repeating: 0, count: Int(r))
+
+    (check[0], check[Int(p % r)]) = (self, 1)
+
+    return ans == check
+  }
+}
+
 @inlinable
 public func aksPrimeTest<T: BinaryInteger & SignedNumeric>(n: T) -> Bool {
+  guard n != 0 || n != 1 else {
+    return false
+  }
+
+  guard n != 2 else {
+    return true
+  }
+
   guard !n.isPerfectPower() else {
     return false
   }
 
+  let log2n = log2(Double(n))
+  let log2n2 = T(log2n).power(2)
+  var r = log2n2 + 1
 
+  rSearch: while true {
+    defer {
+      r += 1
+    }
 
-  return false
+    guard n.gcd(with: r) == 1 else {
+      continue
+    }
+
+    var ans: T = 1
+
+    for k in stride(from: 1, to: r, by: 1) {
+      ans = ans * n % r
+
+      if ans == 1 {
+        if k > log2n2 {
+          break rSearch
+        } else {
+          break
+        }
+      }
+    }
+  }
+
+  for a in stride(from: 2, through: min(r, n - 1), by: 1) where n % a == 0 {
+    return false
+  }
+
+  if n <= r {
+    return true
+  }
+
+  let totR = Double(totient(n: r)).squareRoot()
+  let maxA = totR * log2n
+
+  for a in stride(from: 1, through: T(floor(maxA)), by: 1) where !a.testPoly(p: n, r: r) {
+    return false
+  }
+
+  return true
 }
