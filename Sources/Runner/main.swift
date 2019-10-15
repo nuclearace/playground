@@ -4,25 +4,17 @@ import Foundation
 import Playground
 import Dispatch
 
-let fileLoc = ("~/Desktop/data.json" as NSString).expandingTildeInPath
-let str = try String(contentsOfFile: fileLoc)
-let key = "aadfadfasdfadfadfa"
+let longPi = "3." + DigitsOfPi().prefix(100).dropFirst().lazy.map({ String($0) }).joined()
 
-//print(str)
+print(longPi)
 
-guard let cipher = Vigenere(key: key, smallestCharacter: "\u{9}", largestCharacter: "🛹") else {
-  fatalError("could not create cipher")
+guard let p = BigDecimal(longPi) else {
+  fatalError()
 }
 
-guard let encoded = cipher.encrypt(str) else {
-  fatalError("failed to encrypt")
-}
+print(p * 2)
 
-print("Encoded: \(encoded)")
+let a = BigDecimal(2.0)
+let b = BigDecimal(3.0)
 
-
-guard let decoded = cipher.decrypt(encoded) else {
-  fatalError("failed to decrypt")
-}
-
-print("Decoded: \(decoded == str)")
+print(a / b)
