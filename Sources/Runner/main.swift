@@ -4,19 +4,25 @@ import Foundation
 import Playground
 import Dispatch
 
-let key = "this is some key🤮"
-let text = "this is a string 😂😂😂😂😂😂 with unicode ü"
+let fileLoc = ("~/Desktop/data.json" as NSString).expandingTildeInPath
+let str = try String(contentsOfFile: fileLoc)
+let key = "aadfadfasdfadfadfa"
 
-let cipher = Vigenere(key: key, smallestCharacter: " ", largestCharacter: "🛹")!
+//print(str)
 
-guard let encoded = cipher.encrypt(text) else {
-  fatalError()
+guard let cipher = Vigenere(key: key, smallestCharacter: "\u{9}", largestCharacter: "🛹") else {
+  fatalError("could not create cipher")
 }
 
-print(encoded)
+guard let encoded = cipher.encrypt(str) else {
+  fatalError("failed to encrypt")
+}
+
+print("Encoded: \(encoded)")
+
 
 guard let decoded = cipher.decrypt(encoded) else {
-  fatalError()
+  fatalError("failed to decrypt")
 }
 
-print(decoded)
+print("Decoded: \(decoded == str)")

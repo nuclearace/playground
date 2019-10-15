@@ -36,7 +36,7 @@ public struct SubstitutionCipher {
 }
 
 public struct Vigenere {
-  private let keyBytes: [UInt32]
+  private let keyScalars: [UInt32]
   private let smallestScalar: UInt32
   private let largestScalar: UInt32
   private let sizeAlphabet: UInt32
@@ -53,13 +53,13 @@ public struct Vigenere {
     self.largestScalar = largeScalars.first!.value
     self.sizeAlphabet = (largestScalar - smallestScalar) + 1
 
-    let bytes = convertToUnicodeScalars(str: key, minChar: smallestScalar, maxChar: largestScalar)
+    let scalars = convertToUnicodeScalars(str: key, minChar: smallestScalar, maxChar: largestScalar)
 
-    guard !bytes.isEmpty else {
+    guard !scalars.isEmpty else {
       return nil
     }
 
-    self.keyBytes = bytes
+    self.keyScalars = scalars
 
   }
 
@@ -74,7 +74,7 @@ public struct Vigenere {
 
     for (i, c) in txtBytes.enumerated() where c >= smallestScalar && c <= largestScalar {
       guard let char =
-        UnicodeScalar((c &+ sizeAlphabet &- keyBytes[i % keyBytes.count]) % sizeAlphabet &+ smallestScalar)
+        UnicodeScalar((c &+ sizeAlphabet &- keyScalars[i % keyScalars.count]) % sizeAlphabet &+ smallestScalar)
       else {
         return nil
       }
@@ -96,7 +96,7 @@ public struct Vigenere {
 
     for (i, c) in txtBytes.enumerated() where c >= smallestScalar && c <= largestScalar {
       guard let char =
-        UnicodeScalar((c &+ keyBytes[i % keyBytes.count] &- 2 &* smallestScalar) % sizeAlphabet &+ smallestScalar)
+        UnicodeScalar((c &+ keyScalars[i % keyScalars.count] &- 2 &* smallestScalar) % sizeAlphabet &+ smallestScalar)
       else {
         return nil
       }

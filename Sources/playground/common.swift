@@ -19,7 +19,7 @@ public func convertToUnicodeScalars(
   minChar: UInt32,
   maxChar: UInt32
 ) -> [UInt32] {
-  var bytes = [UInt32]()
+  var scalars = [UInt32]()
 
   for scalar in str.unicodeScalars {
     let val = scalar.value
@@ -28,8 +28,8 @@ public func convertToUnicodeScalars(
       continue
     }
 
-    bytes.append(val)
+    scalars.append(val)
   }
 
-  return bytes
+  return scalars
 }
