@@ -33,3 +33,14 @@ public func convertToUnicodeScalars(
 
   return scalars
 }
+
+extension RangeReplaceableCollection where Element: Equatable {
+  @inlinable
+  public func dropFirstIf(_ thing: @autoclosure () -> Element) -> SubSequence {
+    guard let first = self.first else {
+      return self[...]
+    }
+
+    return first == thing() ? dropFirst() : self[...]
+  }
+}

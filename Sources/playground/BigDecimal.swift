@@ -3,32 +3,44 @@
 //
 
 import BigInt
+import Foundation
 
 public struct BigDecimal {
-  var figure = 0
-  var internalInteger: BigInt
+  public private(set) var scale = 0 {
+    didSet { handleScaleChange(oldScale: oldValue) }
+  }
+  public private(set) var precision = 0
+
+  fileprivate var internalInteger: BigInt
 
   public init?(_ string: String) {
+    guard !string.isEmpty else {
+      return nil
+    }
+
     if let range = string.range(of: ".") {
-      figure = Int(string[range.lowerBound..<string.index(before: string.endIndex)].count)
+      scale = Int(string[range.lowerBound..<string.index(before: string.endIndex)].count)
 
       guard let int = BigInt(string.replacingCharacters(in: range, with: "")) else {
         return nil
       }
 
       internalInteger = int
+      precision = internalInteger.description.dropFirstIf("-").count
     } else {
       guard let int = BigInt(string) else {
         return nil
       }
 
       internalInteger = int
+      precision = internalInteger.description.dropFirstIf("-").count
     }
   }
 
-  public init(bigInteger: BigInt, figure: Int) {
+  public init(bigInteger: BigInt, scale: Int) {
     internalInteger = bigInteger
-    self.figure = Int(figure)
+    self.scale = scale
+    self.precision = internalInteger.description.count
   }
 
   public init(_ int: Int) {
@@ -38,6 +50,20 @@ public struct BigDecimal {
   public init(_ double: Double) {
     self.init(String(double))!
   }
+
+  private mutating func handleScaleChange(oldScale: Int) {
+    guard oldScale != scale && internalInteger != 0 else {
+      return
+    }
+
+    if scale > oldScale {
+      // todo: check scale?
+      internalInteger = internalInteger * BigInt(10).power(scale - oldScale)
+      precision = internalInteger.description.dropFirstIf("-").count
+    } else {
+      // Handle dropping digits
+    }
+  }
 }
 
 extension BigDecimal: CustomStringConvertible {
@@ -46,17 +72,17 @@ extension BigDecimal: CustomStringConvertible {
   public var stringValue: String {
     var string = internalInteger.description
 
-    if figure == 0 {
+    if scale == 0 {
       return string
     } else {
-      var newFigure = string.count - Int(figure)
+      var newScale = string.count - Int(scale)
 
-      while newFigure <= 0 {
+      while newScale <= 0 {
         string.insert("0", at: string.startIndex)
-        newFigure += 1
+        newScale += 1
       }
 
-      string.insert(".", at: string.index(string.startIndex, offsetBy: newFigure))
+      string.insert(".", at: string.index(string.startIndex, offsetBy: newScale))
 
       return string
     }
@@ -65,68 +91,96 @@ extension BigDecimal: CustomStringConvertible {
 
 public extension BigDecimal {
   func add(_ rhs: BigDecimal) -> BigDecimal {
-    var maxFigure = 0
+    var maxScale = 0
     var workingInt = internalInteger
-    var rhsFigure = rhs.figure
+    var rhsScale = rhs.scale
     var rhsInt = rhs.internalInteger
 
-    if figure >= rhs.figure {
-      maxFigure = figure
-      rhsInt *= BigInt(10).power(maxFigure - rhs.figure)
-      rhsFigure = maxFigure
+    if scale >= rhs.scale {
+      maxScale = scale
+      rhsInt *= BigInt(10).power(maxScale - rhs.scale)
+      rhsScale = maxScale
     } else {
-      maxFigure = rhsFigure
-      workingInt *= BigInt(10).power(maxFigure - figure)
+      maxScale = rhsScale
+      workingInt *= BigInt(10).power(maxScale - scale)
     }
 
     let newInteger = workingInt + rhsInt
-    let newDecimal = BigDecimal(bigInteger: newInteger, figure: maxFigure)
+    let newDecimal = BigDecimal(bigInteger: newInteger, scale: maxScale)
 
     return newDecimal
   }
 
   func divide(_ rhs: BigDecimal) -> BigDecimal {
-    var totalFigure = figure - rhs.figure
-    var workingInt = internalInteger
+    guard rhs.internalInteger != 0 else {
+      fatalError()
+    }
 
-    if totalFigure < 0 {
-      let exponent = -totalFigure
-      totalFigure = 0
+    guard internalInteger != 0 else {
+      return BigDecimal(1)
+    }
+
+    let desiredPrecision = min(precision + Int(ceil(10.0 * Double(rhs.precision) / 3.0)), .max)
+    var dividend = self
+    var divisor = rhs
+
+    // let preferredScale = dividend.scale - divisor.scale
+    let xScale = dividend.scale
+    var yScale = divisor.scale
+
+    if dividend.internalInteger.magnitude > divisor.internalInteger.magnitude {
+      divisor.scale -= 1
+      yScale -= divisor.scale
+    }
+
+    if desiredPrecision + yScale > xScale {
+      dividend.scale = desiredPrecision + yScale
+    } else {
+      // todo: check scale
+      divisor.scale = xScale - desiredPrecision
+    }
+
+    var totalScale = dividend.scale - divisor.scale
+    var workingInt = dividend.internalInteger
+
+    if totalScale < 0 {
+      let exponent = -totalScale
+      totalScale = 0
 
       workingInt *= BigInt(10).power(exponent)
     }
 
-    let newInteger = workingInt / rhs.internalInteger
-    let newDecimal = BigDecimal(bigInteger: newInteger, figure: totalFigure)
+    let newInteger = workingInt / divisor.internalInteger
+    let newDecimal = BigDecimal(bigInteger: newInteger, scale: totalScale)
 
     return newDecimal
   }
 
   func multiply(_ rhs: BigDecimal) -> BigDecimal {
-    let totalFigure = figure + rhs.figure
+    let totalScale = scale + rhs.scale
     let newInteger = internalInteger * rhs.internalInteger
-    let newDecimal = BigDecimal(bigInteger: newInteger, figure: totalFigure)
+    let newDecimal = BigDecimal(bigInteger: newInteger, scale: totalScale)
 
     return newDecimal
   }
 
   func subtract(_ rhs: BigDecimal) -> BigDecimal {
-    var maxFigure = 0
+    var maxScale = 0
     var workingInt = internalInteger
-    var rhsFigure = rhs.figure
+    var rhsScale = rhs.scale
     var rhsInt = rhs.internalInteger
 
-    if figure >= rhs.figure {
-      maxFigure = figure
-      rhsInt *= BigInt(10).power(maxFigure - rhs.figure)
-      rhsFigure = maxFigure
+    if scale >= rhs.scale {
+      maxScale = scale
+      rhsInt *= BigInt(10).power(maxScale - rhs.scale)
+      rhsScale = maxScale
     } else {
-      maxFigure = rhsFigure
-      workingInt *= BigInt(10).power(maxFigure - figure)
+      maxScale = rhsScale
+      workingInt *= BigInt(10).power(maxScale - scale)
     }
 
     let newInteger = workingInt - rhsInt
-    let newDecimal = BigDecimal(bigInteger: newInteger, figure: Int(maxFigure))
+    let newDecimal = BigDecimal(bigInteger: newInteger, scale: Int(maxScale))
 
     return newDecimal
   }
