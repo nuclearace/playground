@@ -6,9 +6,7 @@ import BigInt
 import Foundation
 
 public struct BigDecimal {
-  public private(set) var scale = 0 {
-    didSet { handleScaleChange(oldScale: oldValue) }
-  }
+  public private(set) var scale = 0
   public private(set) var precision = 0
 
   fileprivate var internalInteger: BigInt
@@ -49,20 +47,6 @@ public struct BigDecimal {
 
   public init(_ double: Double) {
     self.init(String(double))!
-  }
-
-  private mutating func handleScaleChange(oldScale: Int) {
-    guard oldScale != scale && internalInteger != 0 else {
-      return
-    }
-
-    if scale > oldScale {
-      // todo: check scale?
-      internalInteger = internalInteger * BigInt(10).power(scale - oldScale)
-      precision = internalInteger.description.dropFirstIf("-").count
-    } else {
-      // Handle dropping digits
-    }
   }
 }
 
@@ -120,40 +104,31 @@ public extension BigDecimal {
       return BigDecimal(1)
     }
 
-    let desiredPrecision = min(precision + Int(ceil(10.0 * Double(rhs.precision) / 3.0)), .max)
-    var dividend = self
-    var divisor = rhs
-
-    // let preferredScale = dividend.scale - divisor.scale
-    let xScale = dividend.scale
-    var yScale = divisor.scale
+    let dividend = self
+    let divisor = rhs
+    // todo: rounding and different precision
+    let desiredPrecision = dividend.precision//min(precision + Int(ceil(10.0 * Double(divisor.precision) / 3.0)), .max)
+    let desiredScale = scale - divisor.scale
+    let xScale = dividend.precision
+    var yScale = divisor.precision
 
     if dividend.internalInteger.magnitude > divisor.internalInteger.magnitude {
-      divisor.scale -= 1
-      yScale -= divisor.scale
+      yScale -= 1
     }
 
-    if desiredPrecision + yScale > xScale {
-      dividend.scale = desiredPrecision + yScale
+    let power = desiredPrecision + yScale - xScale
+    let scl = desiredScale + yScale - xScale + desiredPrecision
+
+    if power > 0 {
+      let raised = dividend.internalInteger * BigInt(10).power(power)
+      let newInteger = raised / divisor.internalInteger
+
+      return BigDecimal(bigInteger: newInteger, scale: scl)
     } else {
-      // todo: check scale
-      divisor.scale = xScale - desiredPrecision
+        let newInteger = dividend.internalInteger / divisor.internalInteger
+
+        return BigDecimal(bigInteger: newInteger, scale: scl)
     }
-
-    var totalScale = dividend.scale - divisor.scale
-    var workingInt = dividend.internalInteger
-
-    if totalScale < 0 {
-      let exponent = -totalScale
-      totalScale = 0
-
-      workingInt *= BigInt(10).power(exponent)
-    }
-
-    let newInteger = workingInt / divisor.internalInteger
-    let newDecimal = BigDecimal(bigInteger: newInteger, scale: totalScale)
-
-    return newDecimal
   }
 
   func multiply(_ rhs: BigDecimal) -> BigDecimal {
@@ -270,4 +245,8 @@ public extension BigDecimal {
   static func *(lhs: BigDecimal, rhs: Double) -> BigDecimal {
     return lhs.multiply(rhs)
   }
+}
+
+extension BigDecimal: Equatable {
+
 }
