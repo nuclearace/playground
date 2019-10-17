@@ -107,7 +107,7 @@ public extension BigDecimal {
     let dividend = self
     let divisor = rhs
     // todo: rounding and different precision
-    let desiredPrecision = dividend.precision//min(precision + Int(ceil(10.0 * Double(divisor.precision) / 3.0)), .max)
+    let desiredPrecision = max(dividend.precision, 34)
     let desiredScale = scale - divisor.scale
     let xScale = dividend.precision
     var yScale = divisor.precision
@@ -158,6 +158,24 @@ public extension BigDecimal {
     let newDecimal = BigDecimal(bigInteger: newInteger, scale: Int(maxScale))
 
     return newDecimal
+  }
+
+  func power(_ n: Int) -> BigDecimal {
+    guard n != 0 else {
+      return BigDecimal(1)
+    }
+
+    var acc = BigDecimal(1)
+
+    for _ in 0..<n.magnitude {
+      acc = acc * self
+    }
+
+    if n < 0 {
+      return BigDecimal(1) / acc
+    } else {
+      return acc
+    }
   }
 }
 
@@ -244,6 +262,40 @@ public extension BigDecimal {
 
   static func *(lhs: BigDecimal, rhs: Double) -> BigDecimal {
     return lhs.multiply(rhs)
+  }
+
+  // flip
+
+  static func +(lhs: Int, rhs: BigDecimal) -> BigDecimal {
+    return BigDecimal(lhs) + rhs
+  }
+
+  static func -(lhs: Int, rhs: BigDecimal) -> BigDecimal {
+    return BigDecimal(lhs) - rhs
+  }
+
+  static func /(lhs: Int, rhs: BigDecimal) -> BigDecimal {
+    return BigDecimal(lhs) / rhs
+  }
+
+  static func *(lhs: Int, rhs: BigDecimal) -> BigDecimal {
+    return BigDecimal(lhs) * rhs
+  }
+
+  static func +(lhs: Double, rhs: BigDecimal) -> BigDecimal {
+    return BigDecimal(lhs) + rhs
+  }
+
+  static func -(lhs: Double, rhs: BigDecimal) -> BigDecimal {
+    return BigDecimal(lhs) - rhs
+  }
+
+  static func /(lhs: Double, rhs: BigDecimal) -> BigDecimal {
+    return BigDecimal(lhs) / rhs
+  }
+
+  static func *(lhs: Double, rhs: BigDecimal) -> BigDecimal {
+    return BigDecimal(lhs) * rhs
   }
 }
 
