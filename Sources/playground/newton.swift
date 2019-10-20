@@ -5,12 +5,12 @@
 import Foundation
 
 public struct Vector {
-  public var px = 0.0
-  public var py = 0.0
-  public var pz = 0.0
+  public var x = 0.0
+  public var y = 0.0
+  public var z = 0.0
 
-  public init(px: Double, py: Double, pz: Double) {
-    (self.px, self.py, self.pz) = (px, py, pz)
+  public init(x: Double, y: Double, z: Double) {
+    (self.x, self.y, self.z) = (x, y, z)
   }
 
   public init?(array: [Double]) {
@@ -18,57 +18,71 @@ public struct Vector {
       return nil
     }
 
-    (self.px, self.py, self.pz) = (array[0], array[1], array[2])
+    (self.x, self.y, self.z) = (array[0], array[1], array[2])
   }
 
   public func mod() -> Double {
-    (px * px + py * py + pz * pz).squareRoot()
+    (x * x + y * y + z * z).squareRoot()
   }
 
-  static func + (lhs: Vector, rhs: Vector) -> Vector {
+  public static func + (lhs: Vector, rhs: Vector) -> Vector {
     return Vector(
-      px: lhs.px + rhs.px,
-      py: lhs.py + rhs.py,
-      pz: lhs.pz + rhs.pz
+      x: lhs.x + rhs.x,
+      y: lhs.y + rhs.y,
+      z: lhs.z + rhs.z
     )
   }
 
-  static func += (lhs: inout Vector, rhs: Vector) {
-    lhs.px += rhs.px
-    lhs.py += rhs.py
-    lhs.pz += rhs.pz
+  public static func += (lhs: inout Vector, rhs: Vector) {
+    lhs.x += rhs.x
+    lhs.y += rhs.y
+    lhs.z += rhs.z
   }
 
-  static func - (lhs: Vector, rhs: Vector) -> Vector {
+  public static func - (lhs: Vector, rhs: Vector) -> Vector {
     return Vector(
-      px: lhs.px - rhs.px,
-      py: lhs.py - rhs.py,
-      pz: lhs.pz - rhs.pz
+      x: lhs.x - rhs.x,
+      y: lhs.y - rhs.y,
+      z: lhs.z - rhs.z
     )
   }
 
-  static func * (lhs: Vector, rhs: Double) -> Vector {
+  public static func * (lhs: Vector, rhs: Double) -> Vector {
     return Vector(
-      px: lhs.px * rhs,
-      py: lhs.py * rhs,
-      pz: lhs.pz * rhs
+      x: lhs.x * rhs,
+      y: lhs.y * rhs,
+      z: lhs.z * rhs
     )
+  }
+
+  public static func *= (lhs: inout Vector, rhs: Double) {
+    lhs.x *= rhs
+    lhs.y *= rhs
+    lhs.z *= rhs
+  }
+
+  public static func / (lhs: Vector, rhs: Double) -> Vector {
+    return lhs * (1 / rhs)
+  }
+
+  public static func /= (lhs: inout Vector, rhs: Double) {
+    lhs = lhs * (1 / rhs)
   }
 }
 
 extension Vector {
-  public static let origin = Vector(px: 0, py: 0, pz: 0)
+  public static let origin = Vector(x: 0, y: 0, z: 0)
 }
 
 extension Vector: Equatable {
   public static func == (lhs: Vector, rhs: Vector) -> Bool {
-    return lhs.px == rhs.px && lhs.py == rhs.py && lhs.pz == rhs.pz
+    return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z
   }
 }
 
 extension Vector: CustomStringConvertible {
   public var description: String {
-    return String(format: "%.6f\t%.6f\t%.6f", px, py, pz)
+    return String(format: "%.6f\t%.6f\t%.6f", x, y, z)
   }
 }
 
@@ -172,4 +186,45 @@ public class NBody {
     computeVelocities()
     resolveCollisions()
   }
+}
+
+private func mulAdd(v1: Vector, x1: Double, v2: Vector, x2: Double) -> Vector {
+  return v1 * x1 + v2 * x2
+}
+
+private func rotate(_ i: Vector, _ j: Vector, alpha: Double) -> (Vector, Vector) {
+  return (
+    mulAdd(v1: i, x1: +cos(alpha), v2: j, x2: sin(alpha)),
+    mulAdd(v1: i, x1: -sin(alpha), v2: j, x2: cos(alpha))
+  )
+}
+
+public func orbitalStateVectors(
+  semimajorAxis: Double,
+  eccentricity: Double,
+  inclination: Double,
+  longitudeOfAscendingNode: Double,
+  argumentOfPeriapsis: Double,
+  trueAnomaly: Double
+) -> (Vector, Vector) {
+  var i = Vector(x: 1.0, y: 0.0, z: 0.0)
+  var j = Vector(x: 0.0, y: 1.0, z: 0.0)
+  let k = Vector(x: 0.0, y: 0.0, z: 1.0)
+
+  (i, j) = rotate(i, j, alpha: longitudeOfAscendingNode)
+  (j, _) = rotate(j, k, alpha: inclination)
+  (i, j) = rotate(i, j, alpha: argumentOfPeriapsis)
+
+  let l = eccentricity == 1.0 ? 2.0 : 1.0 - eccentricity * eccentricity
+  let c = cos(trueAnomaly)
+  let s = sin(trueAnomaly)
+  let r = l / (1.0 + eccentricity * c)
+  let rPrime = s * r * r / l
+  let position = mulAdd(v1: i, x1: c, v2: j, x2: s) * r
+  var speed = mulAdd(v1: i, x1: rPrime * c - r * s, v2: j, x2: rPrime * s + r * c)
+
+  speed /= speed.mod()
+  speed *= (2.0 / r - 1.0 / semimajorAxis).squareRoot()
+
+  return (position, speed)
 }
