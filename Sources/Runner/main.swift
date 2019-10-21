@@ -20,13 +20,7 @@ import Dispatch
 ////print(BigDecimal("3.14159")!.power(-3))
 //print(a / b)
 
-let (position, speed) = orbitalStateVectors(
-  semimajorAxis: 1.0,
-  eccentricity: 0.1,
-  inclination: 0.0,
-  longitudeOfAscendingNode: 355.0 / (113.0 * 6.0),
-  argumentOfPeriapsis: 0.0,
-  trueAnomaly: 0.0
-)
+let seq = mianChowla(n: 100)
 
-print("Position: \(position); Speed: \(speed)")
+print("First 30 terms in sequence are: \(Array(seq.prefix(30)))")
+print("Terms 91 to 100 are: \(Array(seq[90..<100]))")
