@@ -70,9 +70,9 @@ private var smallestN: InterestingCollatz!
 func getN() -> CollatzType {
   switch mode {
   case .peakSearch:
-    print("\(i): n = \(peakN)")
-
     peakN += 1
+
+    print("\(i): n = \(peakN)")
 
     return peakN
   case _:
