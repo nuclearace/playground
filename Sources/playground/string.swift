@@ -4,10 +4,35 @@
 
 import Foundation
 
-extension String {
+public extension String {
   private static let commaReg = try! NSRegularExpression(pattern: "(\\.[0-9]+|[1-9]([0-9]+)?(\\.[0-9]+)?)")
 
-  public func commatize(start: Int = 0, period: Int = 3, separator: String = ",") -> String {
+  func textBetween(_ startDelim: String, and endDelim: String) -> String {
+    precondition(!startDelim.isEmpty && !endDelim.isEmpty)
+
+    let startIdx: String.Index
+    let endIdx: String.Index
+
+    if startDelim == "start" {
+      startIdx = startIndex
+    } else if let r = range(of: startDelim) {
+      startIdx = r.upperBound
+    } else {
+      return ""
+    }
+
+    if endDelim == "end" {
+      endIdx = endIndex
+    } else if let r = self[startIdx...].range(of: endDelim) {
+      endIdx = r.lowerBound
+    } else {
+      endIdx = endIndex
+    }
+
+    return String(self[startIdx..<endIdx])
+  }
+
+  func commatize(start: Int = 0, period: Int = 3, separator: String = ",") -> String {
     guard separator != "" else {
       return self
     }
