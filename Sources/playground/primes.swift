@@ -29,7 +29,7 @@ public func largestLeftTruncatablePrime(_ base: Int) -> BigInt {
 }
 
 // Miller-Rabin prime test
-public func isPrime(_ n: BigInt, rounds: Int = 5) -> Bool {
+public func isPrime(_ n: BigInt, rounds: Int = 10) -> Bool {
   guard n != 2 && n != 3 else { return true }
   guard n % 2 != 0 && n > 2 else { return false }
 
