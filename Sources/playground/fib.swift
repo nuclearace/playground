@@ -5,13 +5,11 @@
 import BigInt
 
 public func fib(n: Int) -> BigInt {
-  var a = BigInt(0), b = BigInt(1)
+  return lucasSeq(1, 1, n: n)
+}
 
-  for _ in 0..<n {
-    (a, b) = (b, a + b)
-  }
-
-  return a
+public func lucas(n: Int) -> BigInt {
+  return lucasSeq(2, 1, n: n)
 }
 
 public func fibRecursive(n: Int) -> BigInt {
@@ -35,4 +33,14 @@ public struct FibonacciSequence : Sequence, IteratorProtocol {
 
     return a
   }
+}
+
+public func lucasSeq(_ p: Int, _ q: Int, n: Int) -> BigInt {
+  var a = BigInt(p), b = BigInt(q)
+
+  for _ in 0..<n {
+    (a, b) = (b, a + b)
+  }
+
+  return a
 }
