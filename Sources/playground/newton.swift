@@ -4,6 +4,9 @@
 
 import Foundation
 
+infix operator • : MultiplicationPrecedence
+infix operator × : MultiplicationPrecedence
+
 public struct Vector {
   public var x = 0.0
   public var y = 0.0
@@ -61,6 +64,18 @@ public struct Vector {
     lhs.z *= rhs
   }
 
+  public static func • (lhs: Vector, rhs: Vector) -> Double {
+    return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z
+  }
+
+  public static func × (lhs: Vector, rhs: Vector) -> Vector {
+    return Vector(
+      x: lhs.y * rhs.z - lhs.z * rhs.y,
+      y: lhs.z * rhs.x - lhs.x * rhs.z,
+      z: lhs.x * rhs.y - lhs.y * rhs.x
+    )
+  }
+
   public static func / (lhs: Vector, rhs: Double) -> Vector {
     return lhs * (1 / rhs)
   }
@@ -80,11 +95,11 @@ extension Vector: Equatable {
   }
 }
 
-extension Vector: CustomStringConvertible {
-  public var description: String {
-    return String(format: "%.6f\t%.6f\t%.6f", x, y, z)
-  }
-}
+//extension Vector: CustomStringConvertible {
+//  public var description: String {
+//    return String(format: "%.6f\t%.6f\t%.6f", x, y, z)
+//  }
+//}
 
 public class NBody {
   public let gravitationalConstant: Double

@@ -4,24 +4,15 @@ import Foundation
 import Playground
 import Dispatch
 
-let num = 15
+let a = Vector(x: 3, y: 4, z: 5)
+let b = Vector(x: 4, y: 3, z: 5)
+let c = Vector(x: -5, y: -12, z: -13)
 
-let tri = BellTriangle<Int>(n: num)
-
-print("First 15 Bell numbers:")
-
-for i in 1...num  {
-  let n = tri[row: i, col: 0]
-
-  print("\(i + 1): \(n)")
-}
-
-for i in 1...10 {
-  print(tri[row: i, col: 0], terminator: "")
-
-  for j in 1..<i {
-    print(", \(tri[row: i, col: j])", terminator: "")
-  }
-
-  print()
-}
+print("a: \(a)")
+print("b: \(b)")
+print("c: \(c)")
+print()
+print("a • b = \(a • b)")
+print("a × b = \(a × b)")
+print("a • (b × c) = \(a • (b × c))")
+print("a × (b × c) = \(a × (b × c))")
