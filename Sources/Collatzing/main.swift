@@ -32,24 +32,6 @@ struct InterestingCollatz: CustomStringConvertible {
   }
 }
 
-func createRanges(numRanges: Int, max: Int = .max) -> [ClosedRange<Int>] {
-  let perRange = max / numRanges
-  var ranges = [ClosedRange<Int>]()
-
-  var startN = 0
-
-  for _ in 0..<numRanges-1 {
-    startN += 1
-
-    // print("range \(i) starts at \(startN) and ends at \(startN+perRange)")
-    ranges.append(startN...startN+perRange)
-
-    startN += perRange
-  }
-
-  return ranges + [startN+1...max]
-}
-
 private let timer = DispatchSource.makeTimerSource()
 
 private var start: TimeInterval!
@@ -83,15 +65,6 @@ func getN() -> CollatzType {
 
     return n
   }
-}
-
-func stringFromTimeInterval(_ interval: TimeInterval) -> String {
-  let interval = Int(interval)
-  let seconds = interval % 60
-  let minutes = (interval / 60) % 60
-  let hours = (interval / 3600)
-
-  return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
 }
 
 func calculateInterestingThings(n: CollatzType, seriesCount: Int, peak: CollatzType) {
@@ -156,8 +129,14 @@ func calculateInterestingThings(n: CollatzType, seriesCount: Int, peak: CollatzT
 }
 
 func randomCollatz() {
+  let timeRunningStr = stringFromTimeInterval(Date().timeIntervalSince1970 - start)
+  let lastInterestingStr = stringFromTimeInterval(Date().timeIntervalSince1970 - lastInterestingThing)
+
+  print("\u{001B}[2J\u{001B}[f", terminator: "")
+  print("Starting \(i); Time running: \(timeRunningStr); Time since last interesting thing: \(lastInterestingStr)")
+
   let n = getN()
-  let (series, peak) = collatz(n)
+  let ((series, peak), t) = ClockTimer.time({ collatz(n) })
 
   print("\(i): series length: \(series.count); peak: \(peak)")
   print()
@@ -172,17 +151,18 @@ func randomCollatz() {
   print("\(i): \(mode == .random ? "Smallest" : "Starting") = \(smallestN!)")
   print("\(i): Shortest Series = \(shortestSeries!)")
   print("\(i): Smallest Peak = \(smallestPeak!)")
+  print("\(i): took \(t.duration)s")
 }
 
 let collatzing = command(
-  Option("peak", default: -1, flag: "p", description: "peak search, starting at n (default 1)"),
+  Option<CollatzType>("peak", default: -1, flag: "p", description: "peak search, starting at n (default 1)"),
   Option("random", default: 50_000, flag: "r", description: "number of ranges for random search")
 ) {n, numRanges in
   if n > 0 {
     print("doing peak search starting at \(n)")
 
     mode = .peakSearch
-    peakN = CollatzType(n)
+    peakN = n
   } else {
     print("random search with num ranges \(numRanges)")
 
@@ -192,15 +172,7 @@ let collatzing = command(
   start = Date().timeIntervalSince1970
 
   timer.setEventHandler {
-    let timeRunningStr = stringFromTimeInterval(Date().timeIntervalSince1970 - start)
-    let lastInterestingStr = stringFromTimeInterval(Date().timeIntervalSince1970 - lastInterestingThing)
-
-    print("\u{001B}[2J\u{001B}[f", terminator: "")
-    print("Starting \(i); Time running: \(timeRunningStr); Time since last interesting thing: \(lastInterestingStr)")
-
-    let (_, t) = ClockTimer.time(randomCollatz)
-
-    print("\(i): took \(t.duration)s")
+    randomCollatz()
 
     i += 1
   }

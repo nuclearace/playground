@@ -50,6 +50,12 @@ public struct Vector {
     )
   }
 
+  public static func -= (lhs: inout Vector, rhs: Vector) {
+    lhs.x -= rhs.x
+    lhs.y -= rhs.y
+    lhs.z -= rhs.z
+  }
+
   public static func * (lhs: Vector, rhs: Double) -> Vector {
     return Vector(
       x: lhs.x * rhs,

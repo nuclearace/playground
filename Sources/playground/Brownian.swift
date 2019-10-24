@@ -53,7 +53,7 @@ public final class Brownian : BitmapDrawer {
         }
       }
 
-      print("Took \(t.clocks) ticks for a total of \(Double(t.duration))s")
+      print("Took \(Double(t.duration))s")
 
       if preview && i % 100 == 0 {
         save()
