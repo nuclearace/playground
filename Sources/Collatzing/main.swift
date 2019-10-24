@@ -157,7 +157,7 @@ func calculateInterestingThings(n: CollatzType, seriesCount: Int, peak: CollatzT
 
 func randomCollatz() {
   let n = getN()
-  let (series, peak) = collatz(CollatzType(n))
+  let (series, peak) = collatz(n)
 
   print("\(i): series length: \(series.count); peak: \(peak)")
   print()
