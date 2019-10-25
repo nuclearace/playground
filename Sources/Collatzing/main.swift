@@ -49,21 +49,17 @@ private var shortestSeries: InterestingCollatz!
 private var smallestPeak: InterestingCollatz!
 private var smallestN: InterestingCollatz!
 
-func getN() -> CollatzType {
+func getN() -> (CollatzType, String) {
   switch mode {
   case .peakSearch:
     peakN += 1
 
-    print("\(i): n = \(peakN)")
-
-    return peakN
+    return (peakN, "\(i): n = \(peakN)")
   case _:
     let range = ranges.randomElement(using: &rng)!
     let n = CollatzType(Int.random(in: range))
 
-    print("\(i): n = \(n) from range \(range)")
-
-    return n
+    return (n, "\(i): n = \(n) from range \(range)")
   }
 }
 
@@ -131,13 +127,12 @@ func calculateInterestingThings(n: CollatzType, seriesCount: Int, peak: CollatzT
 func randomCollatz() {
   let timeRunningStr = stringFromTimeInterval(Date().timeIntervalSince1970 - start)
   let lastInterestingStr = stringFromTimeInterval(Date().timeIntervalSince1970 - lastInterestingThing)
+  let (n, nStr) = getN()
+  let ((series, peak), t) = ClockTimer.time({ collatz(n) })
 
   print("\u{001B}[2J\u{001B}[f", terminator: "")
   print("Starting \(i); Time running: \(timeRunningStr); Time since last interesting thing: \(lastInterestingStr)")
-
-  let n = getN()
-  let ((series, peak), t) = ClockTimer.time({ collatz(n) })
-
+  print(nStr)
   print("\(i): series length: \(series.count); peak: \(peak)")
   print()
 
