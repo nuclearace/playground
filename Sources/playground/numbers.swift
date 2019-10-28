@@ -144,6 +144,24 @@ private func threeDigitsToText(n: Int) -> String {
 
 extension BinaryInteger {
   @inlinable
+  public var isSquare: Bool {
+    var x = self / 2
+    var seen = Set([x])
+
+    while x * x != self {
+      x = (x + (self / x)) / 2
+
+      if seen.contains(x) {
+        return false
+      }
+
+      seen.insert(x)
+    }
+
+    return true
+  }
+
+  @inlinable
   public func factors() -> [Self] {
     let maxN = Int(Double(self).squareRoot())
     var res = Set<Self>()

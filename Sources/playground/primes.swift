@@ -48,7 +48,7 @@ public func isPrime(_ n: BigInt, rounds: Int = 10) -> Bool {
   func tryComposite(_ a: BigInt) -> Bool {
     guard a.power(d, modulus: n) != 1 else { return false }
 
-    for i in 0..<s where a.power((2 as BigInt).power(i) * d, modulus: n) == n - 1 {
+    for i in 0..<s where a.power(BigInt(2).power(i) * d, modulus: n) == n - 1 {
       return false
     }
 
