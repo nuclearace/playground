@@ -41,6 +41,7 @@ private var lastInterestingThing = Date().timeIntervalSince1970
 private var rng = MTRandom()
 private var i = 1
 private var peakN = CollatzType(1)
+private var addRandom = false
 private var longestSeries: InterestingCollatz!
 private var largestN: InterestingCollatz!
 private var largestPeak: InterestingCollatz!
@@ -52,9 +53,21 @@ private var smallestN: InterestingCollatz!
 func getN() -> (CollatzType, String) {
   switch mode {
   case .peakSearch:
+    let add: CollatzType
+
     peakN += 1
 
-    return (peakN, "\(i): n = \(peakN)")
+    if addRandom {
+      add = CollatzType(Int.random(in: 0...100_000_000, using: &rng))
+    } else {
+      add = 0
+    }
+
+    let str = "\(i): n = \(peakN) + \(add)"
+
+    peakN += add
+
+    return (peakN, str)
   case _:
     let range = ranges.randomElement(using: &rng)!
     let n = CollatzType(Int.random(in: range))
@@ -124,7 +137,7 @@ func calculateInterestingThings(n: CollatzType, seriesCount: Int, peak: CollatzT
   }
 }
 
-func randomCollatz() {
+func randomCollatz() -> TimeResult {
   let timeRunningStr = stringFromTimeInterval(Date().timeIntervalSince1970 - start)
   let lastInterestingStr = stringFromTimeInterval(Date().timeIntervalSince1970 - lastInterestingThing)
   let (n, nStr) = getN()
@@ -145,19 +158,23 @@ func randomCollatz() {
   print()
   print("\(i): \(mode == .random ? "Smallest" : "Starting") = \(smallestN!)")
   print("\(i): Shortest Series = \(shortestSeries!)")
-  print("\(i): Smallest Peak = \(smallestPeak!)")
-  print("\(i): took \(t.duration)s")
+  print("\(i): Smallest Peak = \(smallestPeak!)\n")
+  print("\(i): Collatz took \(t.duration)s")
+
+  return t
 }
 
 let collatzing = command(
   Option<CollatzType>("peak", default: -1, flag: "p", description: "peak search, starting at n (default 1)"),
-  Option("random", default: 50_000, flag: "r", description: "number of ranges for random search")
-) {n, numRanges in
+  Option("random", default: 50_000, flag: "r", description: "number of ranges for random search"),
+  Flag("incrementRandom", default: false, flag: "i")
+) {n, numRanges, ir in
   if n > 0 {
     print("doing peak search starting at \(n)")
 
     mode = .peakSearch
     peakN = n
+    addRandom = ir
   } else {
     print("random search with num ranges \(numRanges)")
 
@@ -167,7 +184,9 @@ let collatzing = command(
   start = Date().timeIntervalSince1970
 
   timer.setEventHandler {
-    randomCollatz()
+    let (collatzT, t) = ClockTimer.time(randomCollatz)
+
+    print("\(i): Overall took \(t.duration)s; Overhead: \(t.duration - collatzT.duration)s")
 
     i += 1
   }
