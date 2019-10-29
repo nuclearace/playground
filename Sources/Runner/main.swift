@@ -4,19 +4,17 @@ import Foundation
 import Playground
 import Dispatch
 
-var x = BigInt(0)
-var y = BigInt(0)
+for candidate in 2..<1<<19 {
+  var sum = Frac(numerator: 1, denominator: candidate)
 
-for n in 2..<10_000 {
-  if n.isSquare {
-    print("square \(n)")
+  let m = Int(ceil(Double(candidate).squareRoot()))
 
-    continue
-  } else if isPrime(BigInt(n)) {
-    print("prime \(n)")
+  for factor in 2..<m where candidate % factor == 0 {
+    sum += Frac(numerator: 1, denominator: factor)
+    sum += Frac(numerator: 1, denominator: candidate / factor)
   }
 
-  solvePell(n: BigInt(n), &x, &y)
-
-  print("x\u{00b2} - \(n)y\u{00b2} = 1 for x = \(x) and y = \(y)")
+  if sum == 1 {
+    print("\(candidate) is perfect")
+  }
 }
