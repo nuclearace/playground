@@ -163,12 +163,10 @@ extension BinaryInteger {
 
   @inlinable
   public func factors() -> [Self] {
-    let maxN = Int(Double(self).squareRoot())
+    let maxN = Self(Double(self).squareRoot())
     var res = Set<Self>()
 
-    for factor in 1...maxN where self % Self(factor) == 0 {
-      let factor = Self(factor)
-
+    for factor in stride(from: 1, through: maxN, by: 1) where self % factor == 0 {
       res.insert(factor)
       res.insert(self / factor)
     }
@@ -255,6 +253,20 @@ extension BinaryInteger {
 }
 
 extension BinaryInteger where Self: SignedNumeric {
+  @inlinable
+  public var isPerfectNumber: Bool {
+    var sum = Frac(numerator: 1, denominator: self)
+
+    let maxN = Self(ceil(Double(self).squareRoot()))
+
+    for factor in stride(from: 2, to: maxN, by: 1) where self % factor == 0 {
+      sum += Frac(numerator: 1, denominator: factor)
+      sum += Frac(numerator: 1, denominator: self / factor)
+    }
+
+    return sum == 1
+  }
+
   @inlinable
   public func isPerfectPower() -> Bool {
     if -self & self == self {
