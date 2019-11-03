@@ -7,6 +7,30 @@ import Foundation
 public extension String {
   private static let commaReg = try! NSRegularExpression(pattern: "(\\.[0-9]+|[1-9]([0-9]+)?(\\.[0-9]+)?)")
 
+  func splitOnChanges() -> [String] {
+    guard !isEmpty else {
+      return []
+    }
+
+    var res = [String]()
+    var workingChar = first!
+    var workingStr = "\(workingChar)"
+
+    for char in dropFirst() {
+      if char != workingChar {
+        res.append(workingStr)
+        workingStr = "\(char)"
+        workingChar = char
+      } else {
+        workingStr += String(char)
+      }
+    }
+
+    res.append(workingStr)
+
+    return res
+  }
+
   func textBetween(_ startDelim: String, and endDelim: String) -> String {
     precondition(!startDelim.isEmpty && !endDelim.isEmpty)
 
