@@ -102,7 +102,9 @@ extension Frac {
 
 extension Frac: CustomStringConvertible {
   public var description: String {
-    return "Frac(\(numerator) / \(denominator))"
+    let neg = numerator < 0 || denominator < 0
+
+    return "Frac(\(neg ? "-" : "")\(abs(numerator)) / \(abs(denominator)))"
   }
 }
 
