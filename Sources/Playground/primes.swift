@@ -254,3 +254,38 @@ public func aksPrimeTest<T: BinaryInteger & SignedNumeric>(n: T) -> Bool {
 
   return true
 }
+
+@inlinable
+public func carmichael<T: BinaryInteger & SignedNumeric>(p1: T) -> [(T, T, T)] {
+  func mod(_ n: T, _ m: T) -> T { (n % m + m) % m }
+
+  var res = [(T, T, T)]()
+
+  guard p1.isPrime else {
+    return res
+  }
+
+  for h3 in stride(from: 2, to: p1, by: 1) {
+    for d in stride(from: 1, to: h3 + p1, by: 1) {
+      if (h3 + p1) * (p1 - 1) % d != 0 || mod(-p1 * p1, h3) != d % h3 {
+        continue
+      }
+
+      let p2 = 1 + (p1 - 1) * (h3 + p1) / d
+
+      guard p2.isPrime else {
+        continue
+      }
+
+      let p3 = 1 + p1 * p2 / h3
+
+      guard p3.isPrime && (p2 * p3) % (p1 - 1) == 1 else {
+        continue
+      }
+
+      res.append((p1, p2, p3))
+    }
+  }
+
+  return res
+}
