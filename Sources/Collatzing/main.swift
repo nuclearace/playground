@@ -55,12 +55,10 @@ func getN() -> (CollatzType, String) {
   case .peakSearch:
     let add: CollatzType
 
-    peakN += 1
-
     if addRandom {
       add = CollatzType(Int.random(in: 0...100_000_000, using: &rng))
     } else {
-      add = 0
+      add = 1
     }
 
     let str = "\(i): n = \(peakN) + \(add)"
@@ -185,8 +183,9 @@ let collatzing = command(
 
   timer.setEventHandler {
     let (collatzT, t) = ClockTimer.time(randomCollatz)
+    let overhead = (t.duration - collatzT.duration) / t.duration
 
-    print("\(i): Overall took \(t.duration)s; Overhead: \(t.duration - collatzT.duration)s")
+    print("\(i): Overall took \(t.duration)s; Overhead: \(String(format: "%.2f", overhead * 100))%")
 
     i += 1
   }

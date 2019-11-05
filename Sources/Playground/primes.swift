@@ -64,6 +64,11 @@ public func isPrime(_ n: BigInt, rounds: Int = 10) -> Bool {
 
 extension BinaryInteger {
   @inlinable
+  public var isAttractive: Bool {
+    return primeDecomposition().count.isPrime
+  }
+
+  @inlinable
   public var isPrime: Bool {
     if self == 0 || self == 1 {
       return false
@@ -84,30 +89,23 @@ extension BinaryInteger {
 
   @inlinable
   public func primeDecomposition() -> [Self] {
-    // Use free generic function for aggressive specialization
-    return _primeDecomposition(of: self)
+    guard self > 1 else { return [] }
+
+    func step(_ x: Self) -> Self {
+      return 1 + (x << 2) - ((x >> 1) << 1)
+    }
+
+    let maxQ = Self(Double(self).squareRoot())
+    var d: Self = 1
+    var q: Self = self & 1 == 0 ? 2 : 3
+
+    while q <= maxQ && self % q != 0 {
+      q = step(d)
+      d += 1
+    }
+
+    return q <= maxQ ? [q] + (self / q).primeDecomposition() : [self]
   }
-}
-
-// Force generic function to be the body of the instance method
-@usableFromInline @inline(__always)
-func _primeDecomposition<T: BinaryInteger>(of n: T) -> [T] {
-  guard n > 1 else { return [] }
-
-  func step(_ x: T) -> T {
-    return 1 + (x << 2) - ((x >> 1) << 1)
-  }
-
-  let maxQ = T(Double(n).squareRoot())
-  var d: T = 1
-  var q: T = n & 1 == 0 ? 2 : 3
-
-  while q <= maxQ && n % q != 0 {
-    q = step(d)
-    d += 1
-  }
-
-  return q <= maxQ ? [q] + _primeDecomposition(of: n / q) : [n]
 }
 
 public func lucasLehmer(_ p: Int) -> Bool {
