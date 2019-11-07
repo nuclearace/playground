@@ -3,24 +3,55 @@ import CStuff
 import Foundation
 import Playground
 
+let gliderGun = [
+  Cell(x: 1, y: 5),
+  Cell(x: 1, y: 6),
+  Cell(x: 2, y: 5),
+  Cell(x: 2, y: 6),
 
+  Cell(x: 11, y: 5),
+  Cell(x: 11, y: 6),
+  Cell(x: 11, y: 7),
+  Cell(x: 12, y: 8),
+  Cell(x: 13, y: 9),
+  Cell(x: 14, y: 9),
+  Cell(x: 12, y: 4),
+  Cell(x: 13, y: 3),
+  Cell(x: 14, y: 3),
 
-let blinker = [Cell(x: 1, y: 0), Cell(x: 1, y: 1), Cell(x: 1, y: 2)] as Set
+  Cell(x: 15, y: 6),
 
-var col = Colony(cells: blinker, height: 3, width: 3)
+  Cell(x: 16, y: 4),
+  Cell(x: 17, y: 5),
+  Cell(x: 17, y: 6),
+  Cell(x: 17, y: 7),
+  Cell(x: 16, y: 8),
+  Cell(x: 18, y: 6),
 
-print("Blinker: ")
-col.run(iterations: 3)
+  Cell(x: 21, y: 3),
+  Cell(x: 21, y: 4),
+  Cell(x: 21, y: 5),
+  Cell(x: 22, y: 3),
+  Cell(x: 22, y: 4),
+  Cell(x: 22, y: 5),
 
-let glider = [
-  Cell(x: 1, y: 0),
-  Cell(x: 2, y: 1),
-  Cell(x: 0, y: 2),
-  Cell(x: 1, y: 2),
-  Cell(x: 2, y: 2)
+  Cell(x: 23, y: 2),
+  Cell(x: 23, y: 6),
+
+  Cell(x: 25, y: 1),
+  Cell(x: 25, y: 2),
+
+  Cell(x: 25, y: 6),
+  Cell(x: 25, y: 7),
+
+  Cell(x: 36, y: 3),
+  Cell(x: 36, y: 4),
+  Cell(x: 35, y: 3),
+  Cell(x: 35, y: 4),
 ] as Set
 
-col = Colony(cells: glider, height: 8, width: 8)
+var col = Colony(cells: gliderGun, height: 50, width: 100)
 
-print("Glider: ")
-col.run(iterations: 20)
+col.printColony()
+//col.run(iterations: 300)
+

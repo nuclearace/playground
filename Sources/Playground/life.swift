@@ -8,6 +8,19 @@ public struct Cell: Hashable {
   public var x: Int
   public var y: Int
 
+  public var neighbors: [Cell] {
+    [
+      Cell(x: x - 1, y: y - 1),
+      Cell(x: x,     y: y - 1),
+      Cell(x: x + 1, y: y - 1),
+      Cell(x: x - 1, y: y),
+      Cell(x: x + 1, y: y),
+      Cell(x: x - 1, y: y + 1),
+      Cell(x: x,     y: y + 1),
+      Cell(x: x + 1, y: y + 1),
+    ]
+  }
+
   public init(x: Int, y: Int) {
     (self.x, self.y) = (x, y)
   }
@@ -27,24 +40,11 @@ public struct Colony {
   private func neighborCounts() -> [Cell: Int] {
     var counts = [Cell: Int]()
 
-    for cell in cells.flatMap(Colony.neighbors(for:)) {
+    for cell in cells.flatMap({ $0.neighbors }) {
       counts[cell, default: 0] += 1
     }
 
     return counts
-  }
-
-  private static func neighbors(for cell: Cell) -> [Cell] {
-    return [
-      Cell(x: cell.x - 1, y: cell.y - 1),
-      Cell(x: cell.x,     y: cell.y - 1),
-      Cell(x: cell.x + 1, y: cell.y - 1),
-      Cell(x: cell.x - 1, y: cell.y),
-      Cell(x: cell.x + 1, y: cell.y),
-      Cell(x: cell.x - 1, y: cell.y + 1),
-      Cell(x: cell.x,     y: cell.y + 1),
-      Cell(x: cell.x + 1, y: cell.y + 1),
-    ]
   }
 
   public func printColony() {
