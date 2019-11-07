@@ -42,6 +42,7 @@ private var rng = MTRandom()
 private var i = 1
 private var peakN = CollatzType(1)
 private var addRandom = false
+private var increment = 100_000_000
 private var longestSeries: InterestingCollatz!
 private var largestN: InterestingCollatz!
 private var largestPeak: InterestingCollatz!
@@ -56,7 +57,7 @@ func getN() -> (CollatzType, String) {
     let add: CollatzType
 
     if addRandom {
-      add = CollatzType(Int.random(in: 0...100_000_000, using: &rng))
+      add = CollatzType(Int.random(in: 1...increment, using: &rng))
     } else {
       add = 1
     }
@@ -165,14 +166,16 @@ func randomCollatz() -> TimeResult {
 let collatzing = command(
   Option<CollatzType>("peak", default: -1, flag: "p", description: "peak search, starting at n (default 1)"),
   Option("random", default: 50_000, flag: "r", description: "number of ranges for random search"),
-  Flag("incrementRandom", default: false, flag: "i")
-) {n, numRanges, ir in
+  Option("incrementBound", default: 100_000_000, flag: "b", description: "upper bound on increment"),
+  Flag("incrementRandom", default: false, flag: "i", description: "increment to add to peak search")
+) {n, numRanges, ir, inc in
   if n > 0 {
     print("doing peak search starting at \(n)")
 
     mode = .peakSearch
     peakN = n
-    addRandom = ir
+    addRandom = inc
+    increment = ir
   } else {
     print("random search with num ranges \(numRanges)")
 

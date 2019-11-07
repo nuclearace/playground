@@ -6,7 +6,7 @@ import Foundation
 
 private let orange = Color(red: 255, green: 158, blue: 22)
 
-public final class Brownian : BitmapDrawer {
+public final class Brownian: BitmapDrawer {
   public let numberOfParticles: Int
 
   // Default RNG is too slow. Use a Mersenne Twister
