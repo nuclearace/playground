@@ -4,8 +4,6 @@
 
 import Foundation
 
-private let orange = Color(red: 255, green: 158, blue: 22)
-
 public final class Brownian: BitmapDrawer {
   public let numberOfParticles: Int
 
@@ -22,12 +20,12 @@ public final class Brownian: BitmapDrawer {
     var (px, py, dx, dy) = (0, 0, 0, 0)
 
     func randomPoint() {
-      px = Int.random(in: 0..<width, using: &rng)
-      py = Int.random(in: 0..<height, using: &rng)
+      px = Int.random(in: 0..<imageWidth, using: &rng)
+      py = Int.random(in: 0..<imageHeight, using: &rng)
     }
 
     // Seed
-    grid[width/3][height/3] = orange
+    grid[imageWidth/3][imageHeight/3] = orange
 
     for i in 0..<numberOfParticles-1 {
       print("Putting point \(i + 1)")
@@ -41,7 +39,7 @@ public final class Brownian: BitmapDrawer {
           let x = dx + px
           let y = dy + py
 
-          if x < 0 || x >= width || y < 0 || y >= height {
+          if x < 0 || x >= imageWidth || y < 0 || y >= imageHeight {
             randomPoint()
           } else if grid[x][y] != nil {
             grid[px][py] = orange

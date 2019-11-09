@@ -3,8 +3,8 @@ import CStuff
 import Foundation
 import Playground
 
-let height = 65
-let width = 100
+let height = 2000
+let width = 2000
 
 var seed = Set<Cell>()
 
@@ -33,5 +33,8 @@ var col: Colony
 while let numSeeds = getNumSeeds() {
   resetSeed(numSeeds)
   col = Colony(cells: seed, height: height, width: width)
+
+  col.saveImage(to: "~/Desktop/initial.bmp")
   col.run(iterations: 1000, sim: true)
+  col.saveImage()
 }

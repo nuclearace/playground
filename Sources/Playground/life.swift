@@ -26,7 +26,21 @@ public struct Cell: Hashable {
   }
 }
 
+extension Cell: CustomStringConvertible {
+  public var description: String {
+    return "Cell(x: \(x), y: \(y))"
+  }
+}
+
+extension Cell: CustomDebugStringConvertible {
+  public var debugDescription: String {
+    return "{x: \(x), y: \(y)}"
+  }
+}
+
 public struct Colony {
+  public var numCells: Int { cells.count }
+
   private var height: Int
   private var width: Int
   private var cells: Set<Cell>
@@ -60,15 +74,7 @@ public struct Colony {
   }
 
   public mutating func run(iterations: Int, sim: Bool = false) {
-    if sim {
-      print("\u{001B}[2J\u{001B}[f", terminator: "")
-    }
-
-    print("(0) num cells: \(cells.count)")
-    printColony()
-    print()
-
-    if sim && requestQuit() {
+    if sim && whatNow(i: 0) {
       return
     }
 
@@ -77,18 +83,12 @@ public struct Colony {
         return
       }
 
-      if sim {
-        print("\u{001B}[2J\u{001B}[f", terminator: "")
-      }
-
       runGeneration()
-      print("(\(i)) num cells: \(cells.count)")
-      printColony()
 
-      if sim && requestQuit() {
+      if sim && whatNow(i: i) {
         return
       } else {
-        print()
+        continue
       }
     }
   }
@@ -102,5 +102,87 @@ public struct Colony {
         return nil
       }
     }))
+  }
+
+  public func saveImage(to: String = "~/Desktop/out.bmp") {
+    guard !cells.isEmpty else {
+      return
+    }
+
+    let adjustX: Int
+    let adjustY: Int
+
+    var top = cells.first!
+    var bottom = cells.first!
+    var left = cells.first!
+    var right = cells.first!
+
+    for cell in cells {
+      if cell.x < left.x {
+        left = cell
+      } else if cell.x > right.x {
+        right = cell
+      }
+
+      if cell.y < top.y {
+        top = cell
+      } else if cell.y > bottom.y {
+        bottom = cell
+      }
+    }
+
+    if left.x < 0 {
+      adjustX = abs(left.x)
+    } else {
+      adjustX = 0
+    }
+
+    if top.y < 0 {
+      adjustY = abs(top.y)
+    } else {
+      adjustY = 0
+    }
+
+    let imageHeight = bottom.y + adjustY + 1
+    let imageWidth = right.x + adjustX + 1
+
+    let drawer = BitmapDrawer(height: imageHeight, width: imageWidth)
+
+    for cell in cells {
+      let x = cell.x + adjustX
+      let y = cell.y + adjustY
+
+      assert(
+        x >= 0 && y >= 0 && x <= imageWidth && y <= imageHeight,
+        "\(cell) \(x) \(y) \(imageWidth) \(imageHeight)"
+      )
+
+      drawer.setPixel(x: x, y: y, to: orange)
+    }
+
+    drawer.save(to: to)
+  }
+
+  private func whatNow(i: Int) -> Bool {
+    print("\u{001B}[2J\u{001B}[f", terminator: "")
+    print("(\(i)) num cells: \(cells.count)")
+    print("What now? Nothing) continue; p) print to screen q) stop sim; s) save image: ", terminator: "")
+
+    guard let input = readLine(strippingNewline: true) else {
+      return true
+    }
+
+    switch input.lowercased() {
+    case "s":
+      saveImage()
+    case "p":
+      printColony()
+    case "q":
+      return true
+    case _:
+      break
+    }
+
+    return false
   }
 }

@@ -6,8 +6,8 @@ import Foundation
 import QDBMP
 
 public protocol Drawer {
-  var height: Int { get }
-  var width: Int { get }
+  var imageHeight: Int { get }
+  var imageWidth: Int { get }
   var origin: (Int, Int) { get }
 
   func save(to path: String)
@@ -20,16 +20,18 @@ public protocol Drawable {
 
 public typealias Color = (red: UInt8, green: UInt8, blue: UInt8)
 
-public class BitmapDrawer : Drawer {
+let orange = Color(red: 255, green: 158, blue: 22)
+
+public class BitmapDrawer: Drawer {
   /// The height of the portrait
-  public let height: Int
+  public let imageHeight: Int
 
   /// The width of the portrait
-  public let width: Int
+  public let imageWidth: Int
 
   /// The origin of the portrait
   public var origin: (Int, Int) {
-    return (width/2, height/2)
+    return (imageWidth/2, imageHeight/2)
   }
 
   /// The portrait that is being drawn
@@ -38,8 +40,8 @@ public class BitmapDrawer : Drawer {
   private let bmp: OpaquePointer
 
   public init(height: Int, width: Int) {
-    self.height = height
-    self.width = width
+    self.imageHeight = height
+    self.imageWidth = width
     self.grid = [[Color?]](repeating: [Color?](repeating: nil, count: height), count: width)
     self.bmp = BMP_Create(UInt(width), UInt(height), 24)
 
@@ -61,18 +63,18 @@ public class BitmapDrawer : Drawer {
   public func drawGrid() {
     let (oX, oY) = origin
 
-    for x in 0..<width {
+    for x in 0..<imageWidth {
       grid[x][oY] = (255, 255, 255)
     }
 
-    for y in 0..<height {
+    for y in 0..<imageHeight {
       grid[oX][y] = (255, 255, 255)
     }
   }
 
   public func save(to path: String = "~/Desktop/out.bmp") {
-    for x in 0..<width {
-      for y in 0..<height {
+    for x in 0..<imageWidth {
+      for y in 0..<imageHeight {
         guard let color = grid[x][y] else { continue }
 
         BMP_SetPixelRGB(bmp, UInt(x), UInt(y), color.red, color.green, color.blue)
