@@ -3,55 +3,35 @@ import CStuff
 import Foundation
 import Playground
 
-let gliderGun = [
-  Cell(x: 1, y: 5),
-  Cell(x: 1, y: 6),
-  Cell(x: 2, y: 5),
-  Cell(x: 2, y: 6),
+let height = 65
+let width = 100
 
-  Cell(x: 11, y: 5),
-  Cell(x: 11, y: 6),
-  Cell(x: 11, y: 7),
-  Cell(x: 12, y: 8),
-  Cell(x: 13, y: 9),
-  Cell(x: 14, y: 9),
-  Cell(x: 12, y: 4),
-  Cell(x: 13, y: 3),
-  Cell(x: 14, y: 3),
+var seed = Set<Cell>()
 
-  Cell(x: 15, y: 6),
+func resetSeed(_ numSeeds: Int) {
+  seed.removeAll()
 
-  Cell(x: 16, y: 4),
-  Cell(x: 17, y: 5),
-  Cell(x: 17, y: 6),
-  Cell(x: 17, y: 7),
-  Cell(x: 16, y: 8),
-  Cell(x: 18, y: 6),
+  while seed.count != numSeeds {
+    seed.insert(Cell(x: .random(in: 0..<width), y: .random(in: 0..<height)))
+  }
+}
 
-  Cell(x: 21, y: 3),
-  Cell(x: 21, y: 4),
-  Cell(x: 21, y: 5),
-  Cell(x: 22, y: 3),
-  Cell(x: 22, y: 4),
-  Cell(x: 22, y: 5),
+func getNumSeeds() -> Int? {
+  print("Enter number of seeds, or anything else to stop: ", terminator: "")
 
-  Cell(x: 23, y: 2),
-  Cell(x: 23, y: 6),
+  guard let num = readLine(strippingNewline: true) else {
+    return nil
+  }
 
-  Cell(x: 25, y: 1),
-  Cell(x: 25, y: 2),
+  return Int(num)
+}
 
-  Cell(x: 25, y: 6),
-  Cell(x: 25, y: 7),
+var col: Colony
 
-  Cell(x: 36, y: 3),
-  Cell(x: 36, y: 4),
-  Cell(x: 35, y: 3),
-  Cell(x: 35, y: 4),
-] as Set
+//col.printColony()
 
-var col = Colony(cells: gliderGun, height: 50, width: 100)
-
-col.printColony()
-//col.run(iterations: 300)
-
+while let numSeeds = getNumSeeds() {
+  resetSeed(numSeeds)
+  col = Colony(cells: seed, height: height, width: width)
+  col.run(iterations: 1000, sim: true)
+}

@@ -44,3 +44,14 @@ extension RangeReplaceableCollection where Element: Equatable {
     return first == thing() ? dropFirst() : self[...]
   }
 }
+
+public func requestQuit() -> Bool {
+  let q = readLine(strippingNewline: true)
+
+  switch q?.lowercased() {
+  case "q", "quit":
+    return true
+  case _:
+    return false
+  }
+}

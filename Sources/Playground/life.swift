@@ -59,16 +59,37 @@ public struct Colony {
     }
   }
 
-  public mutating func run(iterations: Int) {
-    print("(0)")
+  public mutating func run(iterations: Int, sim: Bool = false) {
+    if sim {
+      print("\u{001B}[2J\u{001B}[f", terminator: "")
+    }
+
+    print("(0) num cells: \(cells.count)")
     printColony()
     print()
 
+    if sim && requestQuit() {
+      return
+    }
+
     for i in 1...iterations {
-      print("(\(i))")
+      guard !cells.isEmpty else {
+        return
+      }
+
+      if sim {
+        print("\u{001B}[2J\u{001B}[f", terminator: "")
+      }
+
       runGeneration()
+      print("(\(i)) num cells: \(cells.count)")
       printColony()
-      print()
+
+      if sim && requestQuit() {
+        return
+      } else {
+        print()
+      }
     }
   }
 
