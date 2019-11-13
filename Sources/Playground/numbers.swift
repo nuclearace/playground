@@ -25,6 +25,27 @@ extension BinaryInteger {
   }
 
   @inlinable
+  public func egyptianDivide(by divisor: Self) -> (quo: Self, rem: Self) {
+    let table =
+      (0...).lazy
+        .map({i -> (Self, Self) in
+          let power = Self(2).power(Self(i))
+
+          return (power, power * divisor)
+        })
+        .prefix(while: { $0.1 <= self })
+        .reversed()
+
+    let (answer, acc) = table.reduce((Self(0), Self(0)), {cur, row in
+      let ((ans, acc), (power, doubling)) = (cur, row)
+
+      return acc + doubling <= self ? (ans + power, doubling + acc) : cur
+    })
+
+    return (answer, Self((acc - self).magnitude))
+  }
+
+  @inlinable
   public func factors() -> [Self] {
     let maxN = Self(Double(self).squareRoot())
     var res = Set<Self>()
@@ -75,8 +96,8 @@ extension BinaryInteger {
   }
 
   @inlinable
-  public func power(_ n: Int) -> Self {
-    return (0..<n).lazy.map({_ in self }).reduce(1, *)
+  public func power(_ n: Self) -> Self {
+    return stride(from: 0, to: n, by: 1).lazy.map({_ in self }).reduce(1, *)
   }
 
   @inlinable
@@ -250,7 +271,7 @@ public func exactlyNDivisors<TermType: BinaryInteger>(numTerms: Int) -> [TermTyp
 
   for i in 1...numTerms {
     if i.isPrime {
-      seq.append(TermType(primes[i - 1]).power(i - 1))
+      seq.append(TermType(primes[i - 1]).power(TermType(i - 1)))
     } else {
       var count = 0
       var j = 1
@@ -281,7 +302,6 @@ public func exactlyNDivisors<TermType: BinaryInteger>(numTerms: Int) -> [TermTyp
 
   return seq
 }
-
 
 extension FloatingPoint {
   @inlinable
