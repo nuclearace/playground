@@ -2,9 +2,16 @@ import BigInt
 import CStuff
 import Foundation
 import Playground
+import Numerics
 
-let dividend = 580
-let divisor = 34
-let (quo, rem) = dividend.egyptianDivide(by: divisor)
+var a = TowersOfHanoi.Tower(i: 0, disks: [Int]())
+var b = TowersOfHanoi.Tower(i: 1, disks: [Int]())
+var c = TowersOfHanoi.Tower(i: 2, disks: [Int]())
 
-print("\(dividend) divided by \(divisor) = \(quo) rem \(rem)")
+for i in stride(from: 16, to: 0, by: -1) {
+  a.disks.append(i)
+}
+
+TowersOfHanoi.hanoi(source: &a, target: &c, aux: &b)
+
+

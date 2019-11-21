@@ -134,3 +134,36 @@ extension Array where Element: Comparable {
     return arr.reversed()
   }
 }
+
+@usableFromInline
+struct SequenceGen<InType: BinaryInteger, OutType>: Sequence, IteratorProtocol {
+  let gen: (InType) -> OutType
+
+  var step: InType
+  var i: InType
+
+  @usableFromInline
+  init(gen: @escaping (InType) -> OutType, start: InType = 0, step: InType = 1) {
+    self.gen = gen
+    self.i = start
+    self.step = step
+  }
+
+  @usableFromInline
+  mutating func next() -> OutType? {
+    defer {
+      i += step
+    }
+
+    return gen(i)
+  }
+}
+
+@inlinable
+public func genSequence<InType: BinaryInteger, OutType>(
+  start: InType = 0,
+  step: InType = 1,
+  gen: @escaping (InType) -> OutType
+) -> some Sequence {
+  return SequenceGen(gen: gen, start: start, step: step)
+}

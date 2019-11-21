@@ -13,3 +13,15 @@ public struct SternBrocot: Sequence, IteratorProtocol {
     return seq.removeFirst()
   }
 }
+
+public func fusc<T: BinaryInteger>(n: T) -> T {
+  guard n > 1 else {
+    return n
+  }
+
+  if n & 1 == 0 {
+    return fusc(n: n / 2)
+  } else {
+    return fusc(n: (n - 1) / 2) + fusc(n: (n + 1) / 2)
+  }
+}
