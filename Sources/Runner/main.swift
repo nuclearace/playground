@@ -4,14 +4,15 @@ import Foundation
 import Playground
 import Numerics
 
-var a = TowersOfHanoi.Tower(i: 0, disks: [Int]())
-var b = TowersOfHanoi.Tower(i: 1, disks: [Int]())
-var c = TowersOfHanoi.Tower(i: 2, disks: [Int]())
+private let ludicNumbers = Array(Ludic().prefix(2005))
 
-for i in stride(from: 16, to: 0, by: -1) {
-  a.disks.append(i)
-}
+print("First 25 ludic numbers are \(Array(ludicNumbers.prefix(25)))")
+print("\(ludicNumbers.prefix(while: { $0 <= 1000 }).count) ludic numbers <= 1000")
+print("Ludic numbers 2000...2005: \(Array(ludicNumbers.dropFirst(1998).prefix(7)))")
 
-TowersOfHanoi.hanoi(source: &a, target: &c, aux: &b)
+let triples = ludicNumbers.lazy
+  .prefix(while: { $0 <= 250 })
+  .filter({ Set(ludicNumbers).contains($0 + 2) && Set(ludicNumbers).contains($0 + 6) })
+  .map({ ($0, $0 + 2, $0 + 6) })
 
-
+print("Ludic triples < 250 = \(Array(triples))")
