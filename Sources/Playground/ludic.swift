@@ -111,3 +111,61 @@ public func ludic(minLength: Int) -> [Int] {
   return res
 }
 
+public func ludicSlow(limit: Int) -> [Int] {
+  var work = Array(2...limit)
+  var res = [1]
+
+  while let inc = work.first {
+    res.append(inc)
+
+    for (removed, i) in stride(from: work.startIndex, to: work.endIndex, by: inc).enumerated() {
+      work.remove(at: i - removed)
+    }
+  }
+
+  return res
+}
+
+public func ludicSlowest(limit: Int) -> [Int] {
+  var work = Array(2...limit)
+  var res = [1]
+
+  while let inc = work.first {
+    res.append(inc)
+
+    let toRemove = Set(stride(from: work.startIndex, to: work.endIndex, by: inc))
+
+    work = Array(work.lazy.enumerated().filter({ !toRemove.contains($0.offset) }).map({ $0.element }))
+  }
+
+  return res
+}
+
+public func ludicNoRemoval(limit: Int) -> [Int] {
+  var work = Array(2...limit)
+  var res = [1]
+
+  work.withContiguousMutableStorageIfAvailable {[sizeWork = work.count] buf in
+    for i in 0..<sizeWork where buf[i] != 0 {
+      let n = buf[i]
+
+      res.append(n)
+
+      var seen = n
+
+      for j in i..<sizeWork where buf[j] != 0 {
+        guard seen == n else {
+          seen += 1
+
+          continue
+        }
+
+        seen = 1
+        buf[j] = 0
+      }
+    }
+  }
+
+  return res
+}
+
