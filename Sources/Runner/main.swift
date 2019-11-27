@@ -4,15 +4,40 @@ import Foundation
 import Playground
 import Numerics
 
-private let ludicNumbers = Array(Ludic().prefix(2005))
+typealias LychrelReduce = (seen: Set<BigInt>, seeds: Set<BigInt>, related: Set<BigInt>)
 
-print("First 25 ludic numbers are \(Array(ludicNumbers.prefix(25)))")
-print("\(ludicNumbers.prefix(while: { $0 <= 1000 }).count) ludic numbers <= 1000")
-print("Ludic numbers 2000...2005: \(Array(ludicNumbers.dropFirst(1999).prefix(6)))")
+let iters = BigInt(500)
 
-let triples = ludicNumbers
-  .prefix(while: { $0 <= 250 })
-  .filter({ Set(ludicNumbers).contains($0 + 2) && Set(ludicNumbers).contains($0 + 6) })
-  .map({ ($0, $0 + 2, $0 + 6) })
+let (seen, seeds, related): LychrelReduce =
+  (1...10_000)
+    .map({ BigInt($0) })
+    .reduce(into: LychrelReduce(seen: Set(), seeds: Set(), related: Set()), {res, cur in
+      guard !res.seen.contains(cur) else {
+        res.related.insert(cur)
 
-print("Ludic triples < 250 = \(Array(triples))")
+        return
+      }
+
+      var seen = false
+
+      let seq = Lychrel(seed: cur, iterations: iters).prefix(while: { seen = res.seen.contains($0); return !seen })
+      let last = seq.last!
+
+      guard !isPalindrome(last) || seen else {
+        return
+      }
+
+      res.seen.formUnion(seq)
+
+      if seq.count == Int(iters) {
+        res.seeds.insert(cur)
+      } else {
+        res.related.insert(cur)
+      }
+  })
+
+print("Found \(seeds.count + related.count) Lychrel numbers between 1...10_000 when limited to 500 iterations")
+print("Number of Lychrel seeds found: \(seeds.count)")
+print("Lychrel seeds found: \(seeds.sorted())")
+print("Number of related Lychrel nums found: \(related.count)")
+print("Lychrel palindromes found: \(seeds.union(related).filter(isPalindrome).sorted())")
