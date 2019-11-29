@@ -2,6 +2,13 @@
 // Created by Erik Little on 2018-09-28.
 //
 
+infix operator ??= : AssignmentPrecedence
+
+@inlinable
+public func ??= <T>(lhs: inout T?, rhs: T?) {
+  lhs = lhs ?? rhs
+}
+
 public enum Either<L, R> {
   case left(L)
   case right(R)
