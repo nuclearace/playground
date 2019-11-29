@@ -28,6 +28,15 @@ extension Array {
   }
 }
 
+extension Array {
+  @inlinable
+  public mutating func expandArray(adding n: Int, gen: (Element?) -> Element) {
+    for _ in 0..<n {
+      append(gen(last))
+    }
+  }
+}
+
 @inlinable
 public func + <T>(el: T, arr: [T]) -> [T] {
   var ret = arr
