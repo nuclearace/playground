@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
         "state": {
           "branch": null,
-          "revision": "90e5b7af823d869fa8dea5a3abc7d95b6cb04c8c",
-          "version": "1.1.3"
+          "revision": "79ac632c85df81f2618dd838fc3869633e163370",
+          "version": "1.2.0"
         }
       },
       {
@@ -68,9 +68,9 @@
         "package": "swift-numerics",
         "repositoryURL": "https://github.com/apple/swift-numerics",
         "state": {
-          "branch": "master",
-          "revision": "ee54cc207583f8b481d8ca3e7357819963c2be40",
-          "version": null
+          "branch": null,
+          "revision": "2b63fc844eee63bc95402465513c060b9962c3d9",
+          "version": "0.0.2"
         }
       },
       {

@@ -210,7 +210,6 @@ public func runLife(height: Int, width: Int) {
 
   var col: Colony
 
-//col.printColony()
   while let numSeeds = getNumSeeds() {
     resetSeed(numSeeds)
     col = Colony(cells: seed, height: height, width: width)

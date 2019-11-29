@@ -4,11 +4,11 @@
 
 import BigInt
 
-public func fib(n: Int) -> BigInt {
+public func fib<T: BinaryInteger>(n: T) -> T {
   return lucasSeq(1, 1, n: n)
 }
 
-public func lucas(n: Int) -> BigInt {
+public func lucas<T: BinaryInteger>(n: T) -> T {
   return lucasSeq(2, 1, n: n)
 }
 
@@ -35,10 +35,10 @@ public struct FibonacciSequence : Sequence, IteratorProtocol {
   }
 }
 
-public func lucasSeq(_ p: Int, _ q: Int, n: Int) -> BigInt {
-  var a = BigInt(p), b = BigInt(q)
+public func lucasSeq<T: BinaryInteger>(_ p: T, _ q: T, n: T) -> T {
+  var a = p, b = q
 
-  for _ in 0..<n {
+  for _ in stride(from: 0, to: n, by: 1) {
     (a, b) = (b, a + b)
   }
 
