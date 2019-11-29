@@ -4,14 +4,40 @@ import Foundation
 import Playground
 import Numerics
 
-var a = TowersOfHanoi.Tower(i: 0, disks: [Int]())
-var b = TowersOfHanoi.Tower(i: 1, disks: [Int]())
-var c = TowersOfHanoi.Tower(i: 2, disks: [Int]())
+typealias LychrelReduce = (seen: Set<BigInt>, seeds: Set<BigInt>, related: Set<BigInt>)
 
-for i in stride(from: 16, to: 0, by: -1) {
-  a.disks.append(i)
-}
+let iters = BigInt(500)
 
-TowersOfHanoi.hanoi(source: &a, target: &c, aux: &b)
+let (seen, seeds, related): LychrelReduce =
+  (1...10_000)
+    .map({ BigInt($0) })
+    .reduce(into: LychrelReduce(seen: Set(), seeds: Set(), related: Set()), {res, cur in
+      guard !res.seen.contains(cur) else {
+        res.related.insert(cur)
 
+        return
+      }
 
+      var seen = false
+
+      let seq = Lychrel(seed: cur, iterations: iters).prefix(while: { seen = res.seen.contains($0); return !seen })
+      let last = seq.last!
+
+      guard !isPalindrome(last) || seen else {
+        return
+      }
+
+      res.seen.formUnion(seq)
+
+      if seq.count == Int(iters) {
+        res.seeds.insert(cur)
+      } else {
+        res.related.insert(cur)
+      }
+  })
+
+print("Found \(seeds.count + related.count) Lychrel numbers between 1...10_000 when limited to 500 iterations")
+print("Number of Lychrel seeds found: \(seeds.count)")
+print("Lychrel seeds found: \(seeds.sorted())")
+print("Number of related Lychrel nums found: \(related.count)")
+print("Lychrel palindromes found: \(seeds.union(related).filter(isPalindrome).sorted())")

@@ -7,6 +7,8 @@ import Foundation
 public extension String {
   private static let commaReg = try! NSRegularExpression(pattern: "(\\.[0-9]+|[1-9]([0-9]+)?(\\.[0-9]+)?)")
 
+  var isPalindrome: Bool { Playground.isPalindrome(self) }
+
   func splitOnChanges() -> [String] {
     guard !isEmpty else {
       return []
@@ -101,4 +103,15 @@ public extension String {
 
     return String(prefix(start)) + String(dropFirst(start)).replacingOccurrences(of: fullMatch, with: ip)
   }
+}
+
+@inlinable
+public func isPalindrome<T: CustomStringConvertible>(_ x: T) -> Bool {
+  let asString = String(describing: x)
+
+  for (c, c1) in zip(asString, asString.reversed()) where c != c1 {
+    return false
+  }
+
+  return true
 }
