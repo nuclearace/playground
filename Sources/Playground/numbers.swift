@@ -58,6 +58,32 @@ extension BinaryInteger {
     return res.sorted()
   }
 
+  @inlinable
+  public func modPow(exp: Self, mod: Self) -> Self {
+    guard exp != 0 else {
+      return 1
+    }
+
+    var res = Self(1)
+    var base = self % mod
+    var exp = exp
+
+    while true {
+      if exp & 1 == 1 {
+        res *= base
+        res %= mod
+      }
+
+      if exp == 1 {
+        return res
+      }
+
+      exp >>= 1
+      base *= base
+      base %= mod
+    }
+  }
+
   @usableFromInline
   func fastExp(_ exp: Int) -> Self {
     var ans: Self = 1

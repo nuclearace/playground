@@ -5,7 +5,7 @@
 import BigInt
 import Foundation
 
-public protocol ReversibleNumeric: Numeric {
+public protocol ReversibleNumeric: Numeric, CustomStringConvertible {
   func reversed() -> Self
 }
 
@@ -21,7 +21,7 @@ extension BigInt: ReversibleNumeric {
   }
 }
 
-public struct Lychrel<T: ReversibleNumeric & CustomStringConvertible>: Sequence, IteratorProtocol {
+public struct Lychrel<T: ReversibleNumeric>: Sequence, IteratorProtocol {
   @usableFromInline
   let seed: T
 
@@ -62,7 +62,7 @@ public struct Lychrel<T: ReversibleNumeric & CustomStringConvertible>: Sequence,
   }
 }
 
-public enum LychrelResult<T: BinaryInteger> {
+public enum LychrelResult<T: ReversibleNumeric> {
   case finished([T])
   case stopped([T])
 
