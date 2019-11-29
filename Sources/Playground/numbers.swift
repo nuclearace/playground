@@ -7,6 +7,18 @@ import Foundation
 
 extension BinaryInteger {
   @inlinable
+  public var isNarcissistic: Bool {
+    let digits = String(self).map({ Int(String($0))! })
+    let m = digits.count
+
+    guard m != 1 else {
+      return true
+    }
+
+    return digits.map({ $0.power(m) }).reduce(0, +) == self
+  }
+
+  @inlinable
   public var isSquare: Bool {
     var x = self / 2
     var seen = Set([x])
@@ -346,6 +358,7 @@ public func exactlyNDivisors<TermType: BinaryInteger>(numTerms: Int) -> [TermTyp
   return seq
 }
 
+// FIXME: Remove when Numerics lib has this
 extension FloatingPoint {
   @inlinable
   public func isAlmostEqual(

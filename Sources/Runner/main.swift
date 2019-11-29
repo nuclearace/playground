@@ -4,4 +4,7 @@ import Foundation
 import Playground
 import Numerics
 
-print(42.modInv(2017))
+let narcs = Array((0...).lazy.filter({ $0.isNarcissistic }).prefix(25))
+
+print("First 25 narcissistic numbers are \(narcs)")
+
