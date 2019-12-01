@@ -58,7 +58,7 @@ extension BinaryInteger {
   }
 
   @inlinable
-  public func factors() -> [Self] {
+  public func factors(sorted: Bool = true) -> [Self] {
     let maxN = Self(Double(self).squareRoot())
     var res = Set<Self>()
 
@@ -67,7 +67,7 @@ extension BinaryInteger {
       res.insert(self / factor)
     }
 
-    return res.sorted()
+    return sorted ? res.sorted() : Array(res)
   }
 
   @inlinable

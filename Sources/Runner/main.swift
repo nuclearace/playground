@@ -4,23 +4,10 @@ import Foundation
 import Playground
 import Numerics
 
-let words = [
-  "a",
-  "bc",
-  "abc",
-  "cd",
-  "b"
-] as Set
+let zums = (2...).lazy.filter({ $0.isZumkeller })
+let oddZums = zums.filter({ $0 & 1 == 1 })
+let oddZumsWithout5 = oddZums.filter({ String($0).last! != "5" })
 
-let testCases = [
-  "abcd",
-  "abbc",
-  "abcbcd",
-  "acdbc",
-  "abcdd"
-]
-
-for test in testCases {
-  print("\(test):")
-  print("  \(wordBreak(str: test, dict: words) ?? "did not parse with given words")")
-}
+print("First 220 zumkeller numbers are: \(Array(zums.prefix(220)))")
+print("First 40 odd zumkeller numbers are: \(Array(oddZums.prefix(40)))")
+print("First 40 odd zumkeller numbers that don't end in a 5 are: \(Array(oddZumsWithout5.prefix(40)))")
