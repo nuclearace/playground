@@ -37,6 +37,18 @@ extension BinaryInteger {
   }
 
   @inlinable
+  public var isSelfDescribing: Bool {
+    let asString = String(self)
+    let counts = asString.reduce(into: [Int: Int](), {res, char in res[Int(String(char)), default: 0] += 1})
+
+    for (i, n) in asString.enumerated() where counts[i, default: 0] != Int(String(n)) {
+      return false
+    }
+
+    return true
+  }
+
+  @inlinable
   public func egyptianDivide(by divisor: Self) -> (quo: Self, rem: Self) {
     let table =
       (0...).lazy
