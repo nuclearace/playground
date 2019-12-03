@@ -4,20 +4,18 @@ import Foundation
 import Playground
 import Numerics
 
-print("Self-describing numbers less than 100,000,000:")
-
-DispatchQueue.concurrentPerform(iterations: 100_000_000) {i in
-  defer {
-    if i == 100_000_000 - 1 {
-      exit(0)
-    }
-  }
-
-  guard i.isSelfDescribing else {
-    return
-  }
-
-  print(i)
+for n in 2...29 where n.isPrime {
+  print("The first 25 \(n)-smooth numbers are: \(smoothN(n: n, count: 25))")
 }
 
-dispatchMain()
+print()
+
+for n in 3...29 where n.isPrime {
+  print("The 3000...3002 \(n)-smooth numbers are: \(smoothN(n: BigInt(n), count: 3002).dropFirst(2999).prefix(3))")
+}
+
+print()
+
+for n in 503...521 where n.isPrime {
+  print("The 30,000...30,019 \(n)-smooth numbers are: \(smoothN(n: BigInt(n), count: 30_019).dropFirst(29999).prefix(20))")
+}

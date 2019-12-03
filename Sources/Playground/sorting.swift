@@ -2,6 +2,18 @@
 // Created by Erik Little on 2019-07-16.
 //
 
+extension Sequence {
+  @inlinable
+  public func sorted<Value>(
+    on: KeyPath<Element, Value>,
+    using: (Value, Value) -> Bool
+  ) -> [Element] where Value: Comparable {
+    return withoutActuallyEscaping(using, do: {using -> [Element] in
+      return self.sorted(by: { using($0[keyPath: on], $1[keyPath: on]) })
+    })
+  }
+}
+
 extension Collection where Element: Comparable {
   @inlinable
   public func cocktailSorted() -> [Element] {

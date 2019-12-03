@@ -144,6 +144,24 @@ extension Array where Element: Comparable {
   }
 }
 
+public struct InfSeq<T: BinaryInteger>: Sequence, IteratorProtocol {
+  @usableFromInline
+  var n: T
+
+  public init(start: T) {
+    self.n = start
+  }
+
+  @inlinable
+  public mutating func next() -> T? {
+    defer {
+      n += 1
+    }
+
+    return n
+  }
+}
+
 @usableFromInline
 struct SequenceGen<InType: BinaryInteger, OutType>: Sequence, IteratorProtocol {
   let gen: (InType) -> OutType

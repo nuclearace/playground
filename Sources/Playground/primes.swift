@@ -106,6 +106,34 @@ extension BinaryInteger {
 
     return q <= maxQ ? [q] + (self / q).primeDecomposition() : [self]
   }
+
+  @inlinable
+  public func isSmooth(n: Self, primes: [Self]? = nil) -> Bool {
+    guard self != 1, self >= n else {
+      return true
+    }
+
+    guard n != 9 else {
+      return false
+    }
+
+    var work = self
+    var factors = [Self]()
+
+    for p in primes ?? stride(from: 2, to: n + 1, by: 1).filter({ $0.isPrime }) {
+      while work % p == 0 {
+        factors.append(p)
+
+        work /= p
+      }
+    }
+
+    guard !factors.isEmpty else {
+      return false
+    }
+
+    return factors.reduce(1, *) == self
+  }
 }
 
 public func lucasLehmer(_ p: Int) -> Bool {
@@ -284,6 +312,31 @@ public func carmichael<T: BinaryInteger & SignedNumeric>(p1: T) -> [(T, T, T)] {
       }
 
       res.append((p1, p2, p3))
+    }
+  }
+
+  return res
+}
+
+@inlinable
+public func smoothN<T: BinaryInteger>(n: T, count: Int) -> [T] {
+  let primes = stride(from: 2, to: n + 1, by: 1).filter({ $0.isPrime })
+  var next = primes
+  var indices = [Int](repeating: 0, count: primes.count)
+  var res = [T](repeating: 0, count: count)
+
+  res[0] = 1
+
+  guard count > 1 else {
+    return res
+  }
+
+  for m in 1..<count {
+    res[m] = next.min()!
+
+    for i in 0..<indices.count where res[m] == next[i] {
+      indices[i] += 1
+      next[i] = primes[i] * res[indices[i]]
     }
   }
 

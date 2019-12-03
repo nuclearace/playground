@@ -19,6 +19,21 @@ extension BinaryInteger {
   }
 
   @inlinable
+  public var isSmith: Bool {
+    guard self > 3 else {
+      return false
+    }
+
+    let primeFactors = primeDecomposition()
+
+    guard primeFactors.count != 1 else {
+      return false
+    }
+
+    return primeFactors.map({ $0.sumDigits() }).reduce(0, +) == sumDigits()
+  }
+
+  @inlinable
   public var isSquare: Bool {
     var x = self / 2
     var seen = Set([x])
@@ -165,6 +180,11 @@ extension BinaryInteger {
   @inlinable
   public func power(_ n: Self) -> Self {
     return stride(from: 0, to: n, by: 1).lazy.map({_ in self }).reduce(1, *)
+  }
+
+  @inlinable
+  public func sumDigits() -> Self {
+    return String(self).lazy.map({ Self(Int(String($0))!) }).reduce(0, +)
   }
 
   @inlinable
