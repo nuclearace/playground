@@ -78,10 +78,8 @@ extension BinaryInteger {
 
     let max = Self(ceil((Double(self).squareRoot())))
 
-    for i in stride(from: 2, through: max, by: 1) {
-      if self % i == 0 {
-        return false
-      }
+    for i in stride(from: 2, through: max, by: 1) where self % i == 0  {
+      return false
     }
 
     return true

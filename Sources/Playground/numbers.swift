@@ -7,6 +7,15 @@ import Foundation
 
 extension BinaryInteger {
   @inlinable
+  public var highestSetBit: Self {
+    for i in stride(from: bitWidth - 1, through: 0, by: -1) where self & 1 << i != 0 {
+      return 1 << i
+    }
+
+    return 0
+  }
+
+  @inlinable
   public var isNarcissistic: Bool {
     let digits = String(self).map({ Int(String($0))! })
     let m = digits.count

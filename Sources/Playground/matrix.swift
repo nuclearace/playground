@@ -163,6 +163,63 @@ public func matrixTranspose<T>(_ matrix: [[T]]) -> [[T]] {
 }
 
 @inlinable
+public func rref<T: BinaryInteger>(_ matrix: [[T]]) -> [[T]] {
+  guard !matrix.isEmpty else {
+    return []
+  }
+
+  let rowCount = matrix.count
+  let colCount = matrix[0].count
+  var res = matrix
+  var lead = 0
+
+  for r in 0..<rowCount {
+    guard colCount > lead else {
+      return res
+    }
+
+    var i = r
+
+    while res[i][lead] == 0 {
+      i += 1
+
+      guard rowCount == i else {
+        continue
+      }
+
+      i = r
+      lead += 1
+
+      guard colCount != lead else {
+        return res
+      }
+    }
+
+    res.swapAt(i, r)
+
+    if res[r][lead] != 0 {
+      let div = res[r][lead]
+
+      for j in 0..<colCount {
+        res[r][j] /= div
+      }
+    }
+
+    for k in 0..<rowCount where k != r {
+      let mult = res[k][lead]
+
+      for j in 0..<colCount {
+        res[k][j] -= res[r][j] * mult
+      }
+    }
+
+    lead += 1
+  }
+
+  return res
+}
+
+@inlinable
 public func robbins<T: BinaryInteger>(n: Int) -> T {
   var nums = [Int]()
   var doms = [Int]()
