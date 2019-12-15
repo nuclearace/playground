@@ -28,40 +28,6 @@ public func largestLeftTruncatablePrime(_ base: Int) -> BigInt {
   }
 }
 
-// Miller-Rabin prime test
-public func isPrime(_ n: BigInt, rounds: Int = 10) -> Bool {
-  guard n != 2 && n != 3 else { return true }
-  guard n % 2 != 0 && n > 2 else { return false }
-
-  var s = 0
-  var d = n - 1
-
-  while true {
-    let (quo, rem) = (d / 2, d % 2)
-
-    guard rem != 1 else { break }
-
-    s += 1
-    d = quo
-  }
-
-  func tryComposite(_ a: BigInt) -> Bool {
-    guard a.power(d, modulus: n) != 1 else { return false }
-
-    for i in 0..<s where a.power(BigInt(2).power(i) * d, modulus: n) == n - 1 {
-      return false
-    }
-
-    return true
-  }
-
-  for _ in 0..<rounds where tryComposite(BigInt(BigUInt.randomInteger(lessThan: BigUInt(n)))) {
-    return false
-  }
-
-  return true
-}
-
 extension BinaryInteger {
   @inlinable
   public var isAttractive: Bool {
@@ -79,6 +45,61 @@ extension BinaryInteger {
     let max = Self(ceil((Double(self).squareRoot())))
 
     for i in stride(from: 2, through: max, by: 1) where self % i == 0  {
+      return false
+    }
+
+    return true
+  }
+
+  // Miller-Rabin prime test
+  @inlinable
+  public func isProbablePrime(rounds: Int = 10, powerOf2Cache: [Int: Self]? = nil) -> Bool {
+    guard self > 1 else { return false }
+    guard self != 2 && self != 3 else { return true }
+    guard self % 2 != 0 else { return false }
+
+    let smolPrimes: [Self] = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43]
+
+    for prime in smolPrimes {
+      if prime == self {
+        return true
+      } else if self % prime == 0 {
+        return false
+      }
+    }
+
+    var s = 0
+    var d = self - 1
+    var powerCache = powerOf2Cache ?? [Int: Self]()
+
+    while true {
+      let (quo, rem) = d.quotientAndRemainder(dividingBy: 2)
+
+      guard rem != 1 else { break }
+
+      s += 1
+      d = quo
+    }
+
+    func tryComposite(_ a: Self) -> Bool {
+      guard a.modPow(exp: d, mod: self) != 1 else {
+        return false
+      }
+
+      for i in 0..<s {
+        if powerCache[i] == nil {
+          powerCache[i] = Self(2).power(Self(i))
+        }
+
+        guard !(a.modPow(exp: powerCache[i]! * d, mod: self) == self - 1) else {
+          return false
+        }
+      }
+
+      return true
+    }
+
+    for _ in 0..<rounds where tryComposite(Self.randomInt(lessThan: self - 2) + 2) {
       return false
     }
 

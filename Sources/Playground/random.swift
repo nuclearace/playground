@@ -62,3 +62,35 @@ public func generateRandomNumArray(numDigits: Int = 4) -> [Int] {
 
   return Array(nums)
 }
+
+extension BinaryInteger {
+  @inlinable
+  public static func randomInt(withMaximumWidth width: Int) -> Self {
+    guard width > 0 else {
+      return 0
+    }
+
+    var res = Self(0)
+
+    for i in 0..<width {
+      res |= (Bool.random() ? 1 : 0) << i
+    }
+
+    return res
+  }
+
+  @inlinable
+  public static func randomInt(lessThan max: Self) -> Self {
+    guard let width = max.highestSetBitPosition else {
+      return 0
+    }
+
+    var random: Self
+
+    repeat {
+      random = randomInt(withMaximumWidth: width + 1)
+    } while random >= max
+
+    return random
+  }
+}

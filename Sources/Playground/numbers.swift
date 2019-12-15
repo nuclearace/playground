@@ -8,11 +8,24 @@ import Foundation
 extension BinaryInteger {
   @inlinable
   public var highestSetBit: Self {
-    for i in stride(from: bitWidth - 1, through: 0, by: -1) where self & 1 << i != 0 {
-      return 1 << i
+    guard let hi = highestSetBitPosition else {
+      return 0
     }
 
-    return 0
+    return 1 << hi
+  }
+
+  @inlinable
+  public var highestSetBitPosition: Int? {
+    guard self != 0 else {
+      return nil
+    }
+
+    for i in stride(from: bitWidth - 1, through: 0, by: -1) where self & 1 << i != 0 {
+      return i
+    }
+
+    fatalError()
   }
 
   @inlinable
