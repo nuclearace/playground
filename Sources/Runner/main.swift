@@ -4,56 +4,17 @@ import Foundation
 import Playground
 import Numerics
 
-let powerOf2 = 2500
-let queue = DispatchQueue(label: "work", attributes: .concurrent)
-let lock = DispatchSemaphore(value: 1)
+let oddAbundant = (0...).lazy.filter({ $0 & 1 == 1 }).map({ ($0, isAbundant(n: $0)) }).filter({ $1.0 })
 
-var n = BigInt(2).power(powerOf2)
-var probablePrimes = 0
-var nonPrimes = 0
-var pCache = [Int: BigInt]()
-
-for i in 0..<powerOf2 {
-  pCache[i] = BigInt(2).power(BigInt(i))
+for (n, (_, factors)) in oddAbundant.prefix(25) {
+  print("n: \(n); sigma: \(factors.reduce(0, +))")
 }
 
-print("running")
+let (bigA, (_, bigFactors)) =
+  (1_000_000_000...)
+    .lazy
+    .filter({ $0 & 1 == 1 })
+    .map({ ($0, isAbundant(n: $0)) })
+    .first(where: { $1.0 })!
 
-func primeSearch() {
-  queue.async {
-    lock.wait()
-    let localN = n
-
-    n += 1
-    lock.signal()
-
-    let (probablyPrime, t) = ClockTimer.time({ localN.isProbablePrime(powerOf2Cache: pCache) })
-
-    lock.wait()
-    if probablyPrime {
-      print("\(localN) is probably prime. Checking took \(t.duration)s")
-
-      probablePrimes += 1
-
-      if probablePrimes == 10 {
-        exit(0)
-      }
-    } else {
-      nonPrimes += 1
-    }
-
-    if nonPrimes.isMultiple(of: 100) {
-      print("found \(probablePrimes) probable primes; found \(nonPrimes) non-primes")
-    }
-    lock.signal()
-
-    primeSearch()
-  }
-}
-
-
-for _ in 0..<ProcessInfo.processInfo.processorCount {
-  primeSearch()
-}
-
-dispatchMain()
+print("first odd abundant number over 1 billion: \(bigA), sigma: \(bigFactors.reduce(0, +))")

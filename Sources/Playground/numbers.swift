@@ -412,6 +412,13 @@ public func exactlyNDivisors<TermType: BinaryInteger>(numTerms: Int) -> [TermTyp
   return seq
 }
 
+@inlinable
+public func isAbundant<T: BinaryInteger>(n: T) -> (Bool, [T]) {
+  let divs = n.factors().dropLast()
+
+  return (divs.reduce(0, +) > n, Array(divs))
+}
+
 // FIXME: Remove when Numerics lib has this
 extension FloatingPoint {
   @inlinable
