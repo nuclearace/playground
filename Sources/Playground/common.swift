@@ -51,3 +51,10 @@ extension RangeReplaceableCollection where Element: Equatable {
     return first == thing() ? dropFirst() : self[...]
   }
 }
+
+extension Collection where Element: FloatingPoint {
+  @inlinable
+  public func rms() -> Element {
+    return (lazy.map({ $0 * $0 }).reduce(0, +) / Element(count)).squareRoot()
+  }
+}

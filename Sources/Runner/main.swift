@@ -4,17 +4,8 @@ import Foundation
 import Playground
 import Numerics
 
-let oddAbundant = (0...).lazy.filter({ $0 & 1 == 1 }).map({ ($0, isAbundant(n: $0)) }).filter({ $1.0 })
+let fmt = { String(format: "%lf", $0) }
 
-for (n, (_, factors)) in oddAbundant.prefix(25) {
-  print("n: \(n); sigma: \(factors.reduce(0, +))")
-}
-
-let (bigA, (_, bigFactors)) =
-  (1_000_000_000...)
-    .lazy
-    .filter({ $0 & 1 == 1 })
-    .map({ ($0, isAbundant(n: $0)) })
-    .first(where: { $1.0 })!
-
-print("first odd abundant number over 1 billion: \(bigA), sigma: \(bigFactors.reduce(0, +))")
+print("Mean of angles (350, 10) => \(fmt(meanOfAngles([350, 10])))")
+print("Mean of angles (90, 180, 270, 360) => \(fmt(meanOfAngles([90, 180, 270, 360])))")
+print("Mean of angles (10, 20, 30) => \(fmt(meanOfAngles([10, 20, 30])))")
