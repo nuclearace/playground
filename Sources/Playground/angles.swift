@@ -44,7 +44,7 @@ func normalizeToRad<T: FloatingPoint>(_ f: T) -> T {
 
 @inlinable public func m2d<T: FloatingPoint>(_ f: T) -> T { f * 9 / 160 }
 @inlinable public func m2g<T: FloatingPoint>(_ f: T) -> T { f / 16 }
-@inlinable public func m2r<T: FloatingPoint>(_ f: T) { f * .pi / 3200 }
+@inlinable public func m2r<T: FloatingPoint>(_ f: T) -> T { f * .pi / 3200 }
 
 @inlinable public func r2d<T: FloatingPoint>(_ f: T) -> T { f * 180 / .pi }
 @inlinable public func r2g<T: FloatingPoint>(_ f: T) -> T { f * 200 / .pi }
