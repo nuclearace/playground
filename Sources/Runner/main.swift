@@ -4,32 +4,27 @@ import Foundation
 import Playground
 import Numerics
 
-var fact = Array(repeating: 0, count: 12)
-
-fact[0] = 1
-
-for n in 1..<12 {
-  fact[n] = fact[n - 1] * n
+func daysFromTimeInterval(_ interval: Double) -> Int {
+  return Int(interval) / 86400
 }
 
-for b in 2...12 {
-  print("The factorions for base \(b) are:")
+let formatter = DateFormatter()
 
-  for i in 1..<1500000 {
-    var sum = 0
-    var j = i
+formatter.dateFormat = "yyyy-MM-dd"
 
-    while j > 0 {
-      sum += fact[j % b]
-      j /= b
-    }
+print("Enter date one (yyyy-MM-dd): ", terminator: "")
 
-    if sum == i {
-      print("\(i)", terminator: " ")
-      fflush(stdout)
-    }
-  }
-
-  print("\n")
+guard let date1Str = readLine(strippingNewline: true), let date1 = formatter.date(from: date1Str) else {
+  fatalError("Invalid date two")
 }
 
+print("Enter date two (yyyy-MM-dd): ", terminator: "")
+
+guard let date2Str = readLine(strippingNewline: true), let date2 = formatter.date(from: date2Str) else {
+  fatalError("Invalid date two")
+}
+
+let (start, end) = date1 > date2 ? (date2, date1) : (date1, date2)
+let days = daysFromTimeInterval(DateInterval(start: start, end: end).duration)
+
+print("There are \(days) days between \(start) and \(end)")
