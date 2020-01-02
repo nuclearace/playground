@@ -5,21 +5,29 @@
 import Foundation
 
 public struct ChainedSequence<Element> {
-  private var sequences: [AnySequence<Element>]
-  private var iter: AnyIterator<Element>
-  private var curSeq = 0
+  @usableFromInline
+  var sequences: [AnySequence<Element>]
 
+  @usableFromInline
+  var iter: AnyIterator<Element>
+
+  @usableFromInline
+  var curSeq = 0
+
+  @usableFromInline
   init(chain: ChainedSequence) {
     self.sequences = chain.sequences
     self.iter = chain.iter
     self.curSeq = chain.curSeq
   }
 
+  @usableFromInline
   init<Seq: Sequence>(_ seq: Seq) where Seq.Element == Element {
     sequences = [AnySequence(seq)]
     iter = sequences[curSeq].makeIterator()
   }
 
+  @usableFromInline
   func chained<Seq: Sequence>(with seq: Seq) -> ChainedSequence where Seq.Element == Element {
     var res = ChainedSequence(chain: self)
 
@@ -30,6 +38,7 @@ public struct ChainedSequence<Element> {
 }
 
 extension ChainedSequence: Sequence, IteratorProtocol {
+  @inlinable
   public mutating func next() -> Element? {
     if let el = iter.next() {
       return el
@@ -48,8 +57,8 @@ extension ChainedSequence: Sequence, IteratorProtocol {
 }
 
 extension Sequence {
+  @inlinable
   public func chained<Seq: Sequence>(with other: Seq) -> ChainedSequence<Element> where Seq.Element == Element {
     return ChainedSequence(self).chained(with: other)
   }
 }
-
