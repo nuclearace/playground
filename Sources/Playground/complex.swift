@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct Complex {
+public struct SimpleComplex {
   public var real: Double
   public var imaginary: Double
 
@@ -13,47 +13,47 @@ public struct Complex {
     self.imaginary = imaginary
   }
 
-  public static prefix func - (rhs: Complex) -> Complex {
-    return Complex(real: -rhs.real, imaginary: -rhs.imaginary)
+  public static prefix func - (rhs: SimpleComplex) -> SimpleComplex {
+    return SimpleComplex(real: -rhs.real, imaginary: -rhs.imaginary)
   }
 
-  public static func - (lhs: Complex, rhs: Complex) -> Complex {
+  public static func - (lhs: SimpleComplex, rhs: SimpleComplex) -> SimpleComplex {
     return lhs + (-rhs)
   }
 
-  public static func + (lhs: Complex, rhs: Complex) -> Complex {
-    return Complex(
+  public static func + (lhs: SimpleComplex, rhs: SimpleComplex) -> SimpleComplex {
+    return SimpleComplex(
       real: lhs.real + rhs.real,
       imaginary: lhs.imaginary + rhs.imaginary
     )
   }
 
-  public static func * (lhs: Complex, rhs: Complex) -> Complex {
-    return Complex(
+  public static func * (lhs: SimpleComplex, rhs: SimpleComplex) -> SimpleComplex {
+    return SimpleComplex(
       real: lhs.real * rhs.real - lhs.imaginary * rhs.imaginary,
       imaginary: lhs.real * rhs.imaginary + lhs.imaginary * rhs.real
     )
   }
 
-  public static func / (lhs: Complex, rhs: Complex) -> Complex {
+  public static func / (lhs: SimpleComplex, rhs: SimpleComplex) -> SimpleComplex {
     return lhs * rhs.inverse()
   }
 
-  public func inverse() -> Complex {
+  public func inverse() -> SimpleComplex {
     let denom = real * real + imaginary * imaginary
 
-    return Complex(real: real / denom, imaginary: -imaginary / denom)
+    return SimpleComplex(real: real / denom, imaginary: -imaginary / denom)
   }
 }
 
-extension Complex {
+extension SimpleComplex {
   public init(real: Int = 0, imaginary: Int = 0) {
     self.real = Double(real)
     self.imaginary = Double(imaginary)
   }
 }
 
-extension Complex: CustomStringConvertible {
+extension SimpleComplex: CustomStringConvertible {
   public var description: String {
     let real2 = real != -0 ? real : 0.0
     let imag = imaginary != -0 ? imaginary : 0.0

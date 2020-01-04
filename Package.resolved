@@ -33,7 +33,7 @@
         "repositoryURL": "https://github.com/pvieito/CommandLineKit.git",
         "state": {
           "branch": "master",
-          "revision": "d0f1827b62390949bf92a86d83805cf5bd5a8ddc",
+          "revision": "e804cef1719bf410373a06d14d4b9d0b0c456753",
           "version": null
         }
       },
@@ -42,8 +42,8 @@
         "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
         "state": {
           "branch": null,
-          "revision": "79ac632c85df81f2618dd838fc3869633e163370",
-          "version": "1.2.0"
+          "revision": "a44caef0550c346e0ab9172f7c9a3852c1833599",
+          "version": "1.3.0"
         }
       },
       {
@@ -60,16 +60,16 @@
         "repositoryURL": "https://github.com/pvieito/LoggerKit.git",
         "state": {
           "branch": "master",
-          "revision": "da6d79cdb6f1d62658c28e83399116677160f89d",
+          "revision": "6029a7265e08b1ecb92d968b1502de96e26d95e8",
           "version": null
         }
       },
       {
-        "package": "PythonTool",
+        "package": "PythonKit",
         "repositoryURL": "https://github.com/pvieito/PythonKit.git",
         "state": {
           "branch": "master",
-          "revision": "7f144bd4add4aac09adf0eded20879bebdd8f33f",
+          "revision": "d54ba4bb75bc90c5562cefa5d5729283d1728e29",
           "version": null
         }
       },
