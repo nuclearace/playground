@@ -2,8 +2,6 @@
 // Created by Erik Little on 9/17/18.
 //
 
-import Foundation
-
 public struct Eratosthenes: Sequence, IteratorProtocol {
   private let n: Int
   private let limit: Int
@@ -18,7 +16,7 @@ public struct Eratosthenes: Sequence, IteratorProtocol {
       self.sieve = []
     } else {
       self.n = upTo
-      self.limit = Int(sqrt(Double(n)))
+      self.limit = Int(Double(n).squareRoot())
       self.sieve = Array(0...n)
     }
   }

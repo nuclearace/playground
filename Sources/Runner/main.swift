@@ -4,27 +4,30 @@ import Foundation
 import Playground
 import Numerics
 
-print("Unsigned Lah numbers: L(n, k):")
-print("n\\k", terminator: "")
+func findPeriod(n: Int) -> Int {
+  let r = (1...n+1).reduce(1, {res, _ in (10 * res) % n })
+  var rr = r
+  var period = 0
 
-for i in 0...12 {
-  print(String(format: "%10d", i), terminator: " ")
+  repeat {
+    rr = (10 * rr) % n
+    period += 1
+  } while r != rr
+
+  return period
 }
 
-print()
+let longPrimes = Eratosthenes(upTo: 64000).dropFirst().lazy.filter({ findPeriod(n: $0) == $0 - 1 })
 
-for row in 0...12 {
-  print(String(format: "%-2d", row), terminator: "")
+print("Long primes less than 500: \(Array(longPrimes.prefix(while: { $0 <= 500 })))")
 
-  for i in 0...row {
-    lah(n: BigInt(row), k: BigInt(i)).description.withCString {str in
-      print(String(format: "%11s", str), terminator: "")
+let counts =
+  longPrimes.reduce(into: [500: 0, 1000: 0, 2000: 0, 4000: 0, 8000: 0, 16000: 0, 32000: 0, 64000: 0], {counts, n in
+    for key in counts.keys where n < key {
+      counts[key]! += 1
     }
-  }
+  })
 
-  print()
+for key in counts.keys.sorted() {
+  print("There are \(counts[key]!) long primes less than \(key)")
 }
-
-let maxLah = (0...100).map({ lah(n: BigInt(100), k: BigInt($0)) }).max()!
-
-print("Maximum value from the L(100, *) row: \(maxLah)")
