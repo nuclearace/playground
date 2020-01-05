@@ -9,11 +9,9 @@ public func mandlebrot(saveTo loc: String = "~/Desktop/mandlebrot.bmp", iteratio
   let imageSize = 800
   let drawer = BitmapDrawer(height: imageSize, width: imageSize)
   let cxMin = -2.0
-  let cxMax = 1.0
   let cyMin = -1.5
-  let cyMax = 1.5
-  let scaleX = (cxMax - cxMin) / Double(imageSize)
-  let scaleY = (cyMax - cyMin) / Double(imageSize)
+  let scaleX = (1.0 - cxMin) / Double(imageSize)
+  let scaleY = (1.5 - cyMin) / Double(imageSize)
 
   for x in 0..<imageSize {
     for y in 0..<imageSize {
