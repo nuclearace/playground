@@ -4,28 +4,48 @@ import Foundation
 import Playground
 import Numerics
 
-let testCases = [
-  ("H", "1.008"),
-  ("H2", "2.016"),
-  ("H2O", "18.015"),
-  ("H2O2", "34.014"),
-  ("(HO)2", "34.014"),
-  ("Na2SO4", "142.036"),
-  ("C6H12", "84.162"),
-  ("COOH(C(CH3)2)3CH3", "186.295"),
-  ("C6H4O2(OH)4", "176.124"),
-  ("C27H46O", "386.664"),
-  ("Uue", "315.000")
-]
-
-let fmt = { String(format: "%.3f", $0) }
-
-for (mol, expected) in testCases {
-  guard let mass = Chem.calculateMolarMass(of: mol) else {
-    fatalError("Bad formula \(mol)")
+func primeFactors(n: BigInt) -> (BigInt, BigInt)? {
+  if n.isPrime(rounds: 10) {
+    return nil
   }
 
-  assert(fmt(mass) == expected, "Incorrect result")
+  guard let factor1 = pollardRho(n: n) else {
+    fatalError()
+  }
 
-  print("\(mol) => \(fmt(mass))")
+  guard factor1.isPrime(rounds: 10) else {
+    fatalError()
+  }
+
+  let factor2 = n / factor1
+
+  guard factor2.isPrime(rounds: 10) else {
+    fatalError()
+  }
+
+  return (factor1, factor2)
+}
+
+let first10Fermat = fermatNumbers(n: BigInt(10))
+
+print("The first ten fermat numbers are:")
+
+for (i, n) in first10Fermat.enumerated() {
+  print("F(\(i)) = \(n)")
+}
+
+print("Prime factors of first ten fermat numbers:")
+
+for (i, n) in first10Fermat.enumerated() {
+  print("F(\(i)) = \(n) => ", terminator: "")
+
+  fflush(stdout)
+
+  guard case let (factors?, t) = ClockTimer.time({ primeFactors(n: n) }) else {
+    print("prime")
+
+    continue
+  }
+
+  print("\(factors); took \(t.duration)s")
 }

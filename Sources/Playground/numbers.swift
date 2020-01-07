@@ -475,6 +475,40 @@ extension FloatingPoint {
   }
 }
 
+@inlinable
+public func pollardRho<T: SignedInteger>(n: T) -> T? {
+  func g(_ x: T, _ n: T) -> T {
+    return (x * x + 1) % n
+  }
+
+  var (x, y, d) = (T(2), T(2), T(1))
+  var (t, z) = (T(0), T(1))
+  var count = 0
+
+  while true {
+    x = g(x, n)
+    y = g(g(y, n), n)
+    t = abs(x - y)
+    t %= n
+    z *= t
+    count += 1
+
+    if count == 100 {
+      d = z.gcd(with: n)
+
+      if d != 1 {
+        break
+      }
+
+      z = 1
+      count = 0
+    }
+  }
+
+  return d
+}
+
+
 extension Int {
   fileprivate static let bigNames = [
     1_000: "thousand",
