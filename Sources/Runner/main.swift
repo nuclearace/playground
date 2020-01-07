@@ -4,30 +4,28 @@ import Foundation
 import Playground
 import Numerics
 
-func findPeriod(n: Int) -> Int {
-  let r = (1...n+1).reduce(1, {res, _ in (10 * res) % n })
-  var rr = r
-  var period = 0
+let testCases = [
+  ("H", "1.008"),
+  ("H2", "2.016"),
+  ("H2O", "18.015"),
+  ("H2O2", "34.014"),
+  ("(HO)2", "34.014"),
+  ("Na2SO4", "142.036"),
+  ("C6H12", "84.162"),
+  ("COOH(C(CH3)2)3CH3", "186.295"),
+  ("C6H4O2(OH)4", "176.124"),
+  ("C27H46O", "386.664"),
+  ("Uue", "315.000")
+]
 
-  repeat {
-    rr = (10 * rr) % n
-    period += 1
-  } while r != rr
+let fmt = { String(format: "%.3f", $0) }
 
-  return period
-}
+for (mol, expected) in testCases {
+  guard let mass = Chem.calculateMolarMass(of: mol) else {
+    fatalError("Bad formula \(mol)")
+  }
 
-let longPrimes = Eratosthenes(upTo: 64000).dropFirst().lazy.filter({ findPeriod(n: $0) == $0 - 1 })
+  assert(fmt(mass) == expected, "Incorrect result")
 
-print("Long primes less than 500: \(Array(longPrimes.prefix(while: { $0 <= 500 })))")
-
-let counts =
-  longPrimes.reduce(into: [500: 0, 1000: 0, 2000: 0, 4000: 0, 8000: 0, 16000: 0, 32000: 0, 64000: 0], {counts, n in
-    for key in counts.keys where n < key {
-      counts[key]! += 1
-    }
-  })
-
-for key in counts.keys.sorted() {
-  print("There are \(counts[key]!) long primes less than \(key)")
+  print("\(mol) => \(fmt(mass))")
 }
