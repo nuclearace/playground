@@ -30,7 +30,12 @@ let package = Package(
             name: "Profiler"
         ),
         .target(name: "QDBMP"),
-        .target(name: "Runner", dependencies: ["Playground", "CGMP", "BigInt", "Numerics", "PythonKit"]),
+        .target(
+          name: "Runner", 
+          dependencies: ["Playground", "CGMP", "BigInt", "Numerics", "PythonKit"],
+          /*swiftSettings: [.unsafeFlags(["-enforce-exclusivity=always"])],*/
+          linkerSettings: [.unsafeFlags(["-L/usr/local/lib"])]
+        ),
         .target(name: "CStuff"),
         .target(name: "Collatzing", dependencies: ["Playground", "BigInt", "Commander"]),
         .systemLibrary(
