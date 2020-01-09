@@ -361,3 +361,40 @@ public func smoothN<T: BinaryInteger>(n: T, count: Int) -> [T] {
 
   return res
 }
+
+public struct KPrimeGen: Sequence, IteratorProtocol {
+  private let k: Int
+  private var n: Int
+
+  public init(k: Int, n: Int) {
+    self.k = k
+    self.n = n
+  }
+
+  private func isKPrime() -> Bool {
+    var primes = 0
+    var f = 2
+    var rem = n
+
+    while primes < k && rem > 1 {
+      while rem % f == 0 && rem > 1 {
+        rem /= f
+        primes += 1
+      }
+
+      f += 1
+    }
+
+    return rem == 1 && primes == k
+  }
+
+  public mutating func next() -> Int? {
+    n += 1
+
+    while !isKPrime() {
+      n += 1
+    }
+
+    return n
+  }
+}
