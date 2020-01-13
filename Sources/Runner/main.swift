@@ -5,6 +5,12 @@ import Foundation
 import Playground
 import Numerics
 
-for k in 1..<6 {
-  print("\(k): \(Array(KPrimeGen(k: k, n: 1).lazy.prefix(10)))")
+func binomial<T: BinaryInteger>(_ x: (n: T, k: T)) -> T {
+  let nFac = factorial(x.n)
+  let kFac = factorial(x.k)
+
+  return nFac / (factorial(x.n - x.k) * kFac)
 }
+
+print("binomial(\(5), \(3)) = \(binomial((5, 3)))")
+print("binomial(\(20), \(11)) = \(binomial((20, 11)))")

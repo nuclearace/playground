@@ -25,3 +25,11 @@ public func combinations(n: Int, k: Int) -> BigInt {
 
   return permutations(n: n, k: k) / fact
 }
+
+@inlinable
+public func binomial<T: BinaryInteger>(_ x: (n: T, k: T)) -> T {
+  let nFac = factorial(x.n)
+  let kFac = factorial(x.k)
+
+  return nFac / (factorial(x.n - x.k) * kFac)
+}
