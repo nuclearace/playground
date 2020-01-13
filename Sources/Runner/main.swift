@@ -5,43 +5,101 @@ import Foundation
 import Playground
 import Numerics
 
-struct Fib: Sequence, IteratorProtocol {
-  private var cur: String
-  private var nex: String
+func isPalin2(n: Int) -> Bool {
+  var x = 0
+  var n = n
 
-  init(cur: String, nex: String) {
-    self.cur = cur
-    self.nex = nex
+  guard n & 1 != 0 else {
+    return n == 0
   }
 
-  mutating func next() -> String? {
-    let ret = cur
-
-    cur = nex
-    nex = "\(ret)\(nex)"
-
-    return ret
+  while x < n {
+    x = x << 1 | n & 1
+    n >>= 1
   }
+
+  return n == x || n == x >> 1
 }
 
-func getEntropy(_ s: [Int]) -> Double {
-  var entropy = 0.0
-  var hist = Array(repeating: 0.0, count: 256)
+func reverse3(n: Int) -> Int {
+  var x = 0
+  var n = n
 
-  for i in 0..<s.count {
-    hist[s[i]] += 1
+  while n > 0 {
+    x = x * 3 + (n % 3)
+    n /= 3
   }
 
-  for i in 0..<256 where hist[i] > 0 {
-    let rat = hist[i] / Double(s.count)
-    entropy -= rat * log2(rat)
-  }
-
-  return entropy
+  return x
 }
 
-for (i, str) in Fib(cur: "1", nex: "0").prefix(37).enumerated() {
-  let ent = getEntropy(str.map({ Int($0.asciiValue!) }))
+func printN(_ n: Int, base: Int) {
+  var n = n
 
-  print("i: \(i) len: \(str.count) entropy: \(ent)")
+  print(" ", terminator: "")
+
+  repeat {
+    print("\(n % base)", terminator: "")
+
+    n /= base
+  } while n > 0
+
+  print("(\(base))", terminator: "")
+}
+
+func show(n: Int) {
+  print(n, terminator: "")
+  printN(n, base: 2)
+  printN(n, base: 3)
+  print()
+}
+
+private var count = 0
+private var lo = 0
+private var (hi, pow2, pow3) = (1, 1, 1)
+
+show(n: 0)
+
+while true {
+  for i in lo..<hi {
+    let n = (i * 3 + 1) * pow3 + reverse3(n: i)
+
+    guard isPalin2(n: n) else {
+      continue
+    }
+
+    show(n: n)
+    count += 1
+
+    guard count != 6 else {
+      exit(0)
+    }
+  }
+
+  if hi == pow3 {
+    pow3 *= 3
+  } else {
+    pow2 *= 4
+  }
+
+  while true {
+    while pow2 <= pow3 {
+      pow2 *= 4
+    }
+
+    let lo2 = (pow2 / pow3 - 1) / 3
+    let hi2 = (pow2 * 2 / pow3 - 1) / 3 + 1
+    let lo3 = pow3 / 3
+    let hi3 = pow3
+
+    if lo2 >= hi3 {
+      pow3 *= 3
+    } else if lo3 >= hi2 {
+      pow2 *= 4
+    } else {
+      lo = max(lo2, lo3)
+      hi = min(hi2, hi3)
+      break
+    }
+  }
 }
