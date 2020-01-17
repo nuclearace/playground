@@ -234,3 +234,27 @@ public func robbins<T: BinaryInteger>(n: Int) -> T {
 
   return num / dom
 }
+
+@inlinable
+public func kronecker<T: Numeric>(m1: [[T]], m2: [[T]]) -> [[T]] {
+  let m = m1.count
+  let n = m1[0].count
+  let p = m2.count
+  let q = m2[0].count
+  let rtn = m * p
+  let ctn = n * q
+
+  var res = Array(repeating: Array(repeating: 0 as T, count: ctn), count: rtn)
+
+  for i in 0..<m {
+    for j in 0..<n {
+      for k in 0..<p {
+        for l in 0..<q {
+          res[p * i + k][q * j + l] = m1[i][j] * m2[k][l]
+        }
+      }
+    }
+  }
+
+  return res
+}

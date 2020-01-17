@@ -5,101 +5,30 @@ import Foundation
 import Playground
 import Numerics
 
-func isPalin2(n: Int) -> Bool {
-  var x = 0
-  var n = n
-
-  guard n & 1 != 0 else {
-    return n == 0
+prefix func ! <T: BinaryInteger>(n: T) -> T {
+  guard n != 0 else {
+    return 0
   }
 
-  while x < n {
-    x = x << 1 | n & 1
-    n >>= 1
-  }
-
-  return n == x || n == x >> 1
+  return stride(from: 0, to: n, by: 1).lazy.map(factorial).reduce(0, +)
 }
 
-func reverse3(n: Int) -> Int {
-  var x = 0
-  var n = n
-
-  while n > 0 {
-    x = x * 3 + (n % 3)
-    n /= 3
-  }
-
-  return x
+for i in 0...10 {
+  print("!\(i) = \(!i)")
 }
 
-func printN(_ n: Int, base: Int) {
-  var n = n
+print()
 
-  print(" ", terminator: "")
-
-  repeat {
-    print("\(n % base)", terminator: "")
-
-    n /= base
-  } while n > 0
-
-  print("(\(base))", terminator: "")
+for i in stride(from: BigInt(20), through: 110, by: 10) {
+  print("!\(i) = \(!i)")
 }
 
-func show(n: Int) {
-  print(n, terminator: "")
-  printN(n, base: 2)
-  printN(n, base: 3)
-  print()
-}
+print()
 
-private var count = 0
-private var lo = 0
-private var (hi, pow2, pow3) = (1, 1, 1)
+print("!1000 = \((!BigInt(1000)).description.count) digit number")
 
-show(n: 0)
+print()
 
-while true {
-  for i in lo..<hi {
-    let n = (i * 3 + 1) * pow3 + reverse3(n: i)
-
-    guard isPalin2(n: n) else {
-      continue
-    }
-
-    show(n: n)
-    count += 1
-
-    guard count != 6 else {
-      exit(0)
-    }
-  }
-
-  if hi == pow3 {
-    pow3 *= 3
-  } else {
-    pow2 *= 4
-  }
-
-  while true {
-    while pow2 <= pow3 {
-      pow2 *= 4
-    }
-
-    let lo2 = (pow2 / pow3 - 1) / 3
-    let hi2 = (pow2 * 2 / pow3 - 1) / 3 + 1
-    let lo3 = pow3 / 3
-    let hi3 = pow3
-
-    if lo2 >= hi3 {
-      pow3 *= 3
-    } else if lo3 >= hi2 {
-      pow2 *= 4
-    } else {
-      lo = max(lo2, lo3)
-      hi = min(hi2, hi3)
-      break
-    }
-  }
+for i in stride(from: BigInt(2000), through: 10_000, by: 1000) {
+  print("!\(i) = \((!i).description.count) digit number")
 }
