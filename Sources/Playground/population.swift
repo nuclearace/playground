@@ -7,8 +7,17 @@ public func populationNext(lambda: Double, initial: Double) -> Double {
 }
 
 // A different kind of population
-public func populationCount(n: Int) -> Int {
-  guard n >= 0 else { fatalError() }
+public func populationCount<T: BinaryInteger>(n: T) -> Int {
+  var c = 0
+  var n = n
 
-  return String(n, radix: 2).filter({ $0 == "1" }).count
+  while n > 0 {
+    if n & 1 == 1 {
+      c &+= 1
+    }
+
+    n >>= 1
+  }
+
+  return c
 }

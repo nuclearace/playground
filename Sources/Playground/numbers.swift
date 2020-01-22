@@ -5,6 +5,13 @@
 import BigInt
 import Foundation
 
+extension Numeric where Self: Strideable {
+  @inlinable
+  public func power(_ n: Self) -> Self {
+    return stride(from: 0, to: n, by: 1).lazy.map({_ in self }).reduce(1, *)
+  }
+}
+
 extension BinaryInteger {
   @inlinable
   public var highestSetBit: Self {
@@ -197,11 +204,6 @@ extension BinaryInteger {
     let g = gcd(with: other)
 
     return self / g * other
-  }
-
-  @inlinable
-  public func power(_ n: Self) -> Self {
-    return stride(from: 0, to: n, by: 1).lazy.map({_ in self }).reduce(1, *)
   }
 
   @inlinable
@@ -410,6 +412,29 @@ public func exactlyNDivisors<TermType: BinaryInteger>(numTerms: Int) -> [TermTyp
   }
 
   return seq
+}
+
+extension FloatingPoint where Self: ExpressibleByFloatLiteral {
+  @inlinable
+  public func root(n: Self, epsilon: Self = 2.220446049250313e-16) -> Self {
+    guard self != 0 else {
+      return 0
+    }
+
+    guard n >= 1 else {
+      return .nan
+    }
+
+    var d = Self(0)
+    var res = Self(1)
+
+    repeat {
+      d = (self / res.power(n - 1.0) - res) / n
+      res += d
+    } while d >= epsilon * 10 || d <= -epsilon * 10
+
+    return res
+  }
 }
 
 @inlinable
