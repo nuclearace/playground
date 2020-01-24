@@ -53,7 +53,7 @@ extension BinaryInteger {
 
   // Miller-Rabin prime test
   @inlinable
-  public func isProbablePrime(rounds: Int = 10, powerOf2Cache: [Int: Self]? = nil) -> Bool {
+  public func isProbablyPrime(rounds: Int = 10, powerOf2Cache: [Int: Self]? = nil) -> Bool {
     guard self > 1 else { return false }
     guard self != 2 && self != 3 else { return true }
     guard self % 2 != 0 else { return false }
