@@ -17,8 +17,6 @@ struct Solution<T: SignedNumeric & Comparable & Dividable> {
 }
 
 struct Poly<T: SignedNumeric & Comparable & Dividable> {
-  typealias PolyType = SignedNumeric & Comparable & Dividable
-
   private(set) var poly: [T]
 
   var degree: Int {
@@ -73,8 +71,19 @@ struct Poly<T: SignedNumeric & Comparable & Dividable> {
   }
 
   static func / (lhs: Poly, rhs: Poly) -> Solution<T>? {
-    guard lhs.poly.count == rhs.poly.count else {
-      return nil
+    var lhs = lhs
+    var rhs = rhs
+
+    let diff = lhs.poly.count - rhs.poly.count
+
+    if diff != 0 {
+      let newPoly = [T](repeating: 0, count: abs(diff))
+
+      if diff < 0 {
+        lhs.poly.append(contentsOf: newPoly)
+      } else {
+        rhs.poly.append(contentsOf: newPoly)
+      }
     }
 
     var nDeg = lhs.degree
@@ -125,18 +134,12 @@ extension Poly {
     private var terms = [Term]()
 
     func getPoly() -> [T] {
-      guard let maxDegree = terms.max(by: {lhs, rhs in
-        switch (lhs.exp, rhs.exp) {
-        case (_, nil): return false
-        case (nil, _): return true
-        case let (lhs?, rhs?): return lhs < rhs
-        }
-      }) else {
+      guard let maxDegree = terms.lazy.compactMap({ $0.exp }).max() else {
         return []
       }
 
       var left: T = 0
-      var poly = [T](repeating: 0, count: maxDegree.exp! + 1)
+      var poly = [T](repeating: 0, count: maxDegree + 1)
 
       for term in terms {
         guard let i = term.exp else {
@@ -180,12 +183,20 @@ extension Poly {
     }
 
     static func + (lhs: PolyBuilder, rhs: T) -> PolyBuilder {
+      if lhs.terms.isEmpty {
+        lhs.terms.append(Term(builder: lhs, coeff: 1, exp: 1))
+      }
+
       lhs.terms.append(Term(builder: lhs, coeff: rhs))
 
       return lhs
     }
 
     static func - (lhs: PolyBuilder, rhs: T) -> PolyBuilder {
+      if lhs.terms.isEmpty {
+        lhs.terms.append(Term(builder: lhs, coeff: 1, exp: 1))
+      }
+
       lhs.terms.append(Term(builder: lhs, coeff: -rhs))
 
       return lhs
@@ -230,14 +241,21 @@ extension Poly: CustomStringConvertible {
   }
 }
 
-let n = Poly {(x: Poly<Int>.PolyBuilder) in
+let n = Poly {x in
   ((x^3) - (12*x^2) - 42) as Poly<Int>.PolyBuilder
 }
 
 print(n)
 
-let d = Poly {(x: Poly<Int>.PolyBuilder) in
+let d = Poly {x in
   x - 3
 }
 
 print(d)
+
+guard let sol = n / d else {
+  fatalError()
+}
+
+print(sol.quotient)
+print(sol.remainder)
