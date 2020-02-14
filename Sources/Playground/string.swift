@@ -103,6 +103,30 @@ public extension String {
 
     return String(prefix(start)) + String(dropFirst(start)).replacingOccurrences(of: fullMatch, with: ip)
   }
+
+  func tokenize(separator: Character, escape: Character) -> [String] {
+    var token = ""
+    var tokens = [String]()
+    var chars = makeIterator()
+
+    while let char = chars.next() {
+      switch char {
+      case separator:
+        tokens.append(token)
+        token = ""
+      case escape:
+        if let next = chars.next() {
+          token.append(next)
+        }
+      case _:
+        token.append(char)
+      }
+    }
+
+    tokens.append(token)
+
+    return tokens
+  }
 }
 
 @inlinable
