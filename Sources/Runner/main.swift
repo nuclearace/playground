@@ -5,38 +5,25 @@ import Foundation
 import Playground
 import Numerics
 
-func stripBlocks(from str: String, open: String = "/*", close: String = "*/") -> String {
-  guard !open.isEmpty && !close.isEmpty else {
-    return str
-  }
+typealias Polygon = Playground.Polygon
 
-  var ret = str
+let subj = Polygon(points: [
+  (50.0, 150.0),
+  (200.0, 50.0),
+  (350.0, 150.0),
+  (350.0, 300.0),
+  (250.0, 300.0),
+  (200.0, 250.0),
+  (150.0, 350.0),
+  (100.0, 250.0),
+  (100.0, 200.0)
+])
 
-  while let begin = ret.range(of: open), let end = ret[begin.upperBound...].range(of: close) {
-    ret.replaceSubrange(Range(uncheckedBounds: (begin.lowerBound, end.upperBound)), with: "")
-  }
+let clip = Polygon(points: [
+  (100.0, 100.0),
+  (300.0, 100.0),
+  (300.0, 300.0),
+  (100.0, 300.0)
+])
 
-  return ret
-}
-
-let test = """
-             /**
-           * Some comments
-           * longer comments here that we can parse.
-           *
-           * Rahoo 
-           */
-           function subroutine() {
-            a = /* inline comment */ b + c ;
-           }
-           /*/ <-- tricky comments */
-
-           /**
-            * Another comment.
-            */
-            function something() {
-            }
-           """
-
-
-print(stripBlocks(from: test))
+print(sutherlandHodgmanClip(subjPoly: subj, clipPoly: clip))
