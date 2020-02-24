@@ -5,25 +5,15 @@ import Foundation
 import Playground
 import Numerics
 
-typealias Polygon = Playground.Polygon
+print("n/a  0  1  2  3  4  5  6  7  8  9")
+print("---------------------------------")
 
-let subj = Polygon(points: [
-  (50.0, 150.0),
-  (200.0, 50.0),
-  (350.0, 150.0),
-  (350.0, 300.0),
-  (250.0, 300.0),
-  (200.0, 250.0),
-  (150.0, 350.0),
-  (100.0, 250.0),
-  (100.0, 200.0)
-])
+for n in stride(from: 1, through: 17, by: 2) {
+  print(String(format: "%2d", n), terminator: "")
 
-let clip = Polygon(points: [
-  (100.0, 100.0),
-  (300.0, 100.0),
-  (300.0, 300.0),
-  (100.0, 300.0)
-])
+  for a in 0..<10 {
+    print(String(format: " % d", jacobi(a: a, n: n)), terminator: "")
+  }
 
-print(sutherlandHodgmanClip(subjPoly: subj, clipPoly: clip))
+  print()
+}
