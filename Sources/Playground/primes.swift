@@ -398,3 +398,24 @@ public struct KPrimeGen: Sequence, IteratorProtocol {
     return n
   }
 }
+
+@inlinable
+public func isEmirp<T: BinaryInteger>(n: T) -> Bool {
+  guard n.isPrime else {
+    return false
+  }
+
+  var aux = n
+  var revPrime = T(0)
+
+  while aux > 0 {
+    revPrime = revPrime * 10 + aux % 10
+    aux /= 10
+  }
+
+  guard n != revPrime else {
+    return false
+  }
+
+  return revPrime.isPrime
+}

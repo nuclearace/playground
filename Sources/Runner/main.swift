@@ -5,62 +5,9 @@ import Foundation
 import Playground
 import Numerics
 
-let nPoints = 100
+let lots = (2...).lazy.filter(isEmirp).prefix(10000)
+let rang = (7700...8000).filter(isEmirp)
 
-func generatePoint() -> (Int, Int) {
-  while true {
-    let x = Int.random(in: -15...16)
-    let y = Int.random(in: -15...16)
-    let r2 = x * x + y * y
-
-    if r2 >= 100 && r2 <= 225 {
-      return (x, y)
-    }
-  }
-}
-
-func filteringMethod() {
-  var rows = [[String]](repeating: Array(repeating: " ", count: 62), count: 31)
-
-  for _ in 0..<nPoints {
-    let (x, y) = generatePoint()
-
-    rows[y + 15][x + 15 * 2] = "*"
-  }
-
-  for row in rows {
-    print(row.joined())
-  }
-}
-
-func precalculatingMethod() {
-  var possiblePoints = [(Int, Int)]()
-
-  for y in -15...15 {
-    for x in -15...15 {
-      let r2 = x * x + y * y
-
-      if r2 >= 100 && r2 <= 225 {
-        possiblePoints.append((x, y))
-      }
-    }
-  }
-
-  possiblePoints.shuffle()
-
-  var rows = [[String]](repeating: Array(repeating: " ", count: 62), count: 31)
-
-  for (x, y) in possiblePoints {
-    rows[y + 15][x + 15 * 2] = "*"
-  }
-
-  for row in rows {
-    print(row.joined())
-  }
-}
-
-print("Filtering method:")
-filteringMethod()
-
-print("Precalculating method:")
-precalculatingMethod()
+print("First 20 emirps: \(Array(lots.prefix(20)))")
+print("Emirps between 7700 and 8000: \(rang)")
+print("10,000th emirp: \(Array(lots).last!)")
