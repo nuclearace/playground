@@ -5,15 +5,33 @@ import Foundation
 import Playground
 import Numerics
 
-print("n/a  0  1  2  3  4  5  6  7  8  9")
-print("---------------------------------")
+let numGames = 10_000
+let lock = DispatchSemaphore(value: 1)
+var done = 0
 
-for n in stride(from: 1, through: 17, by: 2) {
-  print(String(format: "%2d", n), terminator: "")
+print("Running \(numGames) games for each strategy")
 
-  for a in 0..<10 {
-    print(String(format: " % d", jacobi(a: a, n: n)), terminator: "")
+DispatchQueue.concurrentPerform(iterations: 2) {i in
+  let strat = i == 0 ? PrisonersGame.Strategy.random : .optimum
+  var numPardoned = 0
+
+  for _ in 0..<numGames {
+    let game = PrisonersGame(numPrisoners: 100, strategy: strat)
+
+    if game.play() {
+      numPardoned += 1
+    }
   }
 
-  print()
+  print("Probability of pardon with \(strat) strategy: \(Double(numPardoned) / Double(numGames))")
+
+  lock.wait()
+  done += 1
+  lock.signal()
+
+  if done == 2 {
+    exit(0)
+  }
 }
+
+dispatchMain()
