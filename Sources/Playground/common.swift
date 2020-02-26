@@ -58,3 +58,29 @@ extension Collection where Element: FloatingPoint {
     return (lazy.map({ $0 * $0 }).reduce(0, +) / Element(count)).squareRoot()
   }
 }
+
+extension Collection where Element: Numeric {
+  @inlinable
+  public func equilibriumIndexes() -> [Index] {
+    guard !isEmpty else {
+      return []
+    }
+
+    let sumAll = reduce(0, +)
+    var ret = [Index]()
+    var sumLeft: Element = 0
+    var sumRight: Element
+
+    for i in indices {
+      sumRight = sumAll - sumLeft - self[i]
+
+      if sumLeft == sumRight {
+        ret.append(i)
+      }
+
+      sumLeft += self[i]
+    }
+
+    return ret
+  }
+}
