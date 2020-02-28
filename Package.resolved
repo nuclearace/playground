@@ -33,7 +33,7 @@
         "repositoryURL": "https://github.com/pvieito/CommandLineKit.git",
         "state": {
           "branch": "master",
-          "revision": "e804cef1719bf410373a06d14d4b9d0b0c456753",
+          "revision": "a4ca3c200b87490d070c930d5033ade2fd26ef71",
           "version": null
         }
       },
@@ -60,7 +60,7 @@
         "repositoryURL": "https://github.com/pvieito/LoggerKit.git",
         "state": {
           "branch": "master",
-          "revision": "6029a7265e08b1ecb92d968b1502de96e26d95e8",
+          "revision": "2d1cecdc0c8c01a0714031c7e0740318f5b1a60e",
           "version": null
         }
       },
@@ -69,7 +69,7 @@
         "repositoryURL": "https://github.com/pvieito/PythonKit.git",
         "state": {
           "branch": "master",
-          "revision": "d54ba4bb75bc90c5562cefa5d5729283d1728e29",
+          "revision": "25039c109ee7b64bc76a6e85f904c3b11d39598e",
           "version": null
         }
       },
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/apple/swift-numerics",
         "state": {
           "branch": null,
-          "revision": "7ff707f6f8c7d8aaac365475632892e2da581b6a",
-          "version": "0.0.3"
+          "revision": "5dfc460876510988560170cee3702ab01b89587a",
+          "version": "0.0.5"
         }
       },
       {
