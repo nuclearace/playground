@@ -5,9 +5,47 @@
 import BigInt
 import Foundation
 
+precedencegroup ExponentiationGroup {
+  higherThan: MultiplicationPrecedence
+}
+
+infix operator ** : ExponentiationGroup
+
+@inlinable
+public func ** <T: BinaryInteger>(lhs: T, rhs: T) -> T {
+  guard lhs != 0 else {
+    return 1
+  }
+
+  var x = lhs
+  var n = rhs
+  var y = T(1)
+
+  while n > 1 {
+    switch n & 1 {
+    case 0:
+      n /= 2
+    case 1:
+      y *= x
+      n = (n - 1) / 2
+    case _:
+      fatalError()
+    }
+
+    x *= x
+  }
+
+  return x * y
+}
+
 extension Numeric where Self: Strideable {
   @inlinable
   public func power(_ n: Self) -> Self {
+    return stride(from: 0, to: n, by: 1).lazy.map({_ in self }).reduce(1, *)
+  }
+
+  @inlinable
+  public func pow(_ n: Self) -> Self {
     return stride(from: 0, to: n, by: 1).lazy.map({_ in self }).reduce(1, *)
   }
 }
