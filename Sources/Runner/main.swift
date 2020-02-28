@@ -5,18 +5,19 @@ import Foundation
 import Playground
 import Numerics
 
-let first = FuscSeq().prefix(61)
+let sys = [
+  [1.00, 0.00, 0.00, 0.00, 0.00, 0.00, -0.01],
+  [1.00, 0.63, 0.39, 0.25, 0.16, 0.10, 0.61],
+  [1.00, 1.26, 1.58, 1.98, 2.49, 3.13, 0.91],
+  [1.00, 1.88, 3.55, 6.70, 12.62, 23.80, 0.99],
+  [1.00, 2.51, 6.32, 15.88, 39.90, 100.28, 0.60],
+  [1.00, 3.14, 9.87, 31.01, 97.41, 306.02, 0.02]
+]
 
-print("First 61: \(Array(first))")
+guard let sols = gaussEliminate(sys) else {
+  fatalError("No solutions")
+}
 
-var max = -1
-
-for (i, n) in FuscSeq().prefix(20_000_000).enumerated() {
-  let f = String(n).count
-
-  if f > max {
-    max = f
-
-    print("New max: \(i): \(n)")
-  }
+for (i, f) in sols.enumerated() {
+  print("X\(i + 1) = \(f)")
 }
