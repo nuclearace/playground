@@ -2,8 +2,8 @@
 // Created by Erik Little on 10/24/19.
 //
 
+import ArgumentParser
 import BigInt
-import Commander
 import Foundation
 
 func createRanges(numRanges: Int, max: Int = .max) -> [ClosedRange<Int>] {
@@ -33,8 +33,8 @@ func stringFromTimeInterval(_ interval: TimeInterval) -> String {
   return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
 }
 
-extension BigInt: ArgumentConvertible {
-  public init(parser: ArgumentParser) throws {
-    self.init(try String(parser: parser))!
+extension BigInt: ExpressibleByArgument {
+  public init?(argument: String) {
+    self.init(argument)
   }
 }

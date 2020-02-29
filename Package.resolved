@@ -20,15 +20,6 @@
         }
       },
       {
-        "package": "Commander",
-        "repositoryURL": "https://github.com/kylef/Commander.git",
-        "state": {
-          "branch": null,
-          "revision": "4b6133c3071d521489a80c38fb92d7983f19d438",
-          "version": "0.9.1"
-        }
-      },
-      {
         "package": "CommandLineKit",
         "repositoryURL": "https://github.com/pvieito/CommandLineKit.git",
         "state": {
@@ -74,12 +65,12 @@
         }
       },
       {
-        "package": "Spectre",
-        "repositoryURL": "https://github.com/kylef/Spectre.git",
+        "package": "swift-argument-parser",
+        "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
-          "branch": null,
-          "revision": "f14ff47f45642aa5703900980b014c2e9394b6e5",
-          "version": "0.9.0"
+          "branch": "master",
+          "revision": "598ba07a2f9d61e34f00c289305e64cf52abb224",
+          "version": null
         }
       },
       {

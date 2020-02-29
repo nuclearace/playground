@@ -2,7 +2,7 @@
 // Created by Erik Little on 2019-09-19.
 //
 
-import Commander
+import ArgumentParser
 import Foundation
 import Playground
 
@@ -163,41 +163,113 @@ func randomCollatz() -> TimeResult {
   return t
 }
 
-let collatzing = command(
-  Option<CollatzType>("peak", default: -1, flag: "p", description: "peak search, starting at n (default 1)"),
-  Option("random", default: 50_000, flag: "r", description: "number of ranges for random search"),
-  Option("incrementBound", default: 100_000_000, flag: "b", description: "upper bound on increment"),
-  Flag("incrementRandom", default: false, flag: "i", description: "increment to add to peak search")
-) {n, numRanges, ir, inc in
-  if n > 0 {
-    print("doing peak search starting at \(n)")
+struct Collatzing: ParsableCommand {
+  static let configuration = CommandConfiguration(
+    abstract: "Randomly puts numbers through the Collatz function and tracks results",
+    subcommands: [Peak.self, Random.self]
+  )
 
-    mode = .peakSearch
-    peakN = n
-    addRandom = inc
-    increment = ir
-  } else {
-    print("random search with num ranges \(numRanges)")
+  static func collatz() {
+    start = Date().timeIntervalSince1970
 
-    ranges = createRanges(numRanges: numRanges)
+    timer.setEventHandler {
+      let (collatzT, t) = ClockTimer.time(randomCollatz)
+      let overhead = (t.duration - collatzT.duration) / t.duration
+
+      print("\(i): Overall took \(t.duration)s; Overhead: \(String(format: "%.2f", overhead * 100))%")
+
+      i += 1
+    }
+
+    timer.schedule(deadline: .now(), repeating: .milliseconds(5))
+    timer.activate()
+
+    dispatchMain()
   }
-
-  start = Date().timeIntervalSince1970
-
-  timer.setEventHandler {
-    let (collatzT, t) = ClockTimer.time(randomCollatz)
-    let overhead = (t.duration - collatzT.duration) / t.duration
-
-    print("\(i): Overall took \(t.duration)s; Overhead: \(String(format: "%.2f", overhead * 100))%")
-
-    i += 1
-  }
-
-  timer.schedule(deadline: .now(), repeating: .milliseconds(5))
-  timer.activate()
-
-  dispatchMain()
 }
 
-collatzing.run()
+extension Collatzing {
+  struct Random: ParsableCommand {
+    static let configuration = CommandConfiguration(
+      commandName: "random",
+      abstract: "Randomly goes through the range 1...Int.max, while splitting into ranges"
+    )
 
+    @Option(
+      name: .shortAndLong,
+      default: 50_000,
+      help: "The number of ranges to split 1...Int.max into"
+    )
+    var numRanges: Int
+
+    func validate() throws {
+      guard numRanges >= 1 else {
+        throw RandomError.badNumRange
+      }
+    }
+
+    func run() throws {
+      ranges = createRanges(numRanges: numRanges)
+
+      collatz()
+    }
+
+    enum RandomError: Error {
+      case badNumRange
+    }
+  }
+}
+
+extension Collatzing {
+  struct Peak: ParsableCommand {
+    static let configuration = CommandConfiguration(
+      commandName: "peak",
+      abstract: "Searches for peaks (i.e. largest values reached in a progression) starting at numStart"
+    )
+
+    @Option(
+      name: .shortAndLong,
+      default: 100_000_000,
+      help: "Upper bound for choosing random increment"
+    )
+    var bound: Int
+
+    @Option(
+      name: .shortAndLong,
+      default: 1,
+      help: "The starting value of n"
+    )
+    var numStart: CollatzType
+
+    @Flag(
+      name: .shortAndLong,
+      help: "Sets the increment to a random value, bounded by incrementUpperBound "
+    )
+    var randomIncrement: Bool
+
+    func run() throws {
+      mode = .peakSearch
+      peakN = numStart
+      addRandom = randomIncrement
+      increment = bound
+
+      collatz()
+    }
+
+    func validate() throws {
+      guard numStart >= 1 else {
+        throw PeakError.badN
+      }
+
+      guard bound >= 1 else {
+        throw PeakError.badBound
+      }
+    }
+
+    enum PeakError: Error {
+      case badBound, badN
+    }
+  }
+}
+
+Collatzing.main()

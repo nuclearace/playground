@@ -18,9 +18,9 @@ let package = Package(
         .package(url: "https://github.com/attaswift/BigInt.git", from: "5.0.0"),
         .package(url: "https://github.com/typelift/SwiftCheck.git", from: "0.12.0"),
         .package(url: "https://github.com/krzyzanowskim/CryptoSwift.git", from: "1.0.0"),
-        .package(url: "https://github.com/kylef/Commander.git", from: "0.9.0"),
         .package(url: "https://github.com/apple/swift-numerics", from: "0.0.2"),
         .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
+        .package(url: "https://github.com/apple/swift-argument-parser", .branch("master")),
     ],
     targets: [
         .target(
@@ -37,7 +37,7 @@ let package = Package(
           linkerSettings: [.unsafeFlags(["-L/usr/local/lib"])]
         ),
         .target(name: "CStuff"),
-        .target(name: "Collatzing", dependencies: ["Playground", "BigInt", "Commander"]),
+        .target(name: "Collatzing", dependencies: ["Playground", "BigInt", "ArgumentParser"]),
         .systemLibrary(
             name: "CGMP",
             pkgConfig: "gmp",
