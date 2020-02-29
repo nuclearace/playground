@@ -169,7 +169,7 @@ struct Collatzing: ParsableCommand {
     subcommands: [Peak.self, Random.self]
   )
 
-  static func collatz() {
+  static func collatz(delay: Int) {
     start = Date().timeIntervalSince1970
 
     timer.setEventHandler {
@@ -181,7 +181,7 @@ struct Collatzing: ParsableCommand {
       i += 1
     }
 
-    timer.schedule(deadline: .now(), repeating: .milliseconds(5))
+    timer.schedule(deadline: .now(), repeating: .milliseconds(delay))
     timer.activate()
 
     dispatchMain()
@@ -202,20 +202,32 @@ extension Collatzing {
     )
     var numRanges: Int
 
+    @Option(
+      name: .shortAndLong,
+      default: 5,
+      help: "The number of ms between runs"
+    )
+    var timeDelay: Int
+
     func validate() throws {
       guard numRanges >= 1 else {
         throw RandomError.badNumRange
+      }
+
+      guard timeDelay > 0 else {
+        throw RandomError.badTime
       }
     }
 
     func run() throws {
       ranges = createRanges(numRanges: numRanges)
 
-      collatz()
+      collatz(delay: timeDelay)
     }
 
     enum RandomError: Error {
       case badNumRange
+      case badTime
     }
   }
 }
@@ -247,13 +259,20 @@ extension Collatzing {
     )
     var randomIncrement: Bool
 
+    @Option(
+      name: .shortAndLong,
+      default: 5,
+      help: "The number of ms between runs"
+    )
+    var timeDelay: Int
+
     func run() throws {
       mode = .peakSearch
       peakN = numStart
       addRandom = randomIncrement
       increment = bound
 
-      collatz()
+      collatz(delay: timeDelay)
     }
 
     func validate() throws {
@@ -264,10 +283,14 @@ extension Collatzing {
       guard bound >= 1 else {
         throw PeakError.badBound
       }
+
+      guard timeDelay > 0 else {
+        throw PeakError.badTime
+      }
     }
 
     enum PeakError: Error {
-      case badBound, badN
+      case badBound, badN, badTime
     }
   }
 }
