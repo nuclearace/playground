@@ -20,15 +20,6 @@
         }
       },
       {
-        "package": "CommandLineKit",
-        "repositoryURL": "https://github.com/pvieito/CommandLineKit.git",
-        "state": {
-          "branch": "master",
-          "revision": "a4ca3c200b87490d070c930d5033ade2fd26ef71",
-          "version": null
-        }
-      },
-      {
         "package": "CryptoSwift",
         "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
         "state": {
@@ -60,7 +51,7 @@
         "repositoryURL": "https://github.com/pvieito/PythonKit.git",
         "state": {
           "branch": "master",
-          "revision": "25039c109ee7b64bc76a6e85f904c3b11d39598e",
+          "revision": "05f75d162601eb39d879812d5ab0cc7e7d8954cf",
           "version": null
         }
       },
@@ -69,7 +60,7 @@
         "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
           "branch": "master",
-          "revision": "598ba07a2f9d61e34f00c289305e64cf52abb224",
+          "revision": "7e25c0005f173369e52ae1bfc6edc7c76cb8d34e",
           "version": null
         }
       },

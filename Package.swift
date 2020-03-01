@@ -27,7 +27,8 @@ let package = Package(
             name: "Playground",
             dependencies: ["BigInt", "QDBMP", "CStuff", "CryptoSwift", "Numerics", "PythonKit", "ClockTimer"]),
         .target(
-            name: "Profiler"
+            name: "Profiler",
+          dependencies: ["ArgumentParser", "ClockTimer"]
         ),
         .target(
           name: "ClockTimer"
