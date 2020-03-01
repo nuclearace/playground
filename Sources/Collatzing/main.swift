@@ -3,6 +3,7 @@
 //
 
 import ArgumentParser
+import ClockTimer
 import Foundation
 import Playground
 

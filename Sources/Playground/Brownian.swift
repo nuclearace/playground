@@ -2,6 +2,7 @@
 // Created by Erik Little on 9/3/18.
 //
 
+import ClockTimer
 import Foundation
 
 public final class Brownian: BitmapDrawer {

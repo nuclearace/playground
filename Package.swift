@@ -25,19 +25,22 @@ let package = Package(
     targets: [
         .target(
             name: "Playground",
-            dependencies: ["BigInt", "QDBMP", "CStuff", "CryptoSwift", "Numerics", "PythonKit"]),
+            dependencies: ["BigInt", "QDBMP", "CStuff", "CryptoSwift", "Numerics", "PythonKit", "ClockTimer"]),
         .target(
             name: "Profiler"
+        ),
+        .target(
+          name: "ClockTimer"
         ),
         .target(name: "QDBMP"),
         .target(
           name: "Runner", 
-          dependencies: ["Playground", "CGMP", "BigInt", "Numerics", "PythonKit"],
+          dependencies: ["Playground", "CGMP", "BigInt", "Numerics", "PythonKit", "ClockTimer"],
           /*swiftSettings: [.unsafeFlags(["-enforce-exclusivity=always"])],*/
           linkerSettings: [.unsafeFlags(["-L/usr/local/lib"])]
         ),
         .target(name: "CStuff"),
-        .target(name: "Collatzing", dependencies: ["Playground", "BigInt", "ArgumentParser"]),
+        .target(name: "Collatzing", dependencies: ["Playground", "BigInt", "ArgumentParser", "ClockTimer"]),
         .systemLibrary(
             name: "CGMP",
             pkgConfig: "gmp",
