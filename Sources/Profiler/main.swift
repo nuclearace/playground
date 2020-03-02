@@ -7,7 +7,7 @@ struct Profiler: ParsableCommand {
   @Argument(help: "The program to profile")
   var command: [String]
 
-  @Flag(name: .shortAndLong, help: "Quiet mode. Print no output from profiler")
+  @Flag(name: .shortAndLong, help: "Quiet mode. Print less output from profiler")
   var quiet: Bool
 
   @Flag(name: .shortAndLong, help: "Verbose mode. Print output from program")
@@ -52,7 +52,6 @@ struct Profiler: ParsableCommand {
 
       program = foundCommand
     }
-
 
     let argv = ([program] + command.dropFirst()).map({ $0.withCString(strdup) })
 
