@@ -38,3 +38,15 @@ extension BigInt: ExpressibleByArgument {
     self.init(argument)
   }
 }
+
+protocol DefaultInit {
+  init()
+}
+
+func with<T: DefaultInit>(new thing: T.Type, do: (inout T) -> ()) -> T {
+  var t = thing.init()
+
+  `do`(&t)
+
+  return t
+}
