@@ -20,24 +20,6 @@
         }
       },
       {
-        "package": "Commander",
-        "repositoryURL": "https://github.com/kylef/Commander.git",
-        "state": {
-          "branch": null,
-          "revision": "4b6133c3071d521489a80c38fb92d7983f19d438",
-          "version": "0.9.1"
-        }
-      },
-      {
-        "package": "CommandLineKit",
-        "repositoryURL": "https://github.com/pvieito/CommandLineKit.git",
-        "state": {
-          "branch": "master",
-          "revision": "a4ca3c200b87490d070c930d5033ade2fd26ef71",
-          "version": null
-        }
-      },
-      {
         "package": "CryptoSwift",
         "repositoryURL": "https://github.com/krzyzanowskim/CryptoSwift.git",
         "state": {
@@ -69,17 +51,17 @@
         "repositoryURL": "https://github.com/pvieito/PythonKit.git",
         "state": {
           "branch": "master",
-          "revision": "25039c109ee7b64bc76a6e85f904c3b11d39598e",
+          "revision": "05f75d162601eb39d879812d5ab0cc7e7d8954cf",
           "version": null
         }
       },
       {
-        "package": "Spectre",
-        "repositoryURL": "https://github.com/kylef/Spectre.git",
+        "package": "swift-argument-parser",
+        "repositoryURL": "https://github.com/apple/swift-argument-parser",
         "state": {
-          "branch": null,
-          "revision": "f14ff47f45642aa5703900980b014c2e9394b6e5",
-          "version": "0.9.0"
+          "branch": "master",
+          "revision": "7e25c0005f173369e52ae1bfc6edc7c76cb8d34e",
+          "version": null
         }
       },
       {
