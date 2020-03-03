@@ -78,9 +78,7 @@ struct Profiler: ParsableCommand {
           fatalError("Could not spawn process")
         }
 
-        let returnCode = waitpid(pid, nil, 0)
-
-        guard returnCode == pid else {
+        guard waitpid(pid, nil, 0) == pid else {
           print("Run \(i + 1) errored")
 
           return false
@@ -101,6 +99,7 @@ struct Profiler: ParsableCommand {
     let finish = Date().timeIntervalSince1970
 
     print()
+    print("Number of runs: \(runTimes)")
     print("Minimum: \(times.min()!)")
     print("Maximum: \(times.max()!)")
     print("Average: \(times.reduce(0, +) / Double(times.count))s")
