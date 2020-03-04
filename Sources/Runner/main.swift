@@ -6,61 +6,10 @@ import Foundation
 import Playground
 import Numerics
 
-let bases: [Character] = ["A", "C", "G", "T"]
+var sum = BigInt(0)
 
-enum Action: CaseIterable {
-  case swap, delete, insert
+for i in (1...100).chained(with: 400...500).chained(with: 200...444).chained(with: (Int.max-20)...Int.max) {
+  sum += BigInt(i)
 }
 
-@discardableResult
-func mutate(dna: inout String) -> Action {
-  guard let i = dna.indices.shuffled().first(where: { $0 != dna.endIndex }) else {
-    fatalError()
-  }
-
-  let action = Action.allCases.randomElement()!
-
-  switch action {
-  case .swap:
-    dna.replaceSubrange(i..<i, with: [bases.randomElement()!])
-  case .delete:
-    dna.remove(at: i)
-  case .insert:
-    dna.insert(bases.randomElement()!, at: i)
-  }
-
-  return action
-}
-
-var d = ""
-
-for _ in 0..<200 {
-  d.append(bases.randomElement()!)
-}
-
-func printSeq(_ dna: String) {
-  for startI in stride(from: 0, to: dna.count, by: 50) {
-    print("\(startI): \(dna.dropFirst(startI).prefix(50))")
-  }
-
-  print()
-  print("Size: \(dna.count)")
-  print()
-
-  let counts = dna.reduce(into: [:], { $0[$1, default: 0] += 1 })
-
-  for (char, count) in counts.sorted(by: { $0.key < $1.key }) {
-    print("\(char): \(count)")
-  }
-}
-
-printSeq(d)
-
-print()
-
-for _ in 0..<1000 {
-  mutate(dna: &d)
-}
-
-printSeq(d)
-
+print(sum)

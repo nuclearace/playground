@@ -15,25 +15,12 @@ public struct ChainedSequence<Element> {
   var curSeq = 0
 
   @usableFromInline
-  init(chain: ChainedSequence) {
-    self.sequences = chain.sequences
-    self.iter = chain.iter
-    self.curSeq = chain.curSeq
-  }
-
-  @usableFromInline
-  init<Seq: Sequence>(_ seq: Seq) where Seq.Element == Element {
-    sequences = [AnySequence(seq)]
+  init<Seq1: Sequence, Seq2: Sequence>(
+    _ seq: Seq1,
+    _ other: Seq2
+  ) where Seq1.Element == Element, Seq2.Element == Element {
+    sequences = [AnySequence(seq), AnySequence(other)]
     iter = sequences[curSeq].makeIterator()
-  }
-
-  @usableFromInline
-  func chained<Seq: Sequence>(with seq: Seq) -> ChainedSequence where Seq.Element == Element {
-    var res = ChainedSequence(chain: self)
-
-    res.sequences.append(AnySequence(seq))
-
-    return res
   }
 }
 
@@ -59,6 +46,6 @@ extension ChainedSequence: Sequence, IteratorProtocol {
 extension Sequence {
   @inlinable
   public func chained<Seq: Sequence>(with other: Seq) -> ChainedSequence<Element> where Seq.Element == Element {
-    return ChainedSequence(self).chained(with: other)
+    return ChainedSequence(self, other)
   }
 }

@@ -97,14 +97,17 @@ struct Profiler: ParsableCommand {
     }
 
     let finish = Date().timeIntervalSince1970
+    let totalTime = finish - start
+    let progTime = times.reduce(0, +)
 
     print()
-    print("Number of runs: \(runTimes)")
+    print("Number of runs: \(times.count)")
     print("Minimum: \(times.min()!)")
     print("Maximum: \(times.max()!)")
     print("Average: \(times.reduce(0, +) / Double(times.count))s")
     print("Standard Deviation: \(stdDev(samples: times))")
-    print("Total test time: \(finish - start)")
+    print("Program time: \(progTime)")
+    print("Total test time: \(totalTime)")
   }
 
   enum ProfilerError: Error {
