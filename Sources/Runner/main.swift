@@ -6,98 +6,52 @@ import Foundation
 import Playground
 import Numerics
 
-let ld10 = log(2.0) / log(10.0)
+let N = 32
+let N2 = N * (N - 1) / 2
+let step = 0.05
 
-func p(L: Int, n: Int) -> Int {
-  var l = L
-  var digits = 1
+var xval = [Double](repeating: 0, count: N)
+var tsin = [Double](repeating: 0, count: N)
+var tcos = [Double](repeating: 0, count: N)
+var ttan = [Double](repeating: 0, count: N)
+var rsin = [Double](repeating: .nan, count: N2)
+var rcos = [Double](repeating: .nan, count: N2)
+var rtan = [Double](repeating: .nan, count: N2)
 
-  while l >= 10 {
-    digits *= 10
-    l /= 10
+func rho(_ x: [Double], _ y: [Double], _ r: inout [Double], _ i: Int, _ n: Int) -> Double {
+  guard n >= 0 else {
+    return 0
   }
 
-  var count = 0
-  var i = 0
-
-  while count < n {
-    let rhs = (Double(i) * ld10).truncatingRemainder(dividingBy: 1)
-    let e = exp(log(10.0) * rhs)
-
-    if Int(e * Double(digits)) == L {
-      count += 1
-    }
-
-    i += 1
+  guard n != 0 else {
+    return y[i]
   }
 
-  return i - 1
+  let idx = (N - 1 - n) * (N - n) / 2 + i
+
+  if r[idx] != r[idx] {
+    r[idx] = (x[i] - x[i + n]) /
+      (rho(x, y, &r, i, n - 1) - rho(x, y, &r, i + 1, n - 1)) + rho(x, y, &r, i + 1, n - 2)
+  }
+
+  return r[idx]
 }
 
-func p2(L: Int, n: Int) -> Int {
-  let asString = String(L)
-  var digits = 1
-
-  for _ in 1...18-asString.count {
-    digits *= 10
+func thiele(_ x: [Double], _ y: [Double], _ r: inout [Double], _ xin: Double, _ n: Int) -> Double {
+  guard n <= N - 1 else {
+    return 1
   }
 
-  let ten18 = Int(1e18)
-
-  var count = 0, i = 0, probe = 1
-
-  while true {
-    probe += probe
-    i += 1
-
-    if probe >= ten18 {
-      while true {
-        if probe >= ten18 {
-          probe /= 10
-        }
-
-        if probe / digits == L {
-          count += 1
-
-          if count >= n {
-            count -= 1
-            break
-          }
-        }
-
-        probe += probe
-        i += 1
-      }
-    }
-
-    let probeString = String(probe)
-    var len = asString.count
-
-    if asString.count > probeString.count {
-      len = probeString.count
-    }
-
-    if probeString.prefix(len) == asString {
-      count += 1
-
-      if count >= n {
-        break
-      }
-    }
-  }
-
-  return i
+  return rho(x, y, &r, 0, n) - rho(x, y, &r, 0, n - 2) + (xin - x[n]) / thiele(x, y, &r, xin, n + 1)
 }
 
-let cases = [
-  (12, 1),
-  (12, 2),
-  (123, 45),
-  (123, 12345),
-  (123, 678910),
-  (99, 1)
-]
-
-for (l, n) in cases {
-  print("p(\(l), \(n)) = \(p2(L: l, n: n))")
+for i in 0..<N {
+  xval[i] = Double(i) * step
+  tsin[i] = sin(xval[i])
+  tcos[i] = cos(xval[i])
+  ttan[i] = tsin[i] / tcos[i]
 }
+
+print(String(format: "%16.14f", 6 * thiele(tsin, xval, &rsin, 0.5, 0)))
+print(String(format: "%16.14f", 3 * thiele(tcos, xval, &rcos, 0.5, 0)))
+print(String(format: "%16.14f", 4 * thiele(ttan, xval, &rtan, 1.0, 0)))
