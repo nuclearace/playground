@@ -6,168 +6,205 @@ import Foundation
 import Playground
 import Numerics
 
-extension String {
-  func paddedLeft(totalLen: Int) -> String {
-    let needed = totalLen - count
-
-    guard needed > 0 else {
-      return self
-    }
-
-    return String(repeating: " ", count: needed) + self
-  }
+struct Tamagotchi {
+  var name: String
+  var age = 0
+  var bored = 0
+  var food = 2
+  var poop = 0
 }
 
-class FCNode {
-  let name: String
-  let weight: Int
+private var rng = MTRandom()
+private var tama = Tamagotchi(name: "")
 
-  var coverage: Double {
-    didSet {
-      if oldValue != coverage {
-        parent?.updateCoverage()
+let verbs = [
+  "Ask", "Ban", "Bash", "Bite", "Break", "Build",
+  "Cut", "Dig", "Drag", "Drop", "Drink", "Enjoy",
+  "Eat", "End", "Feed", "Fill", "Force", "Grasp",
+  "Gas", "Get", "Grab", "Grip", "Hoist", "House",
+  "Ice", "Ink", "Join", "Kick", "Leave", "Marry",
+  "Mix", "Nab", "Nail", "Open", "Press", "Quash",
+  "Rub", "Run", "Save", "Snap", "Taste", "Touch",
+  "Use", "Vet", "View", "Wash", "Xerox", "Yield",
+]
+
+let nouns = [
+  "arms", "bugs", "boots", "bowls", "cabins", "cigars",
+  "dogs", "eggs", "fakes", "flags", "greens", "guests",
+  "hens", "hogs", "items", "jowls", "jewels", "juices",
+  "kits", "logs", "lamps", "lions", "levers", "lemons",
+  "maps", "mugs", "names", "nests", "nights", "nurses",
+  "orbs", "owls", "pages", "posts", "quests", "quotas",
+  "rats", "ribs", "roots", "rules", "salads", "sauces",
+  "toys", "urns", "vines", "words", "waters", "zebras",
+]
+
+let boredIcons = ["💤", "💭", "❓"]
+let foodIcons = ["🍼", "🍔", "🍟", "🍰", "🍜"]
+let poopIcons = ["💩"]
+let sickIcons1 = ["😄", "😃", "😀", "😊", "😎", "👍"]
+let sickIcons2 = ["😪", "😥", "😰", "😓"]
+let sickIcons3 = ["😩", "😫"]
+let sickIcons4 = ["😡", "😱"]
+let sickicons5 = ["❌", "💀", "👽", "😇"]
+
+func braces(_ runes: [String]) -> String {
+  "{ \(runes.joined(separator: ", ")) }" 
+}
+
+func alive() -> Bool {
+  sickness() <= 10
+}
+
+func sickness() -> Int {
+  tama.poop + tama.bored + max(0, tama.age - 32) + abs(tama.food - 2)
+}
+
+func feed() {
+  tama.food += 1
+}
+
+func play() {
+  tama.bored = max(0, tama.bored - .random(in: 0...1, using: &rng))
+}
+
+func talk() {
+  print("😮 : \(verbs.randomElement()!) the \(nouns.randomElement(using: &rng)!)")
+
+  tama.bored = max(0, tama.bored - 1)
+}
+
+func clean() {
+  tama.poop = max(0, tama.poop - 1)
+}
+
+func wait() {
+  tama.age += 1
+  tama.bored += .random(in: 0...1, using: &rng)
+  tama.food = max(0, tama.food - 2)
+  tama.poop += .random(in: 0...1, using: &rng)
+}
+
+func status() -> String {
+  guard alive() else {
+    return "R.I.P"
+  }
+
+  var bored = [String]()
+  var food = [String]()
+  var poop = [String]()
+
+  for _ in 0..<tama.bored {
+    bored.append(boredIcons.randomElement()!)
+  }
+
+  for _ in 0..<tama.food {
+    food.append(foodIcons.randomElement()!)
+  }
+
+  for _ in 0..<tama.poop {
+    poop.append(poopIcons.randomElement()!)
+  }
+
+  return "\(braces(bored)) \(braces(food)) \(braces(poop))"
+}
+
+func health() {
+  let s = sickness()
+  let sickRune: String
+
+  switch s {
+  case Int.min..<0, 0, 1, 2:
+    sickRune = sickIcons1.randomElement()!
+  case 3, 4:
+    sickRune = sickIcons2.randomElement()!
+  case 5, 6:
+    sickRune = sickIcons3.randomElement()!
+  case 7, 8, 9, 10:
+    sickRune = sickIcons4.randomElement()!
+  case _:
+    sickRune = sickicons5.randomElement()!
+  }
+
+  print("\(tama.name) (🎂 \(tama.age))  \(s) \(sickRune) \(status())")
+}
+
+func blurb() {
+  print("When the '?' prompt appears, enter an action optionally")
+  print("followed by the number of repetitions")
+  print("If no repetitions are specified, one will be assumed.")
+  print("The available options are: feed, play, talk, clean or wait.\n")
+}
+
+print("         TAMAGOTCHI EMULATOR")
+print("         ===================\n")
+print("Enter the name of your tamagotchi : ")
+
+guard let name = readLine(strippingNewline: true) else {
+  exit(0)
+}
+
+tama = Tamagotchi(name: name)
+
+print("\(name)   (age) health {bored} {food}   {poop}\n\n")
+
+health()
+blurb()
+var count = 0
+
+while alive() {
+  print("? ", terminator: "")
+
+  guard let input = readLine(strippingNewline: true) else {
+    exit(0)
+  }
+
+  let split = input.components(separatedBy: " ")
+
+  guard split.count <= 2 else {
+    continue
+  }
+
+  let action = split[0]
+
+  guard action == "feed" ||
+          action == "play" ||
+          action == "talk" ||
+          action == "clean" ||
+          action == "wait" else {
+    continue
+  }
+
+  var reps = 1
+
+  if split.count == 2, let r = Int(split[1]), r > 0 {
+    reps = r
+  }
+
+  for _ in 0..<reps {
+    switch action {
+    case "feed":
+      feed()
+    case "play":
+      play()
+    case "talk":
+      talk()
+    case "clean":
+      clean()
+    case "wait":
+      wait()
+    case _:
+      fatalError()
+    }
+
+    if action != "wait" {
+      count += 1
+
+      if count % 3 == 0 {
+        wait()
       }
     }
   }
 
-  weak var parent: FCNode?
-  var children = [FCNode]()
-
-  init(name: String, weight: Int = 1, coverage: Double = 0) {
-    self.name = name
-    self.weight = weight
-    self.coverage = coverage
-  }
-
-  func addChildren(_ children: [FCNode]) {
-    for child in children {
-      child.parent = self
-    }
-
-    self.children += children
-
-    updateCoverage()
-  }
-
-  func show(level: Int = 0) {
-    let indent = level * 4
-    let nameLen = name.count + indent
-
-    print(name.paddedLeft(totalLen: nameLen), terminator: "")
-    print("|".paddedLeft(totalLen: 32 - nameLen), terminator: "")
-    print(String(format: "  %3d   |", weight), terminator: "")
-    print(String(format: " %8.6f |", coverage))
-
-    for child in children {
-      child.show(level: level + 1)
-    }
-  }
-
-  func updateCoverage() {
-    let v1 = children.reduce(0.0, { $0 + $1.coverage * Double($1.weight) })
-    let v2 = children.reduce(0.0, { $0 + Double($1.weight) })
-
-    coverage = v1 / v2
-  }
+  health()
 }
-
-let houses = [
-  FCNode(name: "house1", weight: 40),
-  FCNode(name: "house2", weight: 60)
-]
-
-let house1 = [
-  FCNode(name: "bedrooms", weight: 1, coverage: 0.25),
-  FCNode(name: "bathrooms"),
-  FCNode(name: "attic", weight: 1, coverage: 0.75),
-  FCNode(name: "kitchen", weight: 1, coverage: 0.1),
-  FCNode(name: "living_rooms"),
-  FCNode(name: "basement"),
-  FCNode(name: "garage"),
-  FCNode(name: "garden", weight: 1, coverage: 0.8)
-]
-
-let house2 = [
-  FCNode(name: "upstairs"),
-  FCNode(name: "groundfloor"),
-  FCNode(name: "basement")
-]
-
-let h1Bathrooms = [
-  FCNode(name: "bathroom1", weight: 1, coverage: 0.5),
-  FCNode(name: "bathroom2"),
-  FCNode(name: "outside_lavatory", weight: 1, coverage: 1.0)
-]
-
-let h1LivingRooms = [
-  FCNode(name: "lounge"),
-  FCNode(name: "dining_room"),
-  FCNode(name: "conservatory"),
-  FCNode(name: "playroom", weight: 1, coverage: 1.0)
-]
-
-let h2Upstairs = [
-  FCNode(name: "bedrooms"),
-  FCNode(name: "bathroom"),
-  FCNode(name: "toilet"),
-  FCNode(name: "attics", weight: 1, coverage: 0.6)
-]
-
-let h2Groundfloor = [
-  FCNode(name: "kitchen"),
-  FCNode(name: "living_rooms"),
-  FCNode(name: "wet_room_&_toilet"),
-  FCNode(name: "garage"),
-  FCNode(name: "garden", weight: 1, coverage: 0.9),
-  FCNode(name: "hot_tub_suite", weight: 1, coverage: 1.0)
-]
-
-let h2Basement = [
-  FCNode(name: "cellars", weight: 1, coverage: 1.0),
-  FCNode(name: "wine_cellar", weight: 1, coverage: 1.0),
-  FCNode(name: "cinema", weight: 1, coverage: 0.75)
-]
-
-let h2UpstairsBedrooms = [
-  FCNode(name: "suite_1"),
-  FCNode(name: "suite_2"),
-  FCNode(name: "bedroom_3"),
-  FCNode(name: "bedroom_4")
-]
-
-let h2GroundfloorLivingRooms = [
-  FCNode(name: "lounge"),
-  FCNode(name: "dining_room"),
-  FCNode(name: "conservatory"),
-  FCNode(name: "playroom")
-]
-
-let cleaning = FCNode(name: "cleaning")
-
-house1[1].addChildren(h1Bathrooms)
-house1[4].addChildren(h1LivingRooms)
-houses[0].addChildren(house1)
-
-h2Upstairs[0].addChildren(h2UpstairsBedrooms)
-house2[0].addChildren(h2Upstairs)
-h2Groundfloor[1].addChildren(h2GroundfloorLivingRooms)
-house2[1].addChildren(h2Groundfloor)
-house2[2].addChildren(h2Basement)
-houses[1].addChildren(house2)
-
-cleaning.addChildren(houses)
-
-let top = cleaning.coverage
-
-print("Top Coverage: \(String(format: "%8.6f", top))")
-print("Name Hierarchy                 | Weight | Coverage |")
-
-cleaning.show()
-
-h2Basement[2].coverage = 1.0
-
-let diff = cleaning.coverage - top
-
-print("\nIf the coverage of the Cinema node were increased from 0.75 to 1.0")
-print("the top level coverage would increase by ")
-print("\(String(format: "%8.6f", diff)) to \(String(format: "%8.6f", top))")
