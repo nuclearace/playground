@@ -6,37 +6,70 @@ import Foundation
 import Playground
 import Numerics
 
-let size = 1000
-let numBarriers = (size * size) / 2
+typealias Complex = Numerics.Complex<Double>
 
-var rng = MTRandom()
-var barriers: Barrier = []
+extension Complex {
+  var exp: Complex {
+    Complex(cos(imaginary), sin(imaginary)) * Complex(cosh(real), sinh(real))
+  }
 
-while barriers.count != numBarriers {
-  barriers.insert(
-    GridPosition(x: .random(in: 0..<size, using: &rng), y: .random(in: 0..<size, using: &rng))
-  )
+  public var pretty: String {
+    let fmt = { String(format: "%1.3f", $0) }
+    let re = fmt(real)
+    let im = fmt(abs(imaginary))
+
+    if im == "0.000" {
+      return re
+    } else if re == "0.000" {
+      return im
+    } else if imaginary > 0 {
+      return re + " + " + im + "i"
+    } else {
+      return re + " - " + im +  "i"
+    }
+  }
 }
 
-var to = GridPosition(x: .random(in: 0..<size), y: .random(in: 0..<size))
+func fft(_ array: [Complex]) -> [Complex] { _fft(array, direction: Complex(0.0, 2.0), scalar: 1) }
+func rfft(_ array: [Complex]) -> [Complex] { _fft(array, direction: Complex(0.0, -2.0), scalar: 2) }
 
-while barriers.contains(to) {
-  to = GridPosition(x: .random(in: 0..<size), y: .random(in: 0..<size))
+private func _fft(_ arr: [Complex], direction: Complex, scalar: Double) -> [Complex] {
+  guard arr.count > 1 else {
+    return arr
+  }
+
+  let n = arr.count
+  let cScalar = Complex(scalar, 0)
+
+  precondition(n % 2 == 0, "The Cooley-Tukey FFT algorithm only works when the length of the input is even.")
+
+  var (evens, odds) = arr.lazy.enumerated().reduce(into: ([Complex](), [Complex]()), {res, cur in
+    if cur.offset & 1 == 0 {
+      res.0.append(cur.element)
+    } else {
+      res.1.append(cur.element)
+    }
+  })
+
+  evens = _fft(evens, direction: direction, scalar: scalar)
+  odds = _fft(odds, direction: direction, scalar: scalar)
+
+  let (left, right) = (0 ..< n / 2).map({i -> (Complex, Complex) in
+    let offset = (direction * Complex((.pi * Double(i) / Double(n)), 0)).exp * odds[i] / cScalar
+    let base = evens[i] / cScalar
+
+    return (base + offset, base - offset)
+  }).reduce(into: ([Complex](), [Complex]()), {res, cur in
+    res.0.append(cur.0)
+    res.1.append(cur.1)
+  })
+
+  return left + right
 }
 
-print("Searching:...")
+let dat = [Complex(1.0, 0.0), Complex(1.0, 0.0), Complex(1.0, 0.0), Complex(1.0, 0.0),
+           Complex(0.0, 0.0), Complex(0.0, 2.0), Complex(0.0, 0.0), Complex(0.0, 0.0)]
+let f = fft(dat)
 
-guard case let ((path, cost)?, t) = ClockTimer.time({
-  aStarSearch(
-    start: GridPosition(x: 0, y: 0),
-    finish: to,
-    grid: SquareGrid(height: size, width: size, barriers: [barriers])
-  )
-}) else {
-  fatalError("No solution")
-}
-
-print("Found solution in \(t.duration)s\n")
-
-print("Path length \(path)")
-print("Cost: \(cost)")
+print(f.map({ $0.pretty }))
+print(rfft(f).map({ $0.pretty }))
