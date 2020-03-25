@@ -46,6 +46,23 @@ public func + <T>(el: T, arr: [T]) -> [T] {
   return ret
 }
 
+@usableFromInline
+func pel<T>(
+  _ el: T,
+  _ ll: [[T]],
+  _ a: [[T]] = []
+) -> [[T]] {
+  switch ll.count {
+  case 0:
+    return a.reversed()
+  case _:
+    let tail = Array(ll.dropFirst())
+    let head = ll.first!
+
+    return pel(el, tail, el + head + a)
+  }
+}
+
 @inlinable
 public func cartesianProduct<T>(_ arrays: [T]...) -> [[T]] {
   guard let head = arrays.first else {
@@ -53,22 +70,6 @@ public func cartesianProduct<T>(_ arrays: [T]...) -> [[T]] {
   }
 
   let first = Array(head)
-
-  func pel(
-    _ el: T,
-    _ ll: [[T]],
-    _ a: [[T]] = []
-  ) -> [[T]] {
-    switch ll.count {
-    case 0:
-      return a.reversed()
-    case _:
-      let tail = Array(ll.dropFirst())
-      let head = ll.first!
-
-      return pel(el, tail, el + head + a)
-    }
-  }
 
   return arrays.lazy.reversed()
     .reduce([first], {res, el in el.flatMap({ pel($0, res) }) })

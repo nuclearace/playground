@@ -88,8 +88,6 @@ extension DoubleLinkedList : Collection, MutableCollection {
 
 extension DoubleLinkedList : RangeReplaceableCollection {
   private func insert<C>(atSubrange subrange: Range<Int>, _ newElements: C) where C: Collection, C.Element == Value {
-    let lenRange = subrange.upperBound - subrange.lowerBound
-
     var node: UnsafeMutablePointer<DListNode<Value>>?
 
     if subrange.lowerBound == count {
@@ -152,8 +150,6 @@ extension DoubleLinkedList : RangeReplaceableCollection {
 //    precondition(subrange.lowerBound >= startIndex && subrange.upperBound < endIndex)
 
     let lenRange = subrange.upperBound - subrange.lowerBound
-
-    var node: UnsafeMutablePointer<DListNode<Value>>?
 
     defer {
       count += newElements.count - lenRange

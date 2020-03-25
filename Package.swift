@@ -21,6 +21,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-numerics", from: "0.0.2"),
         .package(url: "https://github.com/pvieito/PythonKit.git", .branch("master")),
         .package(url: "https://github.com/apple/swift-argument-parser", .branch("master")),
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.0.0")
     ],
     targets: [
         .target(
@@ -36,7 +37,9 @@ let package = Package(
         .target(name: "QDBMP"),
         .target(
           name: "Runner", 
-          dependencies: ["Playground", "CGMP", "BigInt", "Numerics", "PythonKit", "ClockTimer"],
+          dependencies: [
+              "Playground", "CGMP", "BigInt", "Numerics", "PythonKit", "ClockTimer", "AsyncHTTPClient", "ArgumentParser"
+          ],
           /*swiftSettings: [.unsafeFlags(["-enforce-exclusivity=always"])],*/
           linkerSettings: [.unsafeFlags(["-L/usr/local/lib"])]
         ),
