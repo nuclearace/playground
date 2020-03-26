@@ -708,3 +708,56 @@ private func threeDigitsToText(n: Int) -> String {
 
   return ret
 }
+
+public func hamming(n: Int) -> (Int, Int, Int)? {
+  guard n >= 2 else {
+    if n <= 0 {
+      return nil
+    }
+
+    return (0, 0, 0)
+  }
+
+  let lg3 = log(3.0) / log(2.0)
+  let lg5 = log(5.0) / log(2.0)
+  let fctr = 6 * lg3 * lg5
+  let crctn = log(30.squareRoot()) / log(2.0)
+  let lgest = pow(fctr * Double(n), 1 / 3) - crctn
+  let frctn = n < 1000000000 ? 0.509 : 0.105
+  let lghi = pow(fctr * (Double(n) + frctn * lgest), 1 / 3) - crctn
+  let lglo = 2 * lgest - lghi
+
+  var count = 0
+  var bnd = [(Double, (Int, Int, Int))]()
+
+  for k in 0..<Int(lghi / lg5)+1 {
+    let p = Double(k) * lg5
+    let jlmt = Int((lghi - p) / lg3) + 1
+
+    for j in 0..<jlmt {
+      let q = p + Double(j) * lg3
+      let ir = lghi - q
+      let lg = q + floor(ir)
+
+      count += Int(ir) + 1
+
+      if lg >= lglo {
+        bnd.append((lg, (Int(ir), j, k)))
+      }
+    }
+  }
+
+  let idx = count - n
+
+  guard idx >= 0, idx < bnd.count else {
+    return nil
+  }
+
+  bnd.sort(by: { $0.0 > $1.0 })
+
+  return bnd[idx].1
+}
+
+public func hamString(_ exps: (Int, Int, Int)) -> BigInt {
+  BigInt(2).power(exps.0) * BigInt(3).power(exps.1) * BigInt(5).power(exps.2)
+}

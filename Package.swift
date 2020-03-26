@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -26,10 +26,21 @@ let package = Package(
     targets: [
         .target(
             name: "Playground",
-            dependencies: ["BigInt", "QDBMP", "CStuff", "CryptoSwift", "Numerics", "PythonKit", "ClockTimer"]),
+            dependencies: [
+                "BigInt", 
+                "QDBMP", 
+                "CStuff", 
+                "CryptoSwift",
+                .product(name: "Numerics", package: "swift-numerics"), 
+                "PythonKit", 
+                "ClockTimer"
+            ]),
         .target(
             name: "Profiler",
-          dependencies: ["ArgumentParser", "ClockTimer"]
+          dependencies: [
+              .product(name: "ArgumentParser", package: "swift-argument-parser"), 
+              "ClockTimer"
+          ]
         ),
         .target(
           name: "ClockTimer"
@@ -38,13 +49,25 @@ let package = Package(
         .target(
           name: "Runner", 
           dependencies: [
-              "Playground", "CGMP", "BigInt", "Numerics", "PythonKit", "ClockTimer", "AsyncHTTPClient", "ArgumentParser"
+              "Playground",
+              "CGMP", 
+              "BigInt",
+              .product(name: "Numerics", package: "swift-numerics"),
+              "PythonKit", 
+              "ClockTimer",
+              .product(name: "AsyncHTTPClient", package: "async-http-client"),
+              .product(name: "ArgumentParser", package: "swift-argument-parser")
           ],
           /*swiftSettings: [.unsafeFlags(["-enforce-exclusivity=always"])],*/
           linkerSettings: [.unsafeFlags(["-L/usr/local/lib"])]
         ),
         .target(name: "CStuff"),
-        .target(name: "Collatzing", dependencies: ["Playground", "BigInt", "ArgumentParser", "ClockTimer"]),
+        .target(name: "Collatzing", dependencies: [
+            "Playground", 
+            "BigInt",
+            .product(name: "ArgumentParser", package: "swift-argument-parser"),
+            "ClockTimer"
+        ]),
         .systemLibrary(
             name: "CGMP",
             pkgConfig: "gmp",
