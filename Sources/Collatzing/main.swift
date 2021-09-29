@@ -219,22 +219,22 @@ struct Collatzing: ParsableCommand {
 }
 
 extension Collatzing {
-  struct Random: ParsableCommand {
+  struct Random: ParsableCommand, Decodable {
     static let configuration = CommandConfiguration(
       commandName: "random",
       abstract: "Randomly goes through the range 1...Int.max, while splitting into ranges"
     )
 
     @Option(
+      wrappedValue: 50_000,
       name: .shortAndLong,
-      default: 50_000,
       help: "The number of ranges to split 1...Int.max into"
     )
     var numRanges: Int
 
     @Option(
+      wrappedValue: 5,
       name: .shortAndLong,
-      default: 5,
       help: "The number of ms between runs"
     )
     var timeDelay: Int
@@ -265,35 +265,36 @@ extension Collatzing {
 }
 
 extension Collatzing {
-  struct Peak: ParsableCommand {
+  struct Peak: ParsableCommand, Decodable {
     static let configuration = CommandConfiguration(
       commandName: "peak",
       abstract: "Searches for peaks (i.e. largest values reached in a progression) starting at numStart"
     )
 
     @Option(
+      wrappedValue: 100_000_000,
       name: .shortAndLong,
-      default: 100_000_000,
       help: "Upper bound for choosing random increment"
     )
     var bound: Int
 
     @Option(
+      wrappedValue: 1,
       name: .shortAndLong,
-      default: 1,
       help: "The starting value of n"
     )
     var numStart: CollatzType
 
     @Flag(
+      wrappedValue: false,
       name: .shortAndLong,
       help: "Sets the increment to a random value, bounded by incrementUpperBound "
     )
     var randomIncrement: Bool
 
     @Option(
+      wrappedValue: 5,
       name: .shortAndLong,
-      default: 5,
       help: "The number of ms between runs"
     )
     var timeDelay: Int

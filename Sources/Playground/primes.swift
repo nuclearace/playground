@@ -419,3 +419,32 @@ public func isEmirp<T: BinaryInteger>(n: T) -> Bool {
 
   return revPrime.isPrime
 }
+
+public func φ(_ x: Int, _ a: Int) -> Int {
+  struct Cache {
+    static let primes = eratosthenes(limit: 1_000_000_000)
+    static var cache = [String: Int]()
+  }
+
+  guard a != 0 else {
+    return x
+  }
+
+  guard Cache.cache["\(x),\(a)"] == nil else {
+    return Cache.cache["\(x),\(a)"]!
+  }
+
+  Cache.cache["\(x),\(a)"] = φ(x, a - 1) - φ(x / Cache.primes[a - 1], a - 1)
+
+  return Cache.cache["\(x),\(a)"]!
+}
+
+public func π(n: Int) -> Int {
+  guard n > 2 else {
+    return 0
+  }
+
+  let a = π(n: Int(Double(n).squareRoot()))
+
+  return φ(n, a) + a - 1
+}

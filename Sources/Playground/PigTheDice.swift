@@ -60,9 +60,9 @@ public final class PigTheDice {
     var pathToScore: WritableKeyPath<PigTheDice, Int> {
       switch self {
       case .one:
-        return \p1Score
+        return \.p1Score
       case .two:
-        return \p2Score
+        return \.p2Score
       }
     }
   }

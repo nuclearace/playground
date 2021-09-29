@@ -8,13 +8,13 @@ struct Profiler: ParsableCommand {
   var command: [String]
 
   @Flag(name: .shortAndLong, help: "Quiet mode. Print less output from profiler")
-  var quiet: Bool
+  var quiet: Bool = false
 
   @Flag(name: .shortAndLong, help: "Verbose mode. Print output from program")
-  var verbose: Bool
+  var verbose: Bool = false
 
-  @Option(name: .shortAndLong, default: 10, help: "The number of times to run the program")
-  var runTimes: Int
+  @Option(name: .shortAndLong, help: "The number of times to run the program")
+  var runTimes: Int = 10
 
   mutating func validate() throws {
     guard runTimes > 0 else {
@@ -57,7 +57,7 @@ struct Profiler: ParsableCommand {
 
     defer {
       for arg in argv {
-        free(arg)
+        free(arg!)
       }
     }
 
