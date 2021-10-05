@@ -448,3 +448,12 @@ public func π(n: Int) -> Int {
 
   return φ(n, a) + a - 1
 }
+
+@inlinable
+public func isWilsonPrime<T: BinaryInteger>(_ n: T) -> Bool {
+  guard n >= 2 else {
+    return false
+  }
+
+  return (factorial(n - 1) + 1) % n == 0
+}

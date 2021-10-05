@@ -95,8 +95,6 @@ public struct EratosthenesOddsOnly: Sequence, IteratorProtocol {
 
       n += 2
     }
-
-    return nil
   }
 }
 

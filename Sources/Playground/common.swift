@@ -41,6 +41,23 @@ public func convertToUnicodeScalars(
   return scalars
 }
 
+extension Sequence {
+  @inlinable
+  public func take(_ n: Int) -> [Element] {
+    var res = [Element]()
+
+    for el in self {
+      guard res.count != n else {
+        return res
+      }
+
+      res.append(el)
+    }
+
+    return res
+  }
+}
+
 extension RangeReplaceableCollection where Element: Equatable {
   @inlinable
   public func dropFirstIf(_ thing: @autoclosure () -> Element) -> SubSequence {
