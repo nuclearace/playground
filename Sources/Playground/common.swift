@@ -101,3 +101,9 @@ extension Collection where Element: Numeric {
     return ret
   }
 }
+
+extension Array {
+  public mutating func removeRandom() -> Element {
+    return remove(at: (0..<count).randomElement()!)
+  }
+}
