@@ -31,7 +31,7 @@ public class BitmapDrawer: Drawer {
 
   /// The origin of the portrait
   public var origin: (Int, Int) {
-    return (imageWidth/2, imageHeight/2)
+    return (imageWidth / 2, imageHeight / 2)
   }
 
   /// The portrait that is being drawn
