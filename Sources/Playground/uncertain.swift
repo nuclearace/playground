@@ -6,28 +6,39 @@ import Foundation
 
 infix operator ±
 
+@_transparent
 public func ±(_ lhs: Double, _ rhs: Double) -> UncertainDouble { UncertainDouble(value: lhs, error: rhs) }
 
 public struct UncertainDouble {
   public var value: Double
   public var error: Double
 
+  public init(value: Double, error: Double) {
+    self.value = value
+    self.error = error
+  }
+
+  @_transparent
   public static func +(_ lhs: UncertainDouble, _ rhs: UncertainDouble) -> UncertainDouble {
     return UncertainDouble(value: lhs.value + rhs.value, error: pow(pow(lhs.error, 2) + pow(rhs.error, 2), 0.5))
   }
 
+  @_transparent
   public static func +(_ lhs: UncertainDouble, _ rhs: Double) -> UncertainDouble {
     return UncertainDouble(value: lhs.value + rhs, error: lhs.error)
   }
 
+  @_transparent
   public static func -(_ lhs: UncertainDouble, _ rhs: UncertainDouble) -> UncertainDouble {
     return UncertainDouble(value: lhs.value - rhs.value, error: pow(pow(lhs.error, 2) + pow(rhs.error, 2), 0.5))
   }
 
+  @_transparent
   public static func -(_ lhs: UncertainDouble, _ rhs: Double) -> UncertainDouble {
     return UncertainDouble(value: lhs.value - rhs, error: lhs.error)
   }
 
+  @_transparent
   public static func *(_ lhs: UncertainDouble, _ rhs: UncertainDouble) -> UncertainDouble {
     let val = lhs.value * rhs.value
 
@@ -37,10 +48,12 @@ public struct UncertainDouble {
     )
   }
 
+  @_transparent
   public static func *(_ lhs: UncertainDouble, _ rhs: Double) -> UncertainDouble {
     return UncertainDouble(value: lhs.value * rhs, error: abs(lhs.error * rhs))
   }
 
+  @_transparent
   public static func /(_ lhs: UncertainDouble, _ rhs: UncertainDouble) -> UncertainDouble {
     let val = lhs.value / rhs.value
 
@@ -50,10 +63,12 @@ public struct UncertainDouble {
     )
   }
 
+  @_transparent
   public static func /(_ lhs: UncertainDouble, _ rhs: Double) -> UncertainDouble {
     return UncertainDouble(value: lhs.value / rhs, error: abs(lhs.error * rhs))
   }
 
+  @_transparent
   public static func **(_ lhs: UncertainDouble, _ power: Double) -> UncertainDouble {
     let val = pow(lhs.value, power)
 

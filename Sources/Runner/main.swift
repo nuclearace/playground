@@ -1,6 +1,7 @@
 import ArgumentParser
 //import AsyncHTTPClient
 import BigInt
+import BigNumber
 import ClockTimer
 // import CGMP
 import CStuff
@@ -8,9 +9,38 @@ import Foundation
 import Playground
 import Numerics
 
-let (x1, y1) = (100 ± 1.1, 50 ± 1.2)
-let (x2, y2) = (200 ± 2.2, 100 ± 2.3)
+struct SmallInt {
+  var value: Int
 
-let d = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+  init(value: Int) {
+    guard value >= 1 && value <= 10 else {
+      fatalError("SmallInts must be in the range [1, 10]")
+    }
 
-print(d)
+    self.value = value
+  }
+
+  static func +(_ lhs: SmallInt, _ rhs: SmallInt) -> SmallInt { SmallInt(value: lhs.value + rhs.value) }
+  static func -(_ lhs: SmallInt, _ rhs: SmallInt) -> SmallInt { SmallInt(value: lhs.value - rhs.value) }
+  static func *(_ lhs: SmallInt, _ rhs: SmallInt) -> SmallInt { SmallInt(value: lhs.value * rhs.value) }
+  static func /(_ lhs: SmallInt, _ rhs: SmallInt) -> SmallInt { SmallInt(value: lhs.value / rhs.value) }
+}
+
+extension SmallInt: ExpressibleByIntegerLiteral {
+  public init(integerLiteral value: Int) { self.init(value: value) }
+}
+
+extension SmallInt: CustomStringConvertible {
+  public var description: String { "\(value)" }
+}
+
+let a: SmallInt = 1
+let b: SmallInt = 9
+let c: SmallInt = 10
+let d: SmallInt = 2
+
+print(a + b)
+print(c - b)
+print(a * c)
+print(c / d)
+print(a + c)
