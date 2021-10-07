@@ -8,9 +8,9 @@ import Foundation
 import Playground
 import Numerics
 
-func f<T: Ring>(_ x: T) -> T { (x ** 100) + x + x.one }
+let (x1, y1) = (100 ± 1.1, 50 ± 1.2)
+let (x2, y2) = (200 ± 2.2, 100 ± 2.3)
 
-let x = ModInt(10, modulo: 13)
-let y = f(x)
+let d = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
 
-print("x ^ 100 + x + 1 for x = ModInt(10, 13) is \(y)")
+print(d)
