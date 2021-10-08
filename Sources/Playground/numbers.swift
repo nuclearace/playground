@@ -5,11 +5,12 @@
 import BigInt
 import Foundation
 
-precedencegroup ExponentiationGroup {
+precedencegroup ExponentiationPrecedence {
+  associativity: left
   higherThan: MultiplicationPrecedence
 }
 
-infix operator ** : ExponentiationGroup
+infix operator ** : ExponentiationPrecedence
 
 @inlinable
 public func ** <T: BinaryInteger>(lhs: T, rhs: T) -> T {
@@ -760,4 +761,36 @@ public func hamming(n: Int) -> (Int, Int, Int)? {
 
 public func hamString(_ exps: (Int, Int, Int)) -> BigInt {
   BigInt(2).power(exps.0) * BigInt(3).power(exps.1) * BigInt(5).power(exps.2)
+}
+
+public func minToOne(divs: [Int], subs: [Int], upTo n: Int) -> ([Int], [[String]]) {
+  var table = Array(repeating: n + 2, count: n + 1)
+  var how = Array(repeating: [""], count: n + 2)
+
+  table[1] = 0
+  how[1] = ["="]
+
+  for t in 1..<n {
+    let thisPlus1 = table[t] + 1
+
+    for div in divs {
+      let dt = div * t
+
+      if dt <= n && thisPlus1 < table[dt] {
+        table[dt] = thisPlus1
+        how[dt] = how[t] + ["/\(div)=>  \(t)"]
+      }
+    }
+
+    for sub in subs {
+      let st = sub + t
+
+      if st <= n && thisPlus1 < table[st] {
+        table[st] = thisPlus1
+        how[st] = how[t] + ["-\(sub)=> \(t)"]
+      }
+    }
+  }
+
+  return (table, how.map({ $0.reversed().dropLast() }))
 }

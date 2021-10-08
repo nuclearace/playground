@@ -1,7 +1,7 @@
 import ArgumentParser
 //import AsyncHTTPClient
 import BigInt
-import BigNumber
+//import BigNumber
 import ClockTimer
 // import CGMP
 import CStuff
@@ -9,38 +9,26 @@ import Foundation
 import Playground
 import Numerics
 
-struct SmallInt {
-  var value: Int
+for (divs, subs) in [([2, 3], [1]), ([2, 3], [2])] {
+  print("\nMINIMUM STEPS TO 1:")
+  print("  Possible divisors:  \(divs)")
+  print("  Possible decrements: \(subs)")
 
-  init(value: Int) {
-    guard value >= 1 && value <= 10 else {
-      fatalError("SmallInts must be in the range [1, 10]")
-    }
+  let (table, hows) = minToOne(divs: divs, subs: subs, upTo: 10)
 
-    self.value = value
+  for n in 1...10 {
+    print("    mintab(  \(n)) in {  \(table[n])} by: ", hows[n].joined(separator: ", "))
   }
 
-  static func +(_ lhs: SmallInt, _ rhs: SmallInt) -> SmallInt { SmallInt(value: lhs.value + rhs.value) }
-  static func -(_ lhs: SmallInt, _ rhs: SmallInt) -> SmallInt { SmallInt(value: lhs.value - rhs.value) }
-  static func *(_ lhs: SmallInt, _ rhs: SmallInt) -> SmallInt { SmallInt(value: lhs.value * rhs.value) }
-  static func /(_ lhs: SmallInt, _ rhs: SmallInt) -> SmallInt { SmallInt(value: lhs.value / rhs.value) }
+  for upTo in [2_000, 50_000] {
+    print("\n    Those numbers up to \(upTo) that take the maximum, \"minimal steps down to 1\":")
+    let (table, _) = minToOne(divs: divs, subs: subs, upTo: upTo)
+    let max = table.dropFirst().max()!
+    let maxNs = table.enumerated().filter({ $0.element == max })
+
+    print(
+      "      Taking", max, "steps are the \(maxNs.count) numbers:",
+      maxNs.map({ String($0.offset) }).joined(separator: ", ")
+    )
+  }
 }
-
-extension SmallInt: ExpressibleByIntegerLiteral {
-  public init(integerLiteral value: Int) { self.init(value: value) }
-}
-
-extension SmallInt: CustomStringConvertible {
-  public var description: String { "\(value)" }
-}
-
-let a: SmallInt = 1
-let b: SmallInt = 9
-let c: SmallInt = 10
-let d: SmallInt = 2
-
-print(a + b)
-print(c - b)
-print(a * c)
-print(c / d)
-print(a + c)
