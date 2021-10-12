@@ -48,6 +48,37 @@ public struct MTRandom: RandomNumberGenerator {
   }
 }
 
+public struct XorshiftStar {
+  private let magic: UInt64 = 0x2545F4914F6CDD1D
+  private var state: UInt64
+
+  public init(seed: UInt64) {
+    state = seed
+  }
+
+  public mutating func nextInt() -> UInt64 {
+    state ^= state &>> 12
+    state ^= state &<< 25
+    state ^= state &>> 27
+
+    return (state &* magic) &>> 32
+  }
+
+  public mutating func nextFloat() -> Float {
+    return Float(nextInt()) / Float(1 << 32)
+  }
+}
+
+extension XorshiftStar: RandomNumberGenerator, IteratorProtocol, Sequence {
+  public mutating func next() -> UInt64 {
+    return nextInt()
+  }
+
+  public mutating func next() -> UInt64? {
+    return nextInt()
+  }
+}
+
 public func generateRandomNumArray(numDigits: Int = 4) -> [Int] {
   guard numDigits > 0 else {
     return []

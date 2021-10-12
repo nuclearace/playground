@@ -12,7 +12,7 @@ func fmtBig(_ n: BigInt) -> String {
   return "\(String(asString.prefix(100)))" + (leftOver > 0 ? "... \(leftOver) digits" : "")
 }
 
-public func pierpoint(n: Int, firstOrder: Bool = true) -> (first: [BigInt], second: [BigInt]) {
+public func pierpoint(n: Int) -> (first: [BigInt], second: [BigInt]) {
   var primes = (first: [BigInt](repeating: 0, count: n), second: [BigInt](repeating: 0, count: n))
 
   primes.first[0] = 2
@@ -43,7 +43,7 @@ public func pierpoint(n: Int, firstOrder: Bool = true) -> (first: [BigInt], seco
     t += 1
 
     if count1 < n && t.isPrime(rounds: 10) {
-      print("Found 1st order: \(fmtBig(t)); \(count1)")
+      // print("Found 1st order: \(fmtBig(t)); \(count1)")
       primes.first[count1] = t
       count1 += 1
     }
@@ -51,7 +51,7 @@ public func pierpoint(n: Int, firstOrder: Bool = true) -> (first: [BigInt], seco
     t -= 2
 
     if count2 < n && t.isPrime(rounds: 10) {
-      print("Found 2nd order: \(fmtBig(t)); \(count2)")
+      // print("Found 2nd order: \(fmtBig(t)); \(count2)")
       primes.second[count2] = t
       count2 += 1
     }
