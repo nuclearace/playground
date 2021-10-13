@@ -33,6 +33,7 @@ let package = Package(
         "CStuff",
         "CryptoSwift",
         .product(name: "Numerics", package: "swift-numerics"),
+        .product(name: "BigNumber", package: "Swift-BigInt"),
 //                "PythonKit",
         "ClockTimer"
       ]),

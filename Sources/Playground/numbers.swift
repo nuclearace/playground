@@ -3,6 +3,7 @@
 //
 
 import BigInt
+import BigNumber
 import Foundation
 
 precedencegroup ExponentiationPrecedence {
@@ -37,6 +38,11 @@ public func ** <T: BinaryInteger>(lhs: T, rhs: T) -> T {
   }
 
   return x * y
+}
+
+extension BDouble: Strideable {
+  public func distance(to other: BDouble) -> BDouble { abs(self - other) }
+  public func advanced(by n: BDouble) -> BDouble { self + n }
 }
 
 extension Numeric where Self: Strideable {

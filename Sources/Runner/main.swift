@@ -2,7 +2,7 @@ import ArgumentParser
 //import AsyncHTTPClient
 import BigInt
 import CryptoSwift
-//import BigNumber
+import BigNumber
 import ClockTimer
 // import CGMP
 import CStuff
@@ -10,15 +10,12 @@ import Foundation
 import Playground
 import Numerics
 
-for (i, n) in XorshiftStar(seed: 1234567).lazy.enumerated().prefix(5) {
-  print("\(i): \(n)")
+var sum = BDouble(0)
+
+for n in 0..<10 {
+  let syl = sylvester(n: n)
+  sum += BDouble(1) / BDouble(syl)
+  print(syl)
 }
 
-var gen = XorshiftStar(seed: 987654321)
-var counts = [Float: Int]()
-
-for _ in 0..<100_000 {
-  counts[floorf(gen.nextFloat() * 5), default: 0] += 1
-}
-
-print(counts)
+print("Sum of the reciprocals of first ten in sequence: \(sum)")
