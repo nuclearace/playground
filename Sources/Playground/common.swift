@@ -102,6 +102,11 @@ extension Collection where Element: Numeric {
   }
 }
 
+extension Double {
+  @inline(__always)
+  public var radians: Double { self * .pi / 180 }
+}
+
 extension Array {
   public mutating func removeRandom() -> Element {
     return remove(at: (0..<count).randomElement()!)
