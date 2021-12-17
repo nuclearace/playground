@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
   name: "playground",
   platforms: [
-    .macOS(.v10_15),
+    .macOS(.v12),
   ],
   products: [
     .executable(name: "Runner", targets: ["Runner"]),
@@ -34,7 +34,7 @@ let package = Package(
         "CryptoSwift",
         .product(name: "Numerics", package: "swift-numerics"),
         .product(name: "BigNumber", package: "Swift-BigInt"),
-//                "PythonKit",
+                "PythonKit",
         "ClockTimer"
       ]),
     .executableTarget(

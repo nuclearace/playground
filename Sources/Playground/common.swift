@@ -14,6 +14,11 @@ public enum Either<L, R> {
   case right(R)
 }
 
+@inline(__always)
+public func secsToNSecs(_ secs: Double) -> UInt64 {
+  return UInt64(secs * 1_000_000_000.0)
+}
+
 @inlinable
 public func replicateAtLeastOnce<T>(_ n: T, times: Int) -> [T] {
   guard times > 0 else { return [n] }
