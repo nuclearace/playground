@@ -5,12 +5,10 @@
 extension Sequence {
   @inlinable
   public func sorted<Value>(
-    on: KeyPath<Element, Value>,
-    using: (Value, Value) -> Bool
+      on: KeyPath<Element, Value>,
+      by: (Value, Value) -> Bool
   ) -> [Element] where Value: Comparable {
-    return withoutActuallyEscaping(using, do: {using -> [Element] in
-      return self.sorted(by: { using($0[keyPath: on], $1[keyPath: on]) })
-    })
+    return sorted(by: { by($0[keyPath: on], $1[keyPath: on]) })
   }
 }
 
